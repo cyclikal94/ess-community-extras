@@ -25,6 +25,14 @@ Install:
 helm upgrade --install ntfy ./helm/ntfy -f ntfy-values.yaml
 ```
 
+Install from published Helm repository:
+
+```bash
+helm repo add ess-community-extras https://cyclikal94.github.io/ess-community-extras
+helm repo update
+helm install ntfy ess-community-extras/ntfy -n ntfy --create-namespace --values ntfy-values.yaml
+```
+
 ## Naming
 
 - By default, resource names are release-scoped.
