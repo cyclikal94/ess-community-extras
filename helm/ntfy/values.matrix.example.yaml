@@ -19,8 +19,7 @@ config:
     # Permit Matrix server to bypass rate limits
     # See Rate limiting documentation:
     # - https://docs.ntfy.sh/config/#rate-limiting
-    visitor-request-limit-exempt-hosts:
-      - "matrix.example.com"
+    visitor-request-limit-exempt-hosts: "matrix.example.com"
     
     # Indicate that ntfy is running behind a reverse proxy
     # See Proxy documentation:
