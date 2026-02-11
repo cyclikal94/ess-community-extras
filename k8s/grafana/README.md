@@ -21,22 +21,22 @@ helm repo update
 helm install monitoring prometheus-community/kube-prometheus-stack
 ```
 
-If you already have a Grafana install, ensure the Service name matches the Ingress config in `grafana/grafana.yaml`.
+If you already have a Grafana install, ensure the Service name matches the Ingress config in `k8s/grafana/grafana.yaml`.
 
 ## Files
 
-- `grafana/grafana.yaml`: Ingress definition for Grafana.
+- `k8s/grafana/grafana.yaml`: Ingress definition for Grafana.
 
 ## Configure
 
-- Update the hostname in `grafana/grafana.yaml`: `grafana.example.com` -> your actual hostname.
+- Update the hostname in `k8s/grafana/grafana.yaml`: `grafana.example.com` -> your actual hostname.
 - If your Grafana Service name or port differs, update `service.name` and `service.port`.
 - If you use a different Ingress class or TLS issuer, update `ingressClassName` and the annotations.
 
 ## Install Ingress
 
 ```bash
-kubectl apply -f grafana/grafana.yaml
+kubectl apply -f k8s/grafana/grafana.yaml
 ```
 
 ## Verify

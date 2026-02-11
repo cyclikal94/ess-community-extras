@@ -1,0 +1,14 @@
+{{- $host := required "values.host is required (example: ntfy.example.com)" .Values.host -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ntfy.fullname" . }}
+  labels:
+    {{- include "ntfy.labels" . | nindent 4 }}
+data:
+  server.yml: |
+    # ntfy configuration
+    base-url: https://{{ $host }}
+{{- if .Values.config.extra }}
+{{ .Values.config.extra | nindent 4 }}
+{{- end }}

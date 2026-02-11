@@ -1,0 +1,7 @@
+apiVersion: v2
+name: ntfy
+description: Helm chart for ntfy
+icon: https://github.com/binwiederhier/ntfy/blob/main/web/public/static/images/ntfy.png
+type: application
+version: 0.2.0
+appVersion: "v2.17.0"

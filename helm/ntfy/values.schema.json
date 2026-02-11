@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "ntfy chart values",
+  "description": "Configuration values for deploying ntfy with this Helm chart.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["host"],
+  "properties": {
+    "nameOverride": {
+      "type": "string",
+      "default": "",
+      "description": "Optional short name override used for labels and naming when fullnameOverride is empty."
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "default": "",
+      "description": "Optional full resource name override. When set, this takes precedence over nameOverride."
+    },
+    "host": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Public hostname for ntfy. Used by Ingress host rules and ntfy base-url.",
+      "examples": [
+        "ntfy.example.com"
+      ]
+    },
+    "image": {
+      "type": "object",
+      "description": "Container image settings for ntfy.",
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string",
+          "default": "binwiederhier/ntfy",
+          "description": "Container image repository."
+        },
+        "tag": {
+          "type": "string",
+          "default": "v2.17.0",
+          "description": "Container image tag/version to deploy."
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
+          "default": "IfNotPresent",
+          "description": "Kubernetes image pull policy."
+        }
+      }
+    },
+    "args": {
+      "type": "array",
+      "description": "Arguments passed to the ntfy container.",
+      "default": [
+        "serve",
+        "--cache-file",
+        "/var/cache/ntfy/cache.db"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "replicas": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Number of ntfy StatefulSet replicas."
+    },
+    "service": {
+      "type": "object",
+      "description": "Kubernetes Service settings.",
+      "additionalProperties": false,
+      "properties": {
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 80,
+          "description": "Service port and target container port."
+        }
+      }
+    },
+    "persistence": {
+      "type": "object",
+      "description": "Persistent volume settings for ntfy cache storage.",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to create a PersistentVolumeClaim for ntfy cache."
+        },
+        "accessMode": {
+          "type": "string",
+          "enum": [
+            "ReadWriteOnce",
+            "ReadOnlyMany",
+            "ReadWriteMany",
+            "ReadWriteOncePod"
+          ],
+          "default": "ReadWriteOnce",
+          "description": "PersistentVolumeClaim access mode."
+        },
+        "size": {
+          "type": "string",
+          "minLength": 1,
+          "default": "1Gi",
+          "description": "Requested PersistentVolumeClaim size (for example 1Gi, 5Gi)."
+        },
+        "storageClassName": {
+          "type": "string",
+          "default": "",
+          "description": "StorageClass name for the PVC. Leave empty to use the cluster default StorageClass."
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "description": "Ingress settings used to expose ntfy.",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to create an Ingress resource."
+        },
+        "name": {
+          "type": "string",
+          "default": "",
+          "description": "Ingress resource name. Leave empty to derive from release name (for example, <release>-ntfy-ingress)."
+        },
+        "className": {
+          "type": "string",
+          "default": "traefik",
+          "description": "IngressClass name (for example traefik or nginx)."
+        },
+        "path": {
+          "type": "string",
+          "default": "/",
+          "description": "Ingress path routed to the ntfy service."
+        },
+        "pathType": {
+          "type": "string",
+          "enum": [
+            "Prefix",
+            "Exact",
+            "ImplementationSpecific"
+          ],
+          "default": "Prefix",
+          "description": "Ingress path matching behavior."
+        },
+        "clusterIssuer": {
+          "type": "string",
+          "default": "letsencrypt-prod",
+          "description": "cert-manager ClusterIssuer name used for TLS certificates. Set empty to omit the annotation."
+        },
+        "tls": {
+          "type": "object",
+          "description": "Ingress TLS settings.",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Whether to include TLS configuration in the Ingress."
+            },
+            "secretName": {
+              "type": "string",
+              "default": "ntfy-tls",
+              "description": "TLS secret name referenced by the Ingress."
+            }
+          }
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "description": "ntfy server configuration additions.",
+      "additionalProperties": false,
+      "properties": {
+        "extra": {
+          "type": "string",
+          "default": "",
+          "description": "Raw YAML appended to generated server.yml in the ConfigMap."
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "description": "Container resource requests and limits for ntfy.",
+      "default": {}
+    }
+  }
+}

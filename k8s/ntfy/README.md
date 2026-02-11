@@ -2,30 +2,29 @@
 
 ## Overview
 
-ntfy is a simple pub/sub notification service. This component deploys ntfy with a ConfigMap, Service, StatefulSet, and Ingress.
+ntfy is a simple pub/sub notification service. This directory contains the raw Kubernetes manifest deployment (ConfigMap, Service, StatefulSet, and Ingress).
 
 ## Prerequisites
 
 - A running Kubernetes cluster.
 - An Ingress controller (this manifest uses `traefik`).
 - cert-manager with a ClusterIssuer named `letsencrypt-prod` if you want TLS.
-- A default StorageClass, or edit the PVC spec in `ntfy/ntfy.yaml` to match your environment.
+- A default StorageClass, or edit the PVC spec in `k8s/ntfy/ntfy.yaml` to match your environment.
 
 ## Files
 
-- `ntfy/ntfy.yaml`: ConfigMap, Service, StatefulSet, and Ingress for ntfy.
+- `k8s/ntfy/ntfy.yaml`: ConfigMap, Service, StatefulSet, and Ingress for ntfy.
 
 ## Configure
 
-- Update `base-url` in `ntfy/ntfy.yaml`: `https://ntfy.example.com` -> your actual URL.
+- Update `base-url` in `k8s/ntfy/ntfy.yaml`: `https://ntfy.example.com` -> your actual URL.
 - Update the Ingress hostname and TLS secret name if needed.
 - Adjust storage size or class in `volumeClaimTemplates` if your cluster requires it.
-- Optional: customize ntfy settings in the ConfigMap `server.yml` section.
 
 ## Install
 
 ```bash
-kubectl apply -f ntfy/ntfy.yaml
+kubectl apply -f k8s/ntfy/ntfy.yaml
 ```
 
 ## Verify

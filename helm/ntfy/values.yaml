@@ -1,0 +1,42 @@
+nameOverride: ""
+fullnameOverride: ""
+
+host: ""
+
+image:
+  repository: binwiederhier/ntfy
+  tag: "v2.17.0"
+  pullPolicy: IfNotPresent
+
+args:
+  - serve
+  - --cache-file
+  - /var/cache/ntfy/cache.db
+
+replicas: 1
+
+service:
+  port: 80
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  storageClassName: ""
+
+ingress:
+  enabled: true
+  # Leave empty to derive from release name, e.g. "<release>-ntfy-ingress".
+  name: ""
+  className: traefik
+  path: /
+  pathType: Prefix
+  clusterIssuer: letsencrypt-prod
+  tls:
+    enabled: true
+    secretName: ntfy-tls
+
+config:
+  extra: ""
+
+resources: {}

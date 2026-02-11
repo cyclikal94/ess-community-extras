@@ -1,0 +1,8 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Absolute minimal values example file for ntfy.
+#  /    |    You should probably check `values.matrix.example.yaml`
+#
+
+host: ntfy.example.com

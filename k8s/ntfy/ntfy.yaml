@@ -1,3 +1,10 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Deployment YAML to deploy ntfy.
+#  /    |    Make sure to update the `base-url` and `visitor-request-limit-exempt-hosts`
+#
+
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -7,6 +14,24 @@ data:
   server.yml: |
     # ntfy configuration
     base-url: https://ntfy.example.com
+    
+    # Allow Matrix server to publish to UnifiedPush topics
+    # See UnifiedPush documentation:
+    # - https://docs.ntfy.sh/config/#example-unifiedpush
+    # - https://docs.ntfy.sh/config/#acl-entries-via-the-config
+    auth-access:
+      - "*:up*:wo"
+
+    # Permit Matrix server to bypass rate limits
+    # See Rate limiting documentation:
+    # - https://docs.ntfy.sh/config/#rate-limiting
+    visitor-request-limit-exempt-hosts:
+      - "matrix.example.com"
+    
+    # Indicate that ntfy is running behind a reverse proxy
+    # See Proxy documentation:
+    # - https://docs.ntfy.sh/config/#behind-a-proxy-tls-etc
+    behind-proxy: true
 ---
 apiVersion: v1
 kind: Service

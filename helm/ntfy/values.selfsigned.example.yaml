@@ -1,0 +1,16 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Self-Signed / Custom TLS example for ntfy.
+#  /    |    You should probably merge into `values.matrix.example.yaml`
+#
+
+host: ntfy.example.com
+
+ingress:
+  clusterIssuer: ""
+  tls:
+    enabled: true
+    # Load your self-signed cert and key into a Kubernetes TLS secret, and reference it here.
+    # I.E. `kubectl -n <namespace> create secret tls ntfy-tls --cert=ntfy.crt --key=ntfy.key`
+    secretName: ntfy-tls
