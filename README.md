@@ -8,3 +8,9 @@ Collection of charts and configs to deploy services alongside ESS Community. See
 
 - `grafana`: Ingress for exposing Grafana (following helm chart install).
 - `ntfy`: ntfy notification service.
+
+## Todo
+
+- `irc-bridge`
+- `hookshot`
+- ... other bridges 🤷
