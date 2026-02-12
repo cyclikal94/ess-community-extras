@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read
 
 jobs:
   release:
@@ -60,9 +61,222 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Release charts
+        id: chart_releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: helm
           skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Enrich chart release notes
+        if: steps.chart_releaser.outputs.changed_charts != ''
+        uses: actions/github-script@v7
+        env:
+          CHANGED_CHARTS: ${{ steps.chart_releaser.outputs.changed_charts }}
+        with:
+          script: |
+            const { execSync } = require("node:child_process");
+            const fs = require("node:fs");
+
+            function run(cmd) {
+              return execSync(cmd, { encoding: "utf8" }).trim();
+            }
+
+            function parseChartField(chartText, key) {
+              const re = new RegExp(`^${key}:\\s*"?([^"\\n#]+)"?\\s*$`, "m");
+              const match = chartText.match(re);
+              return match ? match[1].trim() : "";
+            }
+
+            function parseSemver(version) {
+              if (!version) {
+                return null;
+              }
+              const normalized = version.trim().replace(/^v/i, "").split("-")[0].split("+")[0];
+              const match = normalized.match(/^(\d+)\.(\d+)\.(\d+)$/);
+              if (!match) {
+                return null;
+              }
+              return {
+                major: Number(match[1]),
+                minor: Number(match[2]),
+                patch: Number(match[3])
+              };
+            }
+
+            function compareVersions(a, b) {
+              const va = parseSemver(a);
+              const vb = parseSemver(b);
+              if (!va && !vb) {
+                return a.localeCompare(b);
+              }
+              if (!va) {
+                return -1;
+              }
+              if (!vb) {
+                return 1;
+              }
+              if (va.major !== vb.major) {
+                return va.major - vb.major;
+              }
+              if (va.minor !== vb.minor) {
+                return va.minor - vb.minor;
+              }
+              return va.patch - vb.patch;
+            }
+
+            function escapeShellArg(value) {
+              return `'${String(value).replace(/'/g, `'\\''`)}'`;
+            }
+
+            function getLogLines(revRange, paths) {
+              const pathArgs = paths.map(escapeShellArg).join(" ");
+              const cmd = [
+                "git log",
+                "--no-merges",
+                "--pretty=format:%H%x09%s%x09%an",
+                revRange,
+                "--",
+                pathArgs
+              ].join(" ");
+              const out = run(cmd);
+              if (!out) {
+                return [];
+              }
+              return out.split("\n").filter(Boolean);
+            }
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const changedCharts = (process.env.CHANGED_CHARTS || "")
+              .split(",")
+              .map((v) => v.trim())
+              .filter(Boolean);
+
+            if (changedCharts.length === 0) {
+              core.info("No changed charts to enrich.");
+              return;
+            }
+
+            for (const chart of changedCharts) {
+              const chartFile = `helm/${chart}/Chart.yaml`;
+              if (!fs.existsSync(chartFile)) {
+                core.warning(`Skipping ${chart}: missing ${chartFile}`);
+                continue;
+              }
+
+              const chartText = fs.readFileSync(chartFile, "utf8");
+              const chartVersion = parseChartField(chartText, "version");
+              const appVersion = parseChartField(chartText, "appVersion");
+
+              if (!chartVersion) {
+                core.warning(`Skipping ${chart}: unable to parse chart version from ${chartFile}`);
+                continue;
+              }
+
+              const releaseTag = `${chart}-${chartVersion}`;
+              let release;
+              try {
+                release = (await github.rest.repos.getReleaseByTag({
+                  owner,
+                  repo,
+                  tag: releaseTag
+                })).data;
+              } catch (error) {
+                core.warning(`Skipping ${chart}: release ${releaseTag} not found (${error.message})`);
+                continue;
+              }
+
+              let previousTag = "";
+              const tagLines = run(`git tag --list ${escapeShellArg(`${chart}-*`)}`)
+                .split("\n")
+                .map((t) => t.trim())
+                .filter(Boolean)
+                .filter((t) => t !== releaseTag);
+
+              if (tagLines.length > 0) {
+                previousTag = tagLines
+                  .sort((a, b) => {
+                    const av = a.slice(`${chart}-`.length);
+                    const bv = b.slice(`${chart}-`.length);
+                    return compareVersions(av, bv);
+                  })
+                  .pop();
+              }
+
+              const paths = [`helm/${chart}`];
+              if (fs.existsSync(`k8s/${chart}`)) {
+                paths.push(`k8s/${chart}`);
+              }
+
+              const revRange = previousTag ? `${previousTag}..${context.sha}` : context.sha;
+              let commits = [];
+              try {
+                commits = getLogLines(revRange, paths).map((line) => {
+                  const [sha, subject, author] = line.split("\t");
+                  return { sha, subject, author };
+                });
+              } catch (error) {
+                core.warning(`Unable to gather commits for ${chart}: ${error.message}`);
+              }
+
+              const prs = new Map();
+              for (const commit of commits.slice(0, 80)) {
+                try {
+                  const associated = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                    owner,
+                    repo,
+                    commit_sha: commit.sha
+                  });
+                  for (const pr of associated.data || []) {
+                    if (!prs.has(pr.number)) {
+                      prs.set(pr.number, pr);
+                    }
+                  }
+                } catch (error) {
+                  core.warning(`Could not map commit ${commit.sha} to PRs: ${error.message}`);
+                }
+              }
+
+              const lines = [];
+              lines.push(`## ${chart} ${chartVersion}`);
+              lines.push("");
+              lines.push(`- Chart version: \`${chartVersion}\``);
+              lines.push(`- App version: \`${appVersion || "n/a"}\``);
+              if (previousTag) {
+                lines.push(`- Changes since: \`${previousTag}\``);
+                lines.push(`- Compare: [${previousTag}...${releaseTag}](https://github.com/${owner}/${repo}/compare/${previousTag}...${releaseTag})`);
+              } else {
+                lines.push("- Changes since: initial chart release");
+              }
+
+              if (prs.size > 0) {
+                lines.push("");
+                lines.push("### Pull Requests");
+                const sortedPrs = Array.from(prs.values()).sort((a, b) => a.number - b.number);
+                for (const pr of sortedPrs) {
+                  lines.push(`- [#${pr.number}](${pr.html_url}) ${pr.title}`);
+                }
+              }
+
+              if (commits.length > 0) {
+                lines.push("");
+                lines.push("### Commits");
+                for (const commit of commits) {
+                  lines.push(`- [\`${commit.sha.slice(0, 7)}\`](https://github.com/${owner}/${repo}/commit/${commit.sha}) ${commit.subject}`);
+                }
+              } else {
+                lines.push("");
+                lines.push("- No component-scoped commits detected in this range.");
+              }
+
+              await github.rest.repos.updateRelease({
+                owner,
+                repo,
+                release_id: release.id,
+                body: lines.join("\n")
+              });
+
+              core.info(`Updated release notes for ${releaseTag}`);
+            }

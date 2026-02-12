@@ -1,0 +1,260 @@
+name: Backfill Chart Release Notes
+
+on:
+  workflow_dispatch:
+    inputs:
+      chart:
+        description: "Optional chart name filter (for example: ntfy). Leave empty for all charts."
+        required: false
+        type: string
+      dry_run:
+        description: "Preview only (no release updates)."
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch tags
+        run: git fetch --force --tags origin
+
+      - name: Backfill release notes
+        uses: actions/github-script@v7
+        env:
+          CHART_FILTER: ${{ inputs.chart }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        with:
+          script: |
+            const { execSync } = require("node:child_process");
+            const fs = require("node:fs");
+
+            function run(cmd) {
+              return execSync(cmd, { encoding: "utf8" }).trim();
+            }
+
+            function parseSemver(version) {
+              if (!version) {
+                return null;
+              }
+              const normalized = version.trim().replace(/^v/i, "").split("-")[0].split("+")[0];
+              const match = normalized.match(/^(\d+)\.(\d+)\.(\d+)$/);
+              if (!match) {
+                return null;
+              }
+              return {
+                major: Number(match[1]),
+                minor: Number(match[2]),
+                patch: Number(match[3])
+              };
+            }
+
+            function compareVersions(a, b) {
+              const va = parseSemver(a);
+              const vb = parseSemver(b);
+              if (!va && !vb) {
+                return a.localeCompare(b);
+              }
+              if (!va) {
+                return -1;
+              }
+              if (!vb) {
+                return 1;
+              }
+              if (va.major !== vb.major) {
+                return va.major - vb.major;
+              }
+              if (va.minor !== vb.minor) {
+                return va.minor - vb.minor;
+              }
+              return va.patch - vb.patch;
+            }
+
+            function parseChartField(chartText, key) {
+              const re = new RegExp(`^${key}:\\s*"?([^"\\n#]+)"?\\s*$`, "m");
+              const match = chartText.match(re);
+              return match ? match[1].trim() : "";
+            }
+
+            function escapeShellArg(value) {
+              return `'${String(value).replace(/'/g, `'\\''`)}'`;
+            }
+
+            function getLogLines(revRange, paths) {
+              const pathArgs = paths.map(escapeShellArg).join(" ");
+              const cmd = [
+                "git log",
+                "--no-merges",
+                "--pretty=format:%H%x09%s%x09%an",
+                revRange,
+                "--",
+                pathArgs
+              ].join(" ");
+              const out = run(cmd);
+              if (!out) {
+                return [];
+              }
+              return out.split("\n").filter(Boolean);
+            }
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const chartFilter = (process.env.CHART_FILTER || "").trim();
+            const dryRun = String(process.env.DRY_RUN || "").toLowerCase() === "true";
+
+            const charts = fs
+              .readdirSync("helm", { withFileTypes: true })
+              .filter((entry) => entry.isDirectory())
+              .map((entry) => entry.name)
+              .filter((name) => fs.existsSync(`helm/${name}/Chart.yaml`))
+              .filter((name) => !chartFilter || name === chartFilter);
+
+            if (charts.length === 0) {
+              core.warning("No matching charts found for backfill.");
+              return;
+            }
+
+            let updatedCount = 0;
+            let skippedCount = 0;
+
+            for (const chart of charts) {
+              const tagLines = run(`git tag --list ${escapeShellArg(`${chart}-*`)}`)
+                .split("\n")
+                .map((t) => t.trim())
+                .filter(Boolean);
+
+              if (tagLines.length === 0) {
+                core.info(`Skipping ${chart}: no release tags found.`);
+                skippedCount += 1;
+                continue;
+              }
+
+              const sortedTags = tagLines.sort((a, b) => {
+                const av = a.slice(`${chart}-`.length);
+                const bv = b.slice(`${chart}-`.length);
+                return compareVersions(av, bv);
+              });
+
+              const paths = [`helm/${chart}`];
+              if (fs.existsSync(`k8s/${chart}`)) {
+                paths.push(`k8s/${chart}`);
+              }
+
+              for (let idx = 0; idx < sortedTags.length; idx += 1) {
+                const releaseTag = sortedTags[idx];
+                const previousTag = idx > 0 ? sortedTags[idx - 1] : "";
+                const chartVersion = releaseTag.slice(`${chart}-`.length);
+                let appVersion = "n/a";
+
+                let release;
+                try {
+                  release = (await github.rest.repos.getReleaseByTag({
+                    owner,
+                    repo,
+                    tag: releaseTag
+                  })).data;
+                } catch (error) {
+                  core.warning(`Skipping ${releaseTag}: release not found (${error.message})`);
+                  skippedCount += 1;
+                  continue;
+                }
+
+                try {
+                  const chartAtTag = run(`git show ${escapeShellArg(`${releaseTag}:helm/${chart}/Chart.yaml`)}`);
+                  appVersion = parseChartField(chartAtTag, "appVersion") || "n/a";
+                } catch (error) {
+                  core.warning(`Could not parse appVersion for ${releaseTag}: ${error.message}`);
+                }
+
+                const revRange = previousTag ? `${previousTag}..${releaseTag}` : releaseTag;
+                let commits = [];
+                try {
+                  commits = getLogLines(revRange, paths).map((line) => {
+                    const [sha, subject, author] = line.split("\t");
+                    return { sha, subject, author };
+                  });
+                } catch (error) {
+                  core.warning(`Unable to gather commits for ${releaseTag}: ${error.message}`);
+                }
+
+                const prs = new Map();
+                for (const commit of commits.slice(0, 80)) {
+                  try {
+                    const associated = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                      owner,
+                      repo,
+                      commit_sha: commit.sha
+                    });
+                    for (const pr of associated.data || []) {
+                      if (!prs.has(pr.number)) {
+                        prs.set(pr.number, pr);
+                      }
+                    }
+                  } catch (error) {
+                    core.warning(`Could not map commit ${commit.sha} to PRs: ${error.message}`);
+                  }
+                }
+
+                const lines = [];
+                lines.push(`## ${chart} ${chartVersion}`);
+                lines.push("");
+                lines.push(`- Chart version: \`${chartVersion}\``);
+                lines.push(`- App version: \`${appVersion}\``);
+                if (previousTag) {
+                  lines.push(`- Changes since: \`${previousTag}\``);
+                  lines.push(`- Compare: [${previousTag}...${releaseTag}](https://github.com/${owner}/${repo}/compare/${previousTag}...${releaseTag})`);
+                } else {
+                  lines.push("- Changes since: initial chart release");
+                }
+
+                if (prs.size > 0) {
+                  lines.push("");
+                  lines.push("### Pull Requests");
+                  const sortedPrs = Array.from(prs.values()).sort((a, b) => a.number - b.number);
+                  for (const pr of sortedPrs) {
+                    lines.push(`- [#${pr.number}](${pr.html_url}) ${pr.title}`);
+                  }
+                }
+
+                if (commits.length > 0) {
+                  lines.push("");
+                  lines.push("### Commits");
+                  for (const commit of commits) {
+                    lines.push(`- [\`${commit.sha.slice(0, 7)}\`](https://github.com/${owner}/${repo}/commit/${commit.sha}) ${commit.subject}`);
+                  }
+                } else {
+                  lines.push("");
+                  lines.push("- No component-scoped commits detected in this range.");
+                }
+
+                lines.push("");
+                lines.push(`_Backfilled by workflow run ${context.runId} on ${new Date().toISOString()}._`);
+
+                if (dryRun) {
+                  core.info(`[DRY RUN] Would update ${releaseTag}`);
+                  continue;
+                }
+
+                await github.rest.repos.updateRelease({
+                  owner,
+                  repo,
+                  release_id: release.id,
+                  body: lines.join("\n")
+                });
+
+                updatedCount += 1;
+                core.info(`Updated release notes for ${releaseTag}`);
+              }
+            }
+
+            core.info(`Backfill complete. Updated releases: ${updatedCount}. Skipped releases/charts: ${skippedCount}.`);
