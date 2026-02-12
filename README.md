@@ -12,5 +12,5 @@ Collection of charts and configs to deploy services alongside ESS Community. See
 ## Todo
 
 - `irc-bridge`
-- `hookshot`
+- <del>`hookshot`</del> Maybe just <https://github.com/matrix-org/matrix-hookshot/tree/main/helm>
 - ... other bridges 🤷
