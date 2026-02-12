@@ -38,6 +38,10 @@ spec:
         - name: config
           configMap:
             name: {{ include "ntfy.fullname" . }}
+        {{- if not .Values.persistence.enabled }}
+        - name: cache
+          emptyDir: {}
+        {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
