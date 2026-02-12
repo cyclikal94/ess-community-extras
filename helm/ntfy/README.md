@@ -45,6 +45,20 @@ helm install ntfy ess-community-extras/ntfy -n ntfy --create-namespace --values 
 - Validation is enforced by `values.schema.json`; Helm will fail fast if `host` is missing or empty.
 - If deploying to Matrix, you should replace `visitor-request-limit-exempt-hosts` with your Synapse domain.
 
+## Linting
+
+Because `host` is required, lint with a values file:
+
+```bash
+helm lint ./helm/ntfy -f ./helm/ntfy/values.example.yaml
+```
+
+Or lint with your own values file containing at least:
+
+```yaml
+host: ntfy.example.com
+```
+
 ## Example Values Files
 
 - `values.example.yaml`: absolute minimal chart input (`host` only).
@@ -101,8 +115,8 @@ You can supply multiple `values.yaml` files so you could also deploy with the `v
 
 ```bash
 helm upgrade --install ntfy ./helm/ntfy \
-  -f values.matrix.example.yaml \
-  -f values.selfsigned.example.yaml
+  -f helm/ntfy/values.matrix.example.yaml \
+  -f helm/ntfy/values.selfsigned.example.yaml
 ```
 
 **Note:** Both examples define `host` so you should ensure both are correct (or the last provided will apply).
