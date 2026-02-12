@@ -241,7 +241,9 @@ jobs:
                 lines.push(`_Backfilled by workflow run ${context.runId} on ${new Date().toISOString()}._`);
 
                 if (dryRun) {
-                  core.info(`[DRY RUN] Would update ${releaseTag}`);
+                  core.startGroup(`[DRY RUN] Preview for ${releaseTag}`);
+                  core.info(lines.join("\n"));
+                  core.endGroup();
                   continue;
                 }
 
