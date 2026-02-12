@@ -1,0 +1,472 @@
+name: Bump Component Versions
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: bump-component-versions
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      has_updates: ${{ steps.discover.outputs.has_updates }}
+      matrix: ${{ steps.discover.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Discover available component updates
+        id: discover
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const path = require("path");
+
+            function readIfExists(filePath) {
+              return fs.existsSync(filePath) ? fs.readFileSync(filePath, "utf8") : "";
+            }
+
+            function normalizeTag(tag) {
+              return (tag || "").trim().replace(/^v/i, "").toLowerCase();
+            }
+
+            function parseSimpleField(content, key) {
+              const re = new RegExp(`^${key}:\\s*"?([^"\\n#]+)"?\\s*$`, "m");
+              const match = content.match(re);
+              return match ? match[1].trim() : "";
+            }
+
+            function parseGithubRepoFromUrl(url) {
+              const match = (url || "").match(/github\.com\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)/i);
+              if (!match) {
+                return "";
+              }
+              return `${match[1]}/${match[2].replace(/\.git$/i, "")}`;
+            }
+
+            function parseGithubRepoFromChartText(content) {
+              const urls = content.match(/https?:\/\/[^\s"']+/g) || [];
+              for (const url of urls) {
+                const repo = parseGithubRepoFromUrl(url);
+                if (repo) {
+                  return repo;
+                }
+              }
+              return "";
+            }
+
+            function parseGithubRepoFromContainerRepo(imageRepo) {
+              if (!imageRepo) {
+                return "";
+              }
+
+              const cleaned = imageRepo.replace(/^docker\.io\//, "");
+              const parts = cleaned.split("/");
+
+              if (parts.length >= 3 && parts[0].includes(".")) {
+                return `${parts[1]}/${parts[2]}`;
+              }
+              if (parts.length >= 2) {
+                return `${parts[0]}/${parts[1]}`;
+              }
+              return "";
+            }
+
+            function parseImageSettings(valuesContent) {
+              const lines = valuesContent.split(/\r?\n/);
+              let inImageBlock = false;
+              let baseIndent = 0;
+              let repository = "";
+              let tag = "";
+
+              for (const line of lines) {
+                if (!inImageBlock) {
+                  const imageMatch = line.match(/^(\s*)image:\s*$/);
+                  if (imageMatch) {
+                    inImageBlock = true;
+                    baseIndent = imageMatch[1].length;
+                  }
+                  continue;
+                }
+
+                if (line.trim() === "" || line.trim().startsWith("#")) {
+                  continue;
+                }
+
+                const indent = (line.match(/^(\s*)/) || ["", ""])[1].length;
+                if (indent <= baseIndent) {
+                  break;
+                }
+
+                const repoMatch = line.match(/^\s*repository:\s*"?([^"\s#]+)"?/);
+                if (repoMatch) {
+                  repository = repoMatch[1].trim();
+                }
+
+                const tagMatch = line.match(/^\s*tag:\s*"?([^"\s#]+)"?/);
+                if (tagMatch) {
+                  tag = tagMatch[1].trim();
+                }
+              }
+
+              return { repository, tag };
+            }
+
+            function parseImageFromRef(ref) {
+              let value = ref.split("@")[0];
+              let repo = value;
+              let tag = "";
+
+              const lastColon = value.lastIndexOf(":");
+              const lastSlash = value.lastIndexOf("/");
+              if (lastColon > lastSlash) {
+                repo = value.slice(0, lastColon);
+                tag = value.slice(lastColon + 1);
+              }
+              return { repo, tag };
+            }
+
+            function parseK8sImages(fileContent) {
+              const lines = fileContent.split(/\r?\n/);
+              const images = [];
+
+              for (const line of lines) {
+                const match = line.match(/^\s*image:\s*["']?([^"'\s#]+)["']?/);
+                if (!match) {
+                  continue;
+                }
+                images.push(parseImageFromRef(match[1].trim()));
+              }
+
+              return images;
+            }
+
+            const components = new Map();
+
+            const helmRoot = "helm";
+            if (fs.existsSync(helmRoot)) {
+              for (const entry of fs.readdirSync(helmRoot, { withFileTypes: true })) {
+                if (!entry.isDirectory()) {
+                  continue;
+                }
+
+                const component = entry.name;
+                const chartDir = path.join(helmRoot, component);
+                const chartPath = path.join(chartDir, "Chart.yaml");
+                if (!fs.existsSync(chartPath)) {
+                  continue;
+                }
+
+                const chartText = readIfExists(chartPath);
+                const valuesText = readIfExists(path.join(chartDir, "values.yaml"));
+                const imageSettings = parseImageSettings(valuesText);
+
+                const chartInfo = {
+                  dir: chartDir,
+                  appVersion: parseSimpleField(chartText, "appVersion"),
+                  chartVersion: parseSimpleField(chartText, "version"),
+                  sourceRepo: parseGithubRepoFromChartText(chartText),
+                  imageRepo: imageSettings.repository,
+                  imageTag: imageSettings.tag
+                };
+
+                const componentInfo = components.get(component) || {};
+                componentInfo.helm = chartInfo;
+                components.set(component, componentInfo);
+              }
+            }
+
+            const k8sRoot = "k8s";
+            if (fs.existsSync(k8sRoot)) {
+              for (const entry of fs.readdirSync(k8sRoot, { withFileTypes: true })) {
+                if (!entry.isDirectory()) {
+                  continue;
+                }
+
+                const component = entry.name;
+                const componentDir = path.join(k8sRoot, component);
+                const files = [];
+                const stack = [componentDir];
+                while (stack.length > 0) {
+                  const currentDir = stack.pop();
+                  for (const item of fs.readdirSync(currentDir, { withFileTypes: true })) {
+                    const fullPath = path.join(currentDir, item.name);
+                    if (item.isDirectory()) {
+                      stack.push(fullPath);
+                      continue;
+                    }
+                    if (item.isFile() && /\.ya?ml$/i.test(item.name)) {
+                      files.push(fullPath);
+                    }
+                  }
+                }
+
+                const images = [];
+                for (const file of files) {
+                  const content = readIfExists(file);
+                  images.push(...parseK8sImages(content));
+                }
+
+                const componentInfo = components.get(component) || {};
+                componentInfo.k8s = { dir: componentDir, files, images };
+                components.set(component, componentInfo);
+              }
+            }
+
+            const updateCandidates = [];
+
+            for (const [component, info] of components.entries()) {
+              let upstreamRepo =
+                (info.helm && info.helm.sourceRepo) ||
+                parseGithubRepoFromContainerRepo(info.helm && info.helm.imageRepo);
+
+              if (!upstreamRepo && info.k8s) {
+                for (const image of info.k8s.images) {
+                  upstreamRepo = parseGithubRepoFromContainerRepo(image.repo);
+                  if (upstreamRepo) {
+                    break;
+                  }
+                }
+              }
+
+              if (!upstreamRepo || !upstreamRepo.includes("/")) {
+                core.info(`Skipping ${component}: unable to determine GitHub owner/repo from chart/manifests.`);
+                continue;
+              }
+
+              const currentVersion =
+                (info.helm && info.helm.appVersion) ||
+                (info.k8s && info.k8s.images.find((img) => img.tag)?.tag) ||
+                "";
+
+              if (!currentVersion) {
+                core.info(`Skipping ${component}: unable to determine current version.`);
+                continue;
+              }
+
+              const [owner, repo] = upstreamRepo.split("/");
+              let latestTag = "";
+              let releaseUrl = "";
+
+              try {
+                const release = await github.rest.repos.getLatestRelease({ owner, repo });
+                latestTag = release.data.tag_name;
+                releaseUrl = release.data.html_url;
+              } catch (error) {
+                core.warning(`Skipping ${component}: could not fetch latest release for ${upstreamRepo}: ${error.message}`);
+                continue;
+              }
+
+              if (normalizeTag(currentVersion) === normalizeTag(latestTag)) {
+                core.info(`No update for ${component}: current=${currentVersion}, latest=${latestTag}`);
+                continue;
+              }
+
+              const imageRepos = new Set();
+              if (info.helm && info.helm.imageRepo) {
+                const helmRepoGuess = parseGithubRepoFromContainerRepo(info.helm.imageRepo);
+                if (helmRepoGuess === upstreamRepo) {
+                  imageRepos.add(info.helm.imageRepo);
+                }
+              }
+              if (info.k8s) {
+                for (const img of info.k8s.images) {
+                  if (!img.repo) {
+                    continue;
+                  }
+                  const k8sRepoGuess = parseGithubRepoFromContainerRepo(img.repo);
+                  if (k8sRepoGuess === upstreamRepo) {
+                    imageRepos.add(img.repo);
+                  }
+                }
+              }
+
+              updateCandidates.push({
+                component,
+                owner,
+                repo,
+                current_version: currentVersion,
+                latest_tag: latestTag,
+                latest_tag_slug: latestTag.replace(/[^A-Za-z0-9._-]/g, "-"),
+                release_url: releaseUrl,
+                chart_dir: info.helm ? info.helm.dir : "",
+                k8s_dir: info.k8s ? info.k8s.dir : "",
+                image_repos: Array.from(imageRepos)
+              });
+            }
+
+            core.info(`Found ${updateCandidates.length} component(s) requiring version updates.`);
+            core.setOutput("has_updates", updateCandidates.length > 0 ? "true" : "false");
+            core.setOutput("matrix", JSON.stringify({ include: updateCandidates }));
+
+  update:
+    needs: discover
+    if: needs.discover.outputs.has_updates == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        if: matrix.chart_dir != ''
+        uses: azure/setup-helm@v4
+
+      - name: Update component files
+        id: update
+        env:
+          COMPONENT: ${{ matrix.component }}
+          CURRENT_VERSION: ${{ matrix.current_version }}
+          LATEST_TAG: ${{ matrix.latest_tag }}
+          CHART_DIR: ${{ matrix.chart_dir }}
+          K8S_DIR: ${{ matrix.k8s_dir }}
+          IMAGE_REPOS_JSON: ${{ toJson(matrix.image_repos) }}
+        run: |
+          set -euo pipefail
+
+          release_bump_type="patch"
+          previous_chart_version="N/A"
+          next_chart_version="N/A"
+          chart_bump_type="N/A"
+
+          parse_semver_triplet() {
+            local raw="$1"
+            raw="${raw#v}"
+            raw="${raw#V}"
+            raw="${raw%%-*}"
+            raw="${raw%%+*}"
+            IFS='.' read -r major minor patch extra <<< "${raw}"
+            if [[ -n "${extra:-}" ]]; then
+              return 1
+            fi
+            if [[ "${major}" =~ ^[0-9]+$ && "${minor}" =~ ^[0-9]+$ && "${patch}" =~ ^[0-9]+$ ]]; then
+              echo "${major} ${minor} ${patch}"
+              return 0
+            fi
+            return 1
+          }
+
+          if read -r current_major current_minor current_patch < <(parse_semver_triplet "${CURRENT_VERSION}") \
+             && read -r latest_major latest_minor latest_patch < <(parse_semver_triplet "${LATEST_TAG}"); then
+            if (( latest_major > current_major )); then
+              release_bump_type="major"
+            elif (( latest_major == current_major && latest_minor > current_minor )); then
+              release_bump_type="minor"
+            elif (( latest_major == current_major && latest_minor == current_minor && latest_patch > current_patch )); then
+              release_bump_type="patch"
+            else
+              release_bump_type="patch"
+            fi
+          fi
+
+          if [ -n "${CHART_DIR}" ] && [ -f "${CHART_DIR}/Chart.yaml" ]; then
+            current_chart_version="$(sed -nE 's/^version:[[:space:]]*([^[:space:]]+)/\1/p' "${CHART_DIR}/Chart.yaml")"
+            if [ -z "${current_chart_version}" ]; then
+              echo "Could not parse chart version in ${CHART_DIR}/Chart.yaml" >&2
+              exit 1
+            fi
+
+            previous_chart_version="${current_chart_version}"
+
+            IFS='.' read -r major minor patch <<< "${current_chart_version}"
+            if [[ "${major}" =~ ^[0-9]+$ && "${minor}" =~ ^[0-9]+$ && "${patch}" =~ ^[0-9]+$ ]]; then
+              case "${release_bump_type}" in
+                major)
+                  chart_bump_type="major"
+                  next_chart_version="$((major + 1)).0.0"
+                  ;;
+                minor)
+                  chart_bump_type="minor"
+                  next_chart_version="${major}.$((minor + 1)).0"
+                  ;;
+                *)
+                  chart_bump_type="patch"
+                  next_chart_version="${major}.${minor}.$((patch + 1))"
+                  ;;
+              esac
+              sed -Ei "s#^version: .*#version: ${next_chart_version}#" "${CHART_DIR}/Chart.yaml"
+            else
+              echo "Chart version '${current_chart_version}' is not simple x.y.z; skipping automatic version bump." >&2
+              exit 1
+            fi
+
+            sed -Ei "s#^appVersion: .*#appVersion: \"${LATEST_TAG}\"#" "${CHART_DIR}/Chart.yaml"
+
+            if [ -f "${CHART_DIR}/values.yaml" ]; then
+              perl -0777 -i -pe 's{(^image:\s*\n(?:[ \t].*\n)*?[ \t]+tag:\s*)"?[^"\n#]+"?}{$1 . "\"" . $ENV{"LATEST_TAG"} . "\""}me' "${CHART_DIR}/values.yaml"
+            fi
+
+            if [ -f "${CHART_DIR}/values.schema.json" ]; then
+              tmp_json="$(mktemp)"
+              jq --arg tag "${LATEST_TAG}" '.properties.image.properties.tag.default = $tag' "${CHART_DIR}/values.schema.json" > "${tmp_json}"
+              mv "${tmp_json}" "${CHART_DIR}/values.schema.json"
+            fi
+          fi
+
+          if [ -n "${K8S_DIR}" ] && [ -d "${K8S_DIR}" ]; then
+            mapfile -t image_repos < <(jq -r '.[]' <<< "${IMAGE_REPOS_JSON}")
+            while IFS= read -r file; do
+              for repo in "${image_repos[@]}"; do
+                if [ -z "${repo}" ]; then
+                  continue
+                fi
+                TARGET_REPO="${repo}" LATEST_TAG="${LATEST_TAG}" perl -i -pe '
+                  BEGIN { $repo = $ENV{"TARGET_REPO"}; $tag = $ENV{"LATEST_TAG"}; }
+                  s{^(\s*image:\s*"?)(\Q$repo\E)(?::[^"\s#]+)?("?)(\s*(?:#.*)?)$}{$1 . $2 . ":" . $tag . $3 . $4}e
+                ' "${file}"
+              done
+            done < <(find "${K8S_DIR}" -type f \( -name "*.yml" -o -name "*.yaml" \))
+          fi
+
+          if git diff --quiet; then
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          echo "changed=true" >> "${GITHUB_OUTPUT}"
+          echo "upstream_bump_type=${release_bump_type^}" >> "${GITHUB_OUTPUT}"
+          echo "chart_bump_type=${chart_bump_type^}" >> "${GITHUB_OUTPUT}"
+          echo "previous_chart_version=${previous_chart_version}" >> "${GITHUB_OUTPUT}"
+          echo "next_chart_version=${next_chart_version}" >> "${GITHUB_OUTPUT}"
+
+      - name: Lint chart
+        if: steps.update.outputs.changed == 'true' && matrix.chart_dir != ''
+        run: |
+          set -euo pipefail
+          if [ -f "${{ matrix.chart_dir }}/values.example.yaml" ]; then
+            helm lint "${{ matrix.chart_dir }}" -f "${{ matrix.chart_dir }}/values.example.yaml"
+          else
+            helm lint "${{ matrix.chart_dir }}"
+          fi
+
+      - name: Create pull request
+        if: steps.update.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "${{ matrix.component }} Version Update to ${{ matrix.latest_tag }}"
+          branch: "codex/${{ matrix.component }}-version-update-${{ matrix.latest_tag_slug }}"
+          delete-branch: true
+          title: "${{ matrix.component }} Version Update to ${{ matrix.latest_tag }}"
+          body: |
+            Automated component version update.
+
+            - Component: `${{ matrix.component }}`
+            - Current version: `${{ matrix.current_version }}`
+            - Target version: `${{ matrix.latest_tag }}`
+            - Upstream bump type: `${{ steps.update.outputs.upstream_bump_type }}`
+            - Chart bump type: `${{ steps.update.outputs.chart_bump_type }}`
+            - Chart version: `${{ steps.update.outputs.previous_chart_version }}` -> `${{ steps.update.outputs.next_chart_version }}`
+            - Release notes: [${{ matrix.owner }}/${{ matrix.repo }} ${{ matrix.latest_tag }}](${{ matrix.release_url }})
+
+            Please review upstream changes before merging.
