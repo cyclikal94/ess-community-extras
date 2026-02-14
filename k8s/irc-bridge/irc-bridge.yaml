@@ -1,0 +1,332 @@
+# matrix-appservice-irc all-in-one Kubernetes manifest
+#
+# Upstream setup docs:
+# https://matrix-org.github.io/matrix-appservice-irc/latest/bridge_setup.html
+# Upstream full config reference:
+# https://github.com/matrix-org/matrix-appservice-irc/blob/develop/config.sample.yaml
+#
+# External Postgres:
+# - Update data.config.yaml -> database.connectionString
+# - Remove the postgres Secret/Service/StatefulSet resources below
+#
+# Disable pooling:
+# - Set ircClients.mode in data.config.yaml to "bot"
+# - Remove the connectionPool section from data.config.yaml
+# - Remove redis Service/StatefulSet and matrix-irc-bridge-pool Deployment below
+#
+# External Redis (pooling still enabled):
+# - Update data.config.yaml -> connectionPool.redisUrl
+# - Update REDIS_URL env on matrix-irc-bridge-pool Deployment
+# - Remove redis Service/StatefulSet below
+#
+# Synapse namespace registration copy:
+# - A second ConfigMap is included below in namespace "ess" for Synapse to mount.
+# - Keep appservice-registration-irc.yaml in both ConfigMaps identical.
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: matrix-irc-bridge-config
+data:
+  config.yaml: |
+    # Minimal bridge config. Add extra options from upstream sample config as needed.
+    homeserver:
+      # Synapse URL reachable from this namespace.
+      url: "http://synapse.matrix.svc.cluster.local:8008"
+      domain: "example.com"
+
+    ircService:
+      servers:
+        irc.libera.chat:
+          name: "Libera Chat"
+          port: 6697
+          ssl: true
+          botConfig:
+            enabled: true
+            nick: "MatrixBot"
+
+    database:
+      engine: "postgres"
+      # Keep this in sync with the matrix-irc-bridge-postgres Secret values below.
+      connectionString: "postgres://matrix_irc:matrix_irc_password@matrix-irc-bridge-postgres:5432/matrix_irc"
+
+    # Pooling is enabled by default in this manifest.
+    ircClients:
+      mode: "pool"
+
+    connectionPool:
+      redisUrl: "redis://matrix-irc-bridge-redis:6379/0"
+      persistConnectionsOnShutdown: true
+
+  appservice-registration-irc.yaml: |
+    # Synapse must load this file via app_service_config_files.
+    id: irc
+    url: "http://matrix-irc-bridge.matrix.svc.cluster.local:8090"
+    as_token: "REPLACE_ME_AS_TOKEN"
+    hs_token: "REPLACE_ME_HS_TOKEN"
+    sender_localpart: appservice-irc
+    rate_limited: false
+    namespaces:
+      users:
+        - exclusive: true
+          regex: '@irc_.*:example.com'
+      aliases:
+        - exclusive: true
+          regex: '#irc_.*:example.com'
+    protocols:
+      - irc
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: matrix-irc-bridge-registration
+  # Change this to the namespace where Synapse runs.
+  namespace: ess
+data:
+  appservice-registration-irc.yaml: |
+    # Synapse must load this file via app_service_config_files.
+    id: irc
+    url: "http://matrix-irc-bridge.matrix.svc.cluster.local:8090"
+    as_token: "REPLACE_ME_AS_TOKEN"
+    hs_token: "REPLACE_ME_HS_TOKEN"
+    sender_localpart: appservice-irc
+    rate_limited: false
+    namespaces:
+      users:
+        - exclusive: true
+          regex: '@irc_.*:example.com'
+      aliases:
+        - exclusive: true
+          regex: '#irc_.*:example.com'
+    protocols:
+      - irc
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: matrix-irc-bridge-postgres
+stringData:
+  POSTGRES_DB: matrix_irc
+  POSTGRES_USER: matrix_irc
+  POSTGRES_PASSWORD: matrix_irc_password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matrix-irc-bridge-postgres
+spec:
+  selector:
+    app: matrix-irc-bridge-postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: matrix-irc-bridge-postgres
+spec:
+  serviceName: matrix-irc-bridge-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matrix-irc-bridge-postgres
+  template:
+    metadata:
+      labels:
+        app: matrix-irc-bridge-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: matrix-irc-bridge-postgres
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: matrix-irc-bridge-postgres
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: matrix-irc-bridge-postgres
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matrix-irc-bridge-redis
+spec:
+  selector:
+    app: matrix-irc-bridge-redis
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: 6379
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: matrix-irc-bridge-redis
+spec:
+  serviceName: matrix-irc-bridge-redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matrix-irc-bridge-redis
+  template:
+    metadata:
+      labels:
+        app: matrix-irc-bridge-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          imagePullPolicy: IfNotPresent
+          args:
+            - redis-server
+            - --appendonly
+            - "yes"
+          ports:
+            - containerPort: 6379
+              name: redis
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matrix-irc-bridge
+spec:
+  selector:
+    app: matrix-irc-bridge
+  ports:
+    - name: appservice
+      port: 8090
+      targetPort: appservice
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix-irc-bridge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matrix-irc-bridge
+  template:
+    metadata:
+      labels:
+        app: matrix-irc-bridge
+    spec:
+      containers:
+        - name: matrix-irc-bridge
+          image: matrixdotorg/matrix-appservice-irc:4.0.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - node
+            - app.js
+            - -p
+            - "8090"
+            - -c
+            - /config/config.yaml
+            - -f
+            - /config/appservice-registration-irc.yaml
+          ports:
+            - name: appservice
+              containerPort: 8090
+          volumeMounts:
+            - name: bridge-config
+              mountPath: /config/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            - name: bridge-registration
+              mountPath: /config/appservice-registration-irc.yaml
+              subPath: appservice-registration-irc.yaml
+              readOnly: true
+      volumes:
+        - name: bridge-config
+          configMap:
+            name: matrix-irc-bridge-config
+            items:
+              - key: config.yaml
+                path: config.yaml
+        - name: bridge-registration
+          configMap:
+            name: matrix-irc-bridge-config
+            items:
+              - key: appservice-registration-irc.yaml
+                path: appservice-registration-irc.yaml
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix-irc-bridge-pool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matrix-irc-bridge-pool
+  template:
+    metadata:
+      labels:
+        app: matrix-irc-bridge-pool
+    spec:
+      containers:
+        - name: pool
+          image: matrixdotorg/matrix-appservice-irc:4.0.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - node
+            - lib/pool-service/IrcConnectionPool.js
+          env:
+            - name: REDIS_URL
+              value: redis://matrix-irc-bridge-redis:6379/0
+            - name: LOGGING_LEVEL
+              value: info
+            - name: METRICS_HOST
+              value: 0.0.0.0
+            - name: METRICS_PORT
+              value: "7002"
+          ports:
+            - name: metrics
+              containerPort: 7002
