@@ -53,6 +53,15 @@ kubectl create namespace ess || true
 kubectl apply -f k8s/irc-bridge/irc-bridge.yaml
 ```
 
+Make sure to apply the `appservice-registration-irc.yaml` to your ESS Synapse using the following `values.yaml` snippet:
+
+```yaml
+synapse:
+  appservices:
+    - configMap: matrix-irc-bridge-registration
+      configMapKey: appservice-registration-irc.yaml
+```
+
 ## Verify
 
 ```bash
