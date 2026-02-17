@@ -30,7 +30,7 @@ Install from published Helm repository:
 ```bash
 helm repo add ess-community-extras https://cyclikal94.github.io/ess-community-extras
 helm repo update
-helm install ntfy ess-community-extras/ntfy -n ntfy --create-namespace --values ntfy-values.yaml
+helm upgrade --install ntfy ess-community-extras/ntfy -n ntfy --create-namespace --values ntfy-values.yaml
 ```
 
 ## Naming
@@ -62,8 +62,8 @@ host: ntfy.example.com
 ## Example Values Files
 
 - `values.example.yaml`: absolute minimal chart input (`host` only).
-- `values.matrix.example.yaml`: recommended Matrix/Element-focused ntfy config example.
-- `values.selfsigned.example.yaml`: self-signed/custom TLS secret example; typically layered with the Matrix example.
+- `values.matrix.example.yaml`: recommended Matrix/ESS-focused ntfy config example.
+- `values.selfsigned.example.yaml`: self-signed/custom TLS secret example; typically merged with the Matrix example.
 
 ## Defaults
 
@@ -121,7 +121,7 @@ helm upgrade --install ntfy ./helm/ntfy \
 
 **Note:** Both examples define `host` so you should ensure both are correct (or the last provided will apply).
 
-## Matrix/Element Example
+## Matrix/ESS Example
 
 For Matrix/Element deployments, use custom ntfy server config for UnifiedPush-style access control (for example `auth-access` entries).
 
@@ -130,6 +130,6 @@ Ready-to-use file: `values.matrix.example.yaml`
 ## Verify
 
 ```bash
-kubectl get pods,svc -l app.kubernetes.io/instance=ntfy
-kubectl get ingress -l app.kubernetes.io/instance=ntfy
+kubectl get pods,svc -l app.kubernetes.io/instance=ntfy -n ntfy
+kubectl get ingress -l app.kubernetes.io/instance=ntfy -n ntfy
 ```
