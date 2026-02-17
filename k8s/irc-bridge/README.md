@@ -2,87 +2,81 @@
 
 ## Overview
 
-This directory uses a single all-in-one Kubernetes manifest:
+matrix-appservice-irc bridges Matrix and IRC. This directory provides a single all-in-one manifest with bridge config, appservice registration, bridge runtime, bundled Postgres, bundled Redis, and pool worker deployment.
 
-- `k8s/irc-bridge/irc-bridge.yaml`
+## Prerequisites
 
-It includes:
+- A running Kubernetes cluster.
+- Synapse running in your cluster (this repo currently assumes namespace `ess`).
+- Namespaces `ircbridge` and `ess`.
+- DNS/network connectivity from bridge to Synapse.
+- An Ingress controller (this manifest uses `traefik`).
+- cert-manager with a ClusterIssuer named `letsencrypt-prod` if you want TLS automation.
 
-- bridge config + appservice registration in one `ConfigMap`
-- duplicate registration `ConfigMap` in Synapse namespace (`ess`) for Synapse mounting
-- bridge `Service` + `Deployment`
-- bundled Postgres (`Secret` + `Service` + `StatefulSet`)
-- bundled Redis (`Service` + `StatefulSet`)
-- pool worker `Deployment` (connection pooling enabled by default)
+## Files
 
-## Upstream docs
+- `k8s/irc-bridge/irc-bridge.yaml`: all resources for IRC bridge deployment and registration ConfigMaps.
 
-- [Bridge setup](https://matrix-org.github.io/matrix-appservice-irc/latest/bridge_setup.html)
-- [Config sample](https://github.com/matrix-org/matrix-appservice-irc/blob/develop/config.sample.yaml)
-- [Usage](https://matrix-org.github.io/matrix-appservice-irc/latest/usage.html)
-- [Connection pooling](https://matrix-org.github.io/matrix-appservice-irc/latest/connection_pooling.html)
+## Configure
 
-## 1) Edit the ConfigMap in `irc-bridge.yaml`
-
-In `k8s/irc-bridge/irc-bridge.yaml`, edit `ConfigMap` values:
-
-- `data.config.yaml`:
-  - `homeserver.url`
-  - `homeserver.domain`
-  - `ircService.servers` entry
+- Edit `data.config.yaml` in `k8s/irc-bridge/irc-bridge.yaml`:
+  - `homeserver.url` and `homeserver.domain`
+  - `ircService.mediaProxy.publicUrl`
+  - `ircService.servers`
   - `database.connectionString`
-  - `ircClients.mode` and `connectionPool.redisUrl` (if pooling)
-- `data.appservice-registration-irc.yaml`:
+  - `ircClients.mode` and `connectionPool.redisUrl`
+- Edit media proxy ingress values in `k8s/irc-bridge/irc-bridge.yaml`:
+  - `Ingress.spec.rules[0].host`
+  - `Ingress.spec.tls[0].hosts[0]`
+  - `Ingress.spec.tls[0].secretName` (if needed)
+- Keep `ircService.mediaProxy.publicUrl` and the Ingress hostname aligned.
+- Edit both `appservice-registration-irc.yaml` blocks in `k8s/irc-bridge/irc-bridge.yaml` and keep them identical:
   - `url`
   - `as_token`
   - `hs_token`
-  - `namespaces.*.regex` domain
-- second `ConfigMap` (`matrix-irc-bridge-registration`) `metadata.namespace` for Synapse
-- keep both `appservice-registration-irc.yaml` copies identical
-
-Generate secure tokens, for example:
+  - `namespaces.*.regex`
+- Generate secure tokens for `as_token` and `hs_token`:
 
 ```bash
 openssl rand -hex 32
 openssl rand -hex 32
 ```
 
-## 2) Apply
+- If Synapse is not in namespace `ess`, update `metadata.namespace` for `matrix-irc-bridge-registration`.
+- For additional bridge options, see upstream config sample.
+
+## Install
 
 ```bash
-kubectl -n <namespace> apply -f k8s/irc-bridge/irc-bridge.yaml
+kubectl create namespace ircbridge || true
+kubectl create namespace ess || true
+kubectl apply -f k8s/irc-bridge/irc-bridge.yaml
 ```
-
-## 3) Synapse changes (required)
-
-Synapse must load the same `appservice-registration-irc.yaml` content.
-
-1. Mount the registration file from `ConfigMap/matrix-irc-bridge-registration` in the Synapse namespace.
-2. Add its path to `app_service_config_files` in Synapse config.
-3. Restart Synapse.
-
-If Synapse does not load the registration file, no bridge traffic will be routed.
-
-## External Postgres / Redis
-
-The manifest defaults to bundled Postgres + bundled Redis.
-
-- External Postgres:
-  - update `database.connectionString` in `data.config.yaml`
-  - remove postgres `Secret` + `Service` + `StatefulSet`
-- Disable pooling:
-  - set `ircClients.mode: "bot"`
-  - remove `connectionPool` section in `data.config.yaml`
-  - remove redis `Service` + `StatefulSet` and pool `Deployment`
-- External Redis with pooling:
-  - update `connectionPool.redisUrl`
-  - update pool `REDIS_URL`
-  - remove bundled redis `Service` + `StatefulSet`
 
 ## Verify
 
 ```bash
-kubectl -n <namespace> get pods,svc | grep matrix-irc-bridge
-kubectl -n <namespace> logs deploy/matrix-irc-bridge
-kubectl -n <namespace> logs deploy/matrix-irc-bridge-pool
+kubectl -n ircbridge get pods,svc | grep matrix-irc-bridge
 ```
+
+```bash
+kubectl -n ircbridge logs deploy/matrix-irc-bridge
+kubectl -n ircbridge logs deploy/matrix-irc-bridge-pool
+```
+
+```bash
+kubectl -n ircbridge get ingress matrix-irc-bridge-media-proxy
+```
+
+## Docs
+
+- [Bridge setup](https://matrix-org.github.io/matrix-appservice-irc/latest/bridge_setup.html)
+- [Usage](https://matrix-org.github.io/matrix-appservice-irc/latest/usage.html)
+- [Connection pooling](https://matrix-org.github.io/matrix-appservice-irc/latest/connection_pooling.html)
+- [Config sample](https://github.com/matrix-org/matrix-appservice-irc/blob/develop/config.sample.yaml)
+
+## Notes
+
+- Synapse must mount and load `appservice-registration-irc.yaml` via `app_service_config_files`, then be restarted.
+- The bridge defaults to bundled Postgres and bundled Redis.
+- To use external Postgres/Redis, update config values and remove the bundled resource sections from `k8s/irc-bridge/irc-bridge.yaml`.
