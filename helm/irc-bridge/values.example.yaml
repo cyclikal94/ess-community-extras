@@ -2,13 +2,15 @@
 #     / V\
 #   / `  /
 #  <<   |    Absolute minimal values example file for matrix-appservice-irc.
-#  /    |    Set host/domain. Tokens auto-generate if omitted.
+#  /    |    You should probably check `values.matrix.example.yaml`.
 #
 
 host: irc-media.example.com
 
 homeserver:
-  # Keep this explicit in minimal values because this is often customized.
+  # Okay small white lie, technically the below is already defined if not supplied.
+  # But it's worth being explicit about the required `url` value.
+  # You may have installed ESS in a different namespace.
   url: http://ess-synapse.ess.svc.cluster.local:8008
   # Required Matrix homeserver domain.
   domain: matrix.example.com

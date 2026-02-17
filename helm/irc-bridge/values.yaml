@@ -1,3 +1,10 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    These are the defualt values for ntfy.
+#  /    |    You should look at the values examples for what to actually apply.
+#
+
 nameOverride: ""
 fullnameOverride: ""
 

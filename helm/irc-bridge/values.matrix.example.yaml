@@ -1,14 +1,15 @@
 #      .
 #     / V\
 #   / `  /
-#  <<   |    Matrix/ESS example for matrix-appservice-irc.
-#  /    |    Replace host/domain values before deploying.
+#  <<   |    Matrix example with recommended config for matrix-appservice-irc.
+#  /    |    Ensure `domain` is your MXID `server-name` i.e. `matrix.org`.
 #
 
 host: irc-media.example.com
 
 homeserver:
-  # Synapse URL reachable from the bridge namespace.
+  # You can leave this as-is if you installed ESS into the `ess` namespace.
+  # Otherwise, update the URL to point to your Synapse instance.
   url: http://ess-synapse.ess.svc.cluster.local:8008
   domain: matrix.example.com
 

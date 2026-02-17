@@ -8,9 +8,7 @@ This chart deploys matrix-appservice-irc with a ConfigMap, Service, Deployment(s
 
 - Kubernetes cluster
 - Helm 3.x
-- Synapse reachable from the chart namespace
 - Ingress controller (defaults assume `traefik`)
-- cert-manager ClusterIssuer `letsencrypt-prod` if using managed TLS
 
 ## Quick Start
 
@@ -34,7 +32,7 @@ Install from published Helm repository:
 ```bash
 helm repo add ess-community-extras https://cyclikal94.github.io/ess-community-extras
 helm repo update
-helm install irc-bridge ess-community-extras/irc-bridge -n ircbridge --create-namespace --values irc-bridge-values.yaml
+helm upgrade --install irc-bridge ess-community-extras/irc-bridge -n ircbridge --create-namespace --values irc-bridge-values.yaml
 ```
 
 ## Naming
@@ -50,7 +48,7 @@ helm install irc-bridge ess-community-extras/irc-bridge -n ircbridge --create-na
 - Validation is enforced by `values.schema.json`; Helm will fail fast when required values are missing or empty.
 - `registration.asToken` and `registration.hsToken` are optional; when omitted, the chart auto-generates 64-hex-char tokens.
 
-You can still provide tokens manually (for example to pre-share with Synapse):
+You can still provide tokens manually if desired:
 
 ```bash
 openssl rand -hex 32
@@ -59,7 +57,7 @@ openssl rand -hex 32
 
 ## Linting
 
-Because `host` is required, lint with a values file:
+Because some configuration options are required, lint with a values file:
 
 ```bash
 helm lint ./helm/irc-bridge -f ./helm/irc-bridge/values.example.yaml
@@ -75,9 +73,9 @@ homeserver:
 
 ## Example Values Files
 
-- `values.example.yaml`: absolute minimal chart input (`host` + `homeserver` values).
-- `values.matrix.example.yaml`: Matrix/ESS-focused baseline values.
-- `values.selfsigned.example.yaml`: self-signed/custom TLS secret example; typically layered with the Matrix example.
+- `values.example.yaml`: absolute minimal chart input (`host` + `homeserver`).
+- `values.matrix.example.yaml`: recommended Matrix/ESS-focused matrix-appservice-irc config example.
+- `values.selfsigned.example.yaml`: self-signed/custom TLS secret example; typically merged with the Matrix example.
 - `values.external.example.yaml`: external Redis/Postgres example.
 
 ## Defaults
@@ -126,7 +124,7 @@ ingress:
 
 Ready-to-use file: `values.selfsigned.example.yaml`
 
-You can supply multiple `values.yaml` files:
+You can supply multiple `values.yaml` files so you could also deploy with the `values.matrix.example.yaml `:
 
 ```bash
 helm upgrade --install irc-bridge ./helm/irc-bridge \
@@ -138,13 +136,13 @@ helm upgrade --install irc-bridge ./helm/irc-bridge \
 
 ## Synapse Registration ConfigMap
 
-By default, this chart creates a duplicate registration ConfigMap in `registration.synapseNamespace` (defaults to the Helm release namespace when unset).
+By default, this chart creates a duplicate registration ConfigMap in `registration.synapseNamespace` (defaulting to the Helm release namespace when unset).
 
 Set `registration.synapseNamespace` if your Synapse namespace is different (for example `ess`).
 
 The same `as_token` and `hs_token` values are used in both registration ConfigMaps. If omitted, they are auto-generated and persisted in a Secret named `<release>-irc-bridge-registration-tokens`.
 
-If your Synapse Helm values support appservice ConfigMaps, add:
+For ESS, simply add the appservice ConfigMap, by using a values file like so:
 
 ```yaml
 synapse:
@@ -155,13 +153,7 @@ synapse:
 
 Set `registration.createSynapseConfigMap=false` if you do not want the duplicate ConfigMap.
 
-## Redis Startup Behavior (`waitForRedis`)
-
-`waitForRedis` is not a Helm feature. It is a Kubernetes init-container gate used to avoid bridge/pool startup races while bundled Redis is still coming up.
-
-- It only applies when `redis.enabled=true`.
-- You do not need to explicitly disable both `redis` and `waitForRedis`; disabling bundled Redis automatically removes the wait init-container.
-- If your bridge tolerates Redis being unavailable at startup, you can disable it with `waitForRedis.enabled=false`.
+**Note**: You will still need to supply the app services file to Synapse another way.
 
 ## External Redis/Postgres Example
 
@@ -179,16 +171,13 @@ database:
   connectionString: postgres://matrix_irc:replace_me@postgres.example.com:5432/matrix_irc
 ```
 
+## Matrix/ESS Example
+
+Ready-to-use file: `values.matrix.example.yaml`
+
 ## Verify
 
 ```bash
-kubectl -n <namespace> get pods,svc -l app.kubernetes.io/instance=<release>
-kubectl -n <namespace> get ingress -l app.kubernetes.io/instance=<release>
+kubectl get pods,svc -l app.kubernetes.io/instance=irc-bridge -n ircbridge
+kubectl get ingress -l app.kubernetes.io/instance=irc-bridge -n nircbridgey
 ```
-
-## Docs
-
-- [Bridge setup](https://matrix-org.github.io/matrix-appservice-irc/latest/bridge_setup.html)
-- [Usage](https://matrix-org.github.io/matrix-appservice-irc/latest/usage.html)
-- [Connection pooling](https://matrix-org.github.io/matrix-appservice-irc/latest/connection_pooling.html)
-- [Config sample](https://github.com/matrix-org/matrix-appservice-irc/blob/develop/config.sample.yaml)

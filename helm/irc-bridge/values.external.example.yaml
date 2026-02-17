@@ -8,9 +8,7 @@
 host: irc-media.example.com
 
 homeserver:
-  # Keep this explicit in minimal values because this is often customized.
   url: http://ess-synapse.ess.svc.cluster.local:8008
-  # Required Matrix homeserver domain.
   domain: matrix.example.com
 
 postgres:
