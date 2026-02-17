@@ -26,12 +26,13 @@ pool:
   resources: {}
 
 waitForRedis:
+  # Kubernetes init-container gate to avoid startup race with Redis.
+  # This is only used when redis.enabled=true.
   enabled: true
   image:
     repository: busybox
     tag: "1.36"
     pullPolicy: IfNotPresent
-  host: ""
   port: 6379
   sleepSeconds: 2
 
@@ -41,7 +42,8 @@ service:
 
 homeserver:
   url: http://ess-synapse.ess.svc.cluster.local:8008
-  domain: example.com
+  # Required: Matrix domain used by homeserver config and registration regex entries.
+  domain: ""
 
 mediaProxy:
   signingKeyPath: /data/media-proxy-signing-key.jwk
@@ -50,23 +52,9 @@ mediaProxy:
   publicUrl: ""
 
 ircService:
-  servers:
-    irc.w3.org:
-      name: W3C IRC
-      port: 6679
-      ssl: true
-      botConfig:
-        enabled: true
-        nick: ess-comm-ex
-      matrixClients:
-        userTemplate: "@irc_$SERVER_$NICK"
-        displayName: "$NICK"
-      dynamicChannels:
-        enabled: true
-        published: false
-        createAlias: true
-        joinRule: public
-        federate: true
+  # End-user server mappings (network names, ports, channel behavior, etc).
+  # Intentionally empty by default.
+  servers: {}
 
 ircClients:
   mode: pool
@@ -89,16 +77,16 @@ registration:
   id: irc
   senderLocalpart: appservice-irc
   rateLimited: false
-  asToken: REPLACE_ME_AS_TOKEN
-  hsToken: REPLACE_ME_HS_TOKEN
-  userRegex: ""
-  aliasRegex: ""
+  # If empty, auto-generated as 64-hex-char values (equivalent shape to `openssl rand -hex 32`).
+  asToken: ""
+  hsToken: ""
   protocols:
     - irc
   # Optional override. Defaults to bridge service URL in release namespace.
   serviceUrl: ""
   createSynapseConfigMap: true
-  synapseNamespace: ess
+  # Namespace for duplicate Synapse registration ConfigMap. Defaults to release namespace when empty.
+  synapseNamespace: ""
   # Leave empty to derive from release name, e.g. "<release>-irc-bridge-registration".
   synapseConfigMapName: ""
 

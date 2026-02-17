@@ -118,6 +118,14 @@ app.kubernetes.io/component: {{ .component }}
 {{- end -}}
 {{- end -}}
 
+{{- define "irc-bridge.homeserverDomain" -}}
+{{- required "values.homeserver.domain is required (example: matrix.example.com)" .Values.homeserver.domain -}}
+{{- end -}}
+
+{{- define "irc-bridge.synapseNamespace" -}}
+{{- default .Release.Namespace .Values.registration.synapseNamespace -}}
+{{- end -}}
+
 {{- define "irc-bridge.registrationServiceUrl" -}}
 {{- if .Values.registration.serviceUrl -}}
 {{- .Values.registration.serviceUrl -}}
@@ -127,19 +135,11 @@ app.kubernetes.io/component: {{ .component }}
 {{- end -}}
 
 {{- define "irc-bridge.registrationUserRegex" -}}
-{{- if .Values.registration.userRegex -}}
-{{- .Values.registration.userRegex -}}
-{{- else -}}
-{{- printf "@irc_.*:%s" .Values.homeserver.domain -}}
-{{- end -}}
+{{- printf "@irc_.*:%s" (include "irc-bridge.homeserverDomain" .) -}}
 {{- end -}}
 
 {{- define "irc-bridge.registrationAliasRegex" -}}
-{{- if .Values.registration.aliasRegex -}}
-{{- .Values.registration.aliasRegex -}}
-{{- else -}}
-{{- printf "#irc_.*:%s" .Values.homeserver.domain -}}
-{{- end -}}
+{{- printf "#irc_.*:%s" (include "irc-bridge.homeserverDomain" .) -}}
 {{- end -}}
 
 {{- define "irc-bridge.databaseConnectionString" -}}
@@ -163,20 +163,50 @@ app.kubernetes.io/component: {{ .component }}
 {{- end -}}
 
 {{- define "irc-bridge.waitForRedisHost" -}}
-{{- if .Values.waitForRedis.host -}}
-{{- .Values.waitForRedis.host -}}
-{{- else if .Values.redis.enabled -}}
 {{- include "irc-bridge.redisFullname" . -}}
-{{- else -}}
-{{- required "values.waitForRedis.host is required when redis.enabled=false and waitForRedis.enabled=true" .Values.waitForRedis.host -}}
 {{- end -}}
+
+{{- define "irc-bridge.registrationTokenSecretName" -}}
+{{- printf "%s-registration-tokens" (include "irc-bridge.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "irc-bridge.ensureRegistrationTokens" -}}
+{{- if not (hasKey .Values.registration "_computedTokens") -}}
+{{- $secretName := include "irc-bridge.registrationTokenSecretName" . -}}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace $secretName -}}
+{{- $asToken := .Values.registration.asToken | default "" -}}
+{{- $hsToken := .Values.registration.hsToken | default "" -}}
+{{- if and (eq $asToken "") $existing (hasKey $existing.data "asToken") -}}
+{{- $asToken = (index $existing.data "asToken" | b64dec) -}}
+{{- end -}}
+{{- if and (eq $hsToken "") $existing (hasKey $existing.data "hsToken") -}}
+{{- $hsToken = (index $existing.data "hsToken" | b64dec) -}}
+{{- end -}}
+{{- if eq $asToken "" -}}
+{{- $asToken = (randAlphaNum 64 | sha256sum) -}}
+{{- end -}}
+{{- if eq $hsToken "" -}}
+{{- $hsToken = (randAlphaNum 64 | sha256sum) -}}
+{{- end -}}
+{{- $_ := set .Values.registration "_computedTokens" (dict "asToken" $asToken "hsToken" $hsToken) -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "irc-bridge.registrationAsToken" -}}
+{{- include "irc-bridge.ensureRegistrationTokens" . -}}
+{{- index (index .Values.registration "_computedTokens") "asToken" -}}
+{{- end -}}
+
+{{- define "irc-bridge.registrationHsToken" -}}
+{{- include "irc-bridge.ensureRegistrationTokens" . -}}
+{{- index (index .Values.registration "_computedTokens") "hsToken" -}}
 {{- end -}}
 
 {{- define "irc-bridge.registrationConfig" -}}
 id: {{ .Values.registration.id }}
 url: {{ include "irc-bridge.registrationServiceUrl" . | quote }}
-as_token: {{ .Values.registration.asToken | quote }}
-hs_token: {{ .Values.registration.hsToken | quote }}
+as_token: {{ include "irc-bridge.registrationAsToken" . | quote }}
+hs_token: {{ include "irc-bridge.registrationHsToken" . | quote }}
 sender_localpart: {{ .Values.registration.senderLocalpart | quote }}
 rate_limited: {{ .Values.registration.rateLimited }}
 namespaces:

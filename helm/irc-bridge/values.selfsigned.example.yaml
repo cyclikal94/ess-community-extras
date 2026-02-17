@@ -1,0 +1,17 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Self-Signed / Custom TLS example for matrix-appservice-irc.
+#  /    |    Typically layered on top of values.matrix.example.yaml.
+#
+
+host: irc-media.example.com
+
+ingress:
+  clusterIssuer: ""
+  tls:
+    enabled: true
+    # Load your cert and key into a Kubernetes TLS secret, then reference it here.
+    # Example:
+    # kubectl -n <namespace> create secret tls matrix-irc-bridge-media-proxy-tls --cert=tls.crt --key=tls.key
+    secretName: matrix-irc-bridge-media-proxy-tls

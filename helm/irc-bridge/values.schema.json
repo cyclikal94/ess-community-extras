@@ -127,7 +127,7 @@
     "waitForRedis": {
       "type": "object",
       "additionalProperties": false,
-      "description": "InitContainer settings used by bridge and pool to wait for Redis readiness.",
+      "description": "Kubernetes init-container gate used by bridge and pool to wait for bundled Redis readiness (runtime ordering, not Helm ordering).",
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -155,10 +155,6 @@
               "default": "IfNotPresent"
             }
           }
-        },
-        "host": {
-          "type": "string",
-          "default": ""
         },
         "port": {
           "type": "integer",
@@ -196,6 +192,9 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Matrix homeserver connectivity used in generated bridge config.",
+      "required": [
+        "domain"
+      ],
       "properties": {
         "url": {
           "type": "string",
@@ -205,7 +204,8 @@
         "domain": {
           "type": "string",
           "minLength": 1,
-          "default": "example.com"
+          "default": "",
+          "description": "Matrix homeserver domain. Also used to generate user and alias regex entries in appservice registration."
         }
       }
     },
@@ -327,21 +327,13 @@
         },
         "asToken": {
           "type": "string",
-          "minLength": 1,
-          "default": "REPLACE_ME_AS_TOKEN"
+          "default": "",
+          "description": "Appservice as_token. Auto-generated when empty."
         },
         "hsToken": {
           "type": "string",
-          "minLength": 1,
-          "default": "REPLACE_ME_HS_TOKEN"
-        },
-        "userRegex": {
-          "type": "string",
-          "default": ""
-        },
-        "aliasRegex": {
-          "type": "string",
-          "default": ""
+          "default": "",
+          "description": "Appservice hs_token. Auto-generated when empty."
         },
         "protocols": {
           "type": "array",
@@ -363,7 +355,8 @@
         },
         "synapseNamespace": {
           "type": "string",
-          "default": "ess"
+          "default": "",
+          "description": "Namespace where duplicate registration ConfigMap should be created. Defaults to release namespace when empty."
         },
         "synapseConfigMapName": {
           "type": "string",

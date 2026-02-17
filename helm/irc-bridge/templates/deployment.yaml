@@ -15,7 +15,7 @@ spec:
         {{- include "irc-bridge.componentSelectorLabels" (dict "context" . "component" "bridge") | nindent 8 }}
     spec:
       initContainers:
-        {{- if .Values.waitForRedis.enabled }}
+        {{- if and .Values.redis.enabled .Values.waitForRedis.enabled }}
         - name: wait-for-redis
           image: {{ include "irc-bridge.waitForRedisImage" . }}
           imagePullPolicy: {{ .Values.waitForRedis.image.pullPolicy }}

@@ -2,11 +2,13 @@
 #     / V\
 #   / `  /
 #  <<   |    Absolute minimal values example file for matrix-appservice-irc.
-#  /    |    You should at least set host and registration tokens.
+#  /    |    Set host/domain. Tokens auto-generate if omitted.
 #
 
 host: irc-media.example.com
 
-registration:
-  asToken: your_generated_as_token
-  hsToken: your_generated_hs_token
+homeserver:
+  # Keep this explicit in minimal values because this is often customized.
+  url: http://ess-synapse.ess.svc.cluster.local:8008
+  # Required Matrix homeserver domain.
+  domain: matrix.example.com

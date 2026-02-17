@@ -1,0 +1,24 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    External Redis/Postgres example for matrix-appservice-irc.
+#  /    |    Disable bundled services and provide explicit connection values.
+#
+
+host: irc-media.example.com
+
+homeserver:
+  # Keep this explicit in minimal values because this is often customized.
+  url: http://ess-synapse.ess.svc.cluster.local:8008
+  # Required Matrix homeserver domain.
+  domain: matrix.example.com
+
+postgres:
+  enabled: false
+
+redis:
+  enabled: false
+  url: redis://redis.example.com:6379/0
+
+database:
+  connectionString: postgres://matrix_irc:replace_me@postgres.example.com:5432/matrix_irc

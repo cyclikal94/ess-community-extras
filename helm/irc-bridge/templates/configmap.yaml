@@ -8,7 +8,7 @@ data:
   config.yaml: |
     homeserver:
       url: {{ .Values.homeserver.url | quote }}
-      domain: {{ .Values.homeserver.domain | quote }}
+      domain: {{ include "irc-bridge.homeserverDomain" . | quote }}
 
     ircService:
       mediaProxy:
