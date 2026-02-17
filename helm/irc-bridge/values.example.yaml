@@ -1,0 +1,12 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Absolute minimal values example file for matrix-appservice-irc.
+#  /    |    You should at least set host and registration tokens.
+#
+
+host: irc-media.example.com
+
+registration:
+  asToken: your_generated_as_token
+  hsToken: your_generated_hs_token

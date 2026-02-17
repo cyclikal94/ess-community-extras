@@ -1,0 +1,56 @@
+{{- if .Values.pool.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "irc-bridge.fullname" . }}-pool
+  labels:
+    {{- include "irc-bridge.componentLabels" (dict "context" . "component" "pool") | nindent 4 }}
+spec:
+  replicas: {{ .Values.pool.replicas }}
+  selector:
+    matchLabels:
+      {{- include "irc-bridge.componentSelectorLabels" (dict "context" . "component" "pool") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "irc-bridge.componentSelectorLabels" (dict "context" . "component" "pool") | nindent 8 }}
+    spec:
+      {{- if .Values.waitForRedis.enabled }}
+      initContainers:
+        - name: wait-for-redis
+          image: {{ include "irc-bridge.waitForRedisImage" . }}
+          imagePullPolicy: {{ .Values.waitForRedis.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -lc
+            - |
+              set -eu
+              until nc -z {{ include "irc-bridge.waitForRedisHost" . }} {{ .Values.waitForRedis.port }}; do
+                echo "waiting for redis..."
+                sleep {{ .Values.waitForRedis.sleepSeconds }}
+              done
+      {{- end }}
+      containers:
+        - name: pool
+          image: {{ include "irc-bridge.poolImage" . }}
+          imagePullPolicy: {{ .Values.pool.image.pullPolicy }}
+          command:
+            - node
+            - lib/pool-service/IrcConnectionPool.js
+          env:
+            - name: REDIS_URL
+              value: {{ include "irc-bridge.redisUrl" . | quote }}
+            - name: LOGGING_LEVEL
+              value: {{ .Values.pool.loggingLevel | quote }}
+            - name: METRICS_HOST
+              value: {{ .Values.pool.metricsHost | quote }}
+            - name: METRICS_PORT
+              value: {{ .Values.pool.metricsPort | quote }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.pool.metricsPort }}
+          {{- with .Values.pool.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

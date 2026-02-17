@@ -1,0 +1,12 @@
+{{- if .Values.registration.createSynapseConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "irc-bridge.registrationConfigMapName" . }}
+  namespace: {{ .Values.registration.synapseNamespace }}
+  labels:
+    {{- include "irc-bridge.componentLabels" (dict "context" . "component" "registration") | nindent 4 }}
+data:
+  appservice-registration-irc.yaml: |
+{{ include "irc-bridge.registrationConfig" . | indent 4 }}
+{{- end }}

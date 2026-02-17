@@ -1,0 +1,151 @@
+nameOverride: ""
+fullnameOverride: ""
+
+host: ""
+
+image:
+  repository: matrixdotorg/matrix-appservice-irc
+  tag: "release-4.0.0"
+  pullPolicy: IfNotPresent
+
+replicas: 1
+
+bridge:
+  resources: {}
+
+pool:
+  enabled: true
+  replicas: 1
+  image:
+    repository: matrixdotorg/matrix-appservice-irc
+    tag: "release-4.0.0"
+    pullPolicy: IfNotPresent
+  metricsPort: 7002
+  metricsHost: 0.0.0.0
+  loggingLevel: info
+  resources: {}
+
+waitForRedis:
+  enabled: true
+  image:
+    repository: busybox
+    tag: "1.36"
+    pullPolicy: IfNotPresent
+  host: ""
+  port: 6379
+  sleepSeconds: 2
+
+service:
+  appservicePort: 8090
+  mediaProxyPort: 11111
+
+homeserver:
+  url: http://ess-synapse.ess.svc.cluster.local:8008
+  domain: example.com
+
+mediaProxy:
+  signingKeyPath: /data/media-proxy-signing-key.jwk
+  ttlSeconds: 3600
+  bindPort: 11111
+  publicUrl: ""
+
+ircService:
+  servers:
+    irc.w3.org:
+      name: W3C IRC
+      port: 6679
+      ssl: true
+      botConfig:
+        enabled: true
+        nick: ess-comm-ex
+      matrixClients:
+        userTemplate: "@irc_$SERVER_$NICK"
+        displayName: "$NICK"
+      dynamicChannels:
+        enabled: true
+        published: false
+        createAlias: true
+        joinRule: public
+        federate: true
+
+ircClients:
+  mode: pool
+
+connectionPool:
+  persistConnectionsOnShutdown: true
+
+config:
+  extra: ""
+
+database:
+  engine: postgres
+  name: matrix_irc
+  user: matrix_irc
+  password: matrix_irc_password
+  # Optional override. Required when postgres.enabled is false.
+  connectionString: ""
+
+registration:
+  id: irc
+  senderLocalpart: appservice-irc
+  rateLimited: false
+  asToken: REPLACE_ME_AS_TOKEN
+  hsToken: REPLACE_ME_HS_TOKEN
+  userRegex: ""
+  aliasRegex: ""
+  protocols:
+    - irc
+  # Optional override. Defaults to bridge service URL in release namespace.
+  serviceUrl: ""
+  createSynapseConfigMap: true
+  synapseNamespace: ess
+  # Leave empty to derive from release name, e.g. "<release>-irc-bridge-registration".
+  synapseConfigMapName: ""
+
+postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "16-alpine"
+    pullPolicy: IfNotPresent
+  service:
+    port: 5432
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClassName: ""
+  resources: {}
+
+redis:
+  enabled: true
+  image:
+    repository: redis
+    tag: "7-alpine"
+    pullPolicy: IfNotPresent
+  args:
+    - redis-server
+    - --appendonly
+    - "yes"
+  # Optional override. Required when redis.enabled is false.
+  url: ""
+  service:
+    port: 6379
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    storageClassName: ""
+  resources: {}
+
+ingress:
+  enabled: true
+  # Leave empty to derive from release name, e.g. "<release>-irc-bridge-media-proxy".
+  name: ""
+  className: traefik
+  path: /
+  pathType: Prefix
+  clusterIssuer: letsencrypt-prod
+  tls:
+    enabled: true
+    secretName: matrix-irc-bridge-media-proxy-tls

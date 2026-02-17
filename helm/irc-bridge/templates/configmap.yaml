@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "irc-bridge.configMapName" . }}
+  labels:
+    {{- include "irc-bridge.componentLabels" (dict "context" . "component" "bridge") | nindent 4 }}
+data:
+  config.yaml: |
+    homeserver:
+      url: {{ .Values.homeserver.url | quote }}
+      domain: {{ .Values.homeserver.domain | quote }}
+
+    ircService:
+      mediaProxy:
+        signingKeyPath: {{ .Values.mediaProxy.signingKeyPath | quote }}
+        ttlSeconds: {{ .Values.mediaProxy.ttlSeconds }}
+        bindPort: {{ .Values.mediaProxy.bindPort }}
+        publicUrl: {{ include "irc-bridge.mediaProxyPublicUrl" . | quote }}
+      servers:
+{{ toYaml .Values.ircService.servers | indent 8 }}
+
+    database:
+      engine: {{ .Values.database.engine | quote }}
+      connectionString: {{ include "irc-bridge.databaseConnectionString" . | quote }}
+
+    ircClients:
+      mode: {{ .Values.ircClients.mode | quote }}
+
+    connectionPool:
+      redisUrl: {{ include "irc-bridge.redisUrl" . | quote }}
+      persistConnectionsOnShutdown: {{ .Values.connectionPool.persistConnectionsOnShutdown }}
+{{- if .Values.config.extra }}
+{{ .Values.config.extra | nindent 4 }}
+{{- end }}
+  appservice-registration-irc.yaml: |
+{{ include "irc-bridge.registrationConfig" . | indent 4 }}
