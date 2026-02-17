@@ -30,13 +30,22 @@ data:
         # Must match the public host exposed by the Ingress below.
         publicUrl: "https://irc-media.example.com"
       servers:
-        irc.libera.chat:
-          name: "Libera Chat"
-          port: 6697
+        irc.w3.org:
+          name: "W3C IRC"
+          port: 6679
           ssl: true
           botConfig:
             enabled: true
-            nick: "MatrixBot"
+            nick: "ess-comm-ex"
+          matrixClients:
+            userTemplate: "@irc_$SERVER_$NICK"
+            displayName: "$NICK"
+          dynamicChannels:
+            enabled: true
+            published: false
+            createAlias: true
+            joinRule: public
+            federate: true
 
     database:
       engine: "postgres"
@@ -292,6 +301,18 @@ spec:
         app: matrix-irc-bridge
     spec:
       initContainers:
+        - name: wait-for-redis
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -lc
+            - |
+              set -eu
+              until nc -z matrix-irc-bridge-redis 6379; do
+                echo "waiting for redis..."
+                sleep 2
+              done
         - name: generate-media-proxy-signing-key
           image: matrixdotorg/matrix-appservice-irc:release-4.0.0
           imagePullPolicy: IfNotPresent
@@ -367,6 +388,19 @@ spec:
       labels:
         app: matrix-irc-bridge-pool
     spec:
+      initContainers:
+        - name: wait-for-redis
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -lc
+            - |
+              set -eu
+              until nc -z matrix-irc-bridge-redis 6379; do
+                echo "waiting for redis..."
+                sleep 2
+              done
       containers:
         - name: pool
           image: matrixdotorg/matrix-appservice-irc:release-4.0.0
