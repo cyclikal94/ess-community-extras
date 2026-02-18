@@ -147,17 +147,36 @@ jobs:
               return out.split("\n").filter(Boolean);
             }
 
+            function normalizeChartName(value) {
+              if (!value) {
+                return "";
+              }
+              return String(value)
+                .trim()
+                .replace(/\\+/g, "/")
+                .replace(/^\.?\/*/, "")
+                .replace(/\/+$/, "")
+                .replace(/^helm\//, "")
+                .replace(/\/Chart\.ya?ml$/i, "");
+            }
+
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const changedCharts = (process.env.CHANGED_CHARTS || "")
-              .split(",")
-              .map((v) => v.trim())
-              .filter(Boolean);
+            const changedCharts = Array.from(
+              new Set(
+                (process.env.CHANGED_CHARTS || "")
+                  .split(/[,\n]/)
+                  .map((v) => normalizeChartName(v))
+                  .filter(Boolean)
+              )
+            );
 
             if (changedCharts.length === 0) {
               core.info("No changed charts to enrich.");
               return;
             }
+
+            core.info(`Resolved changed charts: ${changedCharts.join(", ")}`);
 
             for (const chart of changedCharts) {
               const chartFile = `helm/${chart}/Chart.yaml`;
