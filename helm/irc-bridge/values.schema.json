@@ -236,19 +236,6 @@
         }
       }
     },
-    "ircService": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "IRC server bridge configuration section.",
-      "properties": {
-        "servers": {
-          "type": "object",
-          "default": {},
-          "additionalProperties": true,
-          "description": "Map of IRC server definitions inserted under ircService.servers."
-        }
-      }
-    },
     "ircClients": {
       "type": "object",
       "additionalProperties": false,
@@ -272,7 +259,7 @@
     "config": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Additional raw YAML appended to generated config.yaml.",
+      "description": "Additional raw YAML merged into generated config.yaml. Overlaps with Helm-managed keys fail template rendering.",
       "properties": {
         "extra": {
           "type": "string",

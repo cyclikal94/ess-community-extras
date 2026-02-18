@@ -44,9 +44,9 @@ helm upgrade --install irc-bridge ess-community-extras/irc-bridge -n ircbridge -
 ## Required Values
 
 - `host` is required.
-- `homeserver.domain` is required.
+- `homeserver.domain` is required and should match Synapse `server_name`.
 - Validation is enforced by `values.schema.json`; Helm will fail fast when required values are missing or empty.
-- `registration.asToken` and `registration.hsToken` are optional; when omitted, the chart auto-generates 64-hex-char tokens.
+- `registration.asToken` and `registration.hsToken` are optional; when omitted, the chart auto-generates 64-hex-char tokens and persists them in `<release>-irc-bridge-registration-tokens`.
 
 You can still provide tokens manually if desired:
 
@@ -54,6 +54,28 @@ You can still provide tokens manually if desired:
 openssl rand -hex 32
 openssl rand -hex 32
 ```
+
+## Bridge Config Model
+
+`config.extra` is parsed as YAML and merged into generated `config.yaml`.
+
+This lets users supply bridge-specific preferences (for example `ircService.servers`) in upstream config format without the chart needing to expose every bridge option as first-class Helm values.
+
+The chart always manages these paths and reserves them:
+
+- `homeserver.url`
+- `homeserver.domain`
+- `ircService.mediaProxy.signingKeyPath`
+- `ircService.mediaProxy.ttlSeconds`
+- `ircService.mediaProxy.bindPort`
+- `ircService.mediaProxy.publicUrl`
+- `database.engine`
+- `database.connectionString`
+- `ircClients.mode`
+- `connectionPool.redisUrl`
+- `connectionPool.persistConnectionsOnShutdown`
+
+If `config.extra` overlaps any reserved path above, template rendering fails.
 
 ## Linting
 
@@ -124,7 +146,7 @@ ingress:
 
 Ready-to-use file: `values.selfsigned.example.yaml`
 
-You can supply multiple `values.yaml` files so you could also deploy with the `values.matrix.example.yaml `:
+You can supply multiple `values.yaml` files so you could also deploy with the `values.matrix.example.yaml`:
 
 ```bash
 helm upgrade --install irc-bridge ./helm/irc-bridge \
@@ -140,9 +162,7 @@ By default, this chart creates a duplicate registration ConfigMap in `registrati
 
 Set `registration.synapseNamespace` if your Synapse namespace is different (for example `ess`).
 
-The same `as_token` and `hs_token` values are used in both registration ConfigMaps. If omitted, they are auto-generated and persisted in a Secret named `<release>-irc-bridge-registration-tokens`.
-
-For ESS, simply add the appservice ConfigMap, by using a values file like so:
+For ESS, add the appservice ConfigMap in Synapse values:
 
 ```yaml
 synapse:
@@ -152,8 +172,6 @@ synapse:
 ```
 
 Set `registration.createSynapseConfigMap=false` if you do not want the duplicate ConfigMap.
-
-**Note**: You will still need to supply the app services file to Synapse another way.
 
 ## External Redis/Postgres Example
 
@@ -171,13 +189,21 @@ database:
   connectionString: postgres://matrix_irc:replace_me@postgres.example.com:5432/matrix_irc
 ```
 
-## Matrix/ESS Example
-
-Ready-to-use file: `values.matrix.example.yaml`
-
 ## Verify
 
 ```bash
 kubectl get pods,svc -l app.kubernetes.io/instance=irc-bridge -n ircbridge
-kubectl get ingress -l app.kubernetes.io/instance=irc-bridge -n nircbridgey
+kubectl get ingress -l app.kubernetes.io/instance=irc-bridge -n ircbridge
+kubectl get configmap <release>-irc-bridge-registration -n <synapse-namespace>
 ```
+
+## Troubleshooting
+
+If bridge logs show `No mapped channels` or `IGNORE not mapped`, Synapse/appservice wiring is likely working, but no Matrix<->IRC channel mapping exists yet. Create/join mappings via the bot commands (`!help`) and mapped aliases/rooms.
+
+## Docs
+
+- [Bridge setup](https://matrix-org.github.io/matrix-appservice-irc/latest/bridge_setup.html)
+- [Usage](https://matrix-org.github.io/matrix-appservice-irc/latest/usage.html)
+- [Connection pooling](https://matrix-org.github.io/matrix-appservice-irc/latest/connection_pooling.html)
+- [Config sample](https://github.com/matrix-org/matrix-appservice-irc/blob/develop/config.sample.yaml)

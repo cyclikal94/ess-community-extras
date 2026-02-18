@@ -17,28 +17,27 @@ registration:
   # Set if Synapse runs in a different namespace than this release.
   synapseNamespace: ess
 
-ircService:
-  servers:
-    irc.w3.org:
-      name: W3C IRC
-      port: 6679
-      ssl: true
-      botConfig:
-        enabled: true
-        nick: ess-comm-ex
-      matrixClients:
-        userTemplate: "@irc_$SERVER_$NICK"
-        displayName: "$NICK"
-      dynamicChannels:
-        enabled: true
-        published: false
-        createAlias: true
-        joinRule: public
-        federate: true
-
 # You can append any upstream bridge settings here.
 # See: https://github.com/matrix-org/matrix-appservice-irc/blob/develop/config.sample.yaml
 config:
   extra: |
+    ircService:
+      servers:
+        irc.w3.org:
+          name: W3C IRC
+          port: 6679
+          ssl: true
+          botConfig:
+            enabled: true
+            nick: ess-comm-ex
+          matrixClients:
+            userTemplate: "@irc_$SERVER_$NICK"
+            displayName: "$NICK"
+          dynamicChannels:
+            enabled: true
+            published: false
+            createAlias: true
+            joinRule: public
+            federate: true
     # logging:
     #   level: info

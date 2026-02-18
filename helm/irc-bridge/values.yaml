@@ -1,7 +1,7 @@
 #      .
 #     / V\
 #   / `  /
-#  <<   |    These are the defualt values for ntfy.
+#  <<   |    Default values for matrix-appservice-irc Helm chart.
 #  /    |    You should look at the values examples for what to actually apply.
 #
 
@@ -58,11 +58,6 @@ mediaProxy:
   bindPort: 11111
   publicUrl: ""
 
-ircService:
-  # End-user server mappings (network names, ports, channel behavior, etc).
-  # Intentionally empty by default.
-  servers: {}
-
 ircClients:
   mode: pool
 
@@ -70,6 +65,8 @@ connectionPool:
   persistConnectionsOnShutdown: true
 
 config:
+  # Raw bridge config YAML merged into generated config.yaml.
+  # If this overlaps with Helm-managed keys, template rendering fails.
   extra: ""
 
 database:
