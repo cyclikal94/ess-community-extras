@@ -1,0 +1,22 @@
+homeserver:
+  address: http://ess-synapse.ess.svc.cluster.local:8008
+  domain: matrix.example.com
+
+appservice:
+  id: telegram
+  botUsername: telegrambot
+
+telegram:
+  apiID: 12345678
+  apiHash: replace_with_telegram_api_hash
+
+bridge:
+  usernameTemplate: telegram_{{.}}
+  aliasTemplate: telegram_{{.}}
+
+config:
+  extra: |
+    bridge:
+      permissions:
+        "*": relay
+        "exampleuser": admin

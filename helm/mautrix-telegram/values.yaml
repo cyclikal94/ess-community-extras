@@ -1,0 +1,107 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Default values for mautrix-telegram Helm chart.
+#  /    |    You should look at the values examples for what to actually apply.
+#
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: dock.mau.dev/mautrix/telegram
+  tag: "v0.15.3"
+  pullPolicy: IfNotPresent
+
+service:
+  port: 29317
+  publishNotReadyAddresses: true
+
+homeserver:
+  address: http://ess-synapse.ess.svc.cluster.local:8008
+  # Required: Matrix domain used by homeserver config and registration regex entries.
+  domain: ""
+
+appservice:
+  id: telegram
+  botUsername: telegrambot
+  # Optional override. Defaults to in-cluster service URL.
+  address: ""
+  hostname: 0.0.0.0
+  port: 29317
+  ephemeralEvents: true
+  provisioning:
+    # Optional override. Auto-generated and persisted when empty.
+    sharedSecret: ""
+
+registration:
+  # If empty, auto-generated and persisted in a Secret.
+  asToken: ""
+  hsToken: ""
+  # Optional override. Defaults to appservice.address value.
+  serviceUrl: ""
+  # Optional overrides. If empty, derived from bridge username/alias templates.
+  userRegex: ""
+  aliasRegex: ""
+  # Optional override. Defaults to appservice.botUsername.
+  senderLocalpart: ""
+  rateLimited: false
+  createSynapseConfigMap: true
+  # Namespace for duplicate Synapse registration ConfigMap. Defaults to release namespace when empty.
+  synapseNamespace: ""
+  # Leave empty to derive from release name, e.g. "<release>-mautrix-telegram-registration".
+  synapseConfigMapName: ""
+
+telegram:
+  # Required: Telegram API ID from https://my.telegram.org/apps
+  apiID: 0
+  # Required: Telegram API hash from https://my.telegram.org/apps
+  apiHash: ""
+
+bridge:
+  usernameTemplate: telegram_{{.}}
+  aliasTemplate: telegram_{{.}}
+  resources: {}
+
+config:
+  # Raw bridge config YAML merged into generated config.yaml.
+  # If this overlaps with Helm-managed keys, template rendering fails.
+  extra: ""
+
+database:
+  name: mautrix_telegram
+  user: mautrix_telegram
+  password: mautrix_telegram_password
+  # Optional override. Required when postgres.enabled is false.
+  connectionString: ""
+
+postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "16-alpine"
+    pullPolicy: IfNotPresent
+  service:
+    port: 5432
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClassName: ""
+  resources: {}
+
+probes:
+  liveness:
+    enabled: false
+    path: /_matrix/mau/live
+    initialDelaySeconds: 20
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    enabled: false
+    path: /_matrix/mau/ready
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 3

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mautrix-telegram
+description: Helm chart for mautrix-telegram
+home: https://docs.mau.fi/bridges/python/telegram/
+sources:
+  - https://github.com/mautrix/telegram
+type: application
+version: 0.1.0
+appVersion: "v0.15.3"

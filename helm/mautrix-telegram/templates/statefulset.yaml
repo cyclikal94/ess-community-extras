@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "mautrix-telegram.fullname" . }}
+  labels:
+    {{- include "mautrix-telegram.componentLabels" (dict "context" . "component" "bridge") | nindent 4 }}
+spec:
+  serviceName: {{ include "mautrix-telegram.fullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "mautrix-telegram.componentSelectorLabels" (dict "context" . "component" "bridge") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mautrix-telegram.componentSelectorLabels" (dict "context" . "component" "bridge") | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "mautrix-telegram.name" . }}
+          image: {{ include "mautrix-telegram.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - python3
+            - -m
+            - mautrix_telegram
+            - -c
+            - /data/config.yaml
+            - --no-update
+          ports:
+            - name: appservice
+              containerPort: {{ .Values.appservice.port }}
+          {{- if .Values.probes.liveness.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: appservice
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.probes.readiness.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: appservice
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          {{- end }}
+          {{- with .Values.bridge.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: bridge-config
+              mountPath: /data
+              readOnly: true
+      volumes:
+        - name: bridge-config
+          secret:
+            secretName: {{ include "mautrix-telegram.configSecretName" . }}
+            items:
+              - key: config.yaml
+                path: config.yaml

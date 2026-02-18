@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "mautrix-telegram chart values",
+  "description": "Configuration values for deploying mautrix-telegram with this Helm chart.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "homeserver",
+    "telegram"
+  ],
+  "properties": {
+    "nameOverride": {
+      "type": "string",
+      "default": "",
+      "description": "Optional short name override used for labels and naming when fullnameOverride is empty."
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "default": "",
+      "description": "Optional full resource name override. When set, this takes precedence over nameOverride."
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string",
+          "default": "dock.mau.dev/mautrix/telegram"
+        },
+        "tag": {
+          "type": "string",
+          "default": "v0.15.3"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
+          "default": "IfNotPresent"
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 29317
+        },
+        "publishNotReadyAddresses": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "homeserver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "default": "http://ess-synapse.ess.svc.cluster.local:8008"
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1,
+          "default": "",
+          "description": "Matrix homeserver domain (e.g. matrix.example.com)."
+        }
+      }
+    },
+    "appservice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "default": "telegram"
+        },
+        "botUsername": {
+          "type": "string",
+          "default": "telegrambot"
+        },
+        "address": {
+          "type": "string",
+          "default": ""
+        },
+        "hostname": {
+          "type": "string",
+          "default": "0.0.0.0"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 29317
+        },
+        "ephemeralEvents": {
+          "type": "boolean",
+          "default": true
+        },
+        "provisioning": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sharedSecret": {
+              "type": "string",
+              "default": "",
+              "description": "Provisioning API shared secret. Auto-generated and persisted when empty."
+            }
+          }
+        }
+      }
+    },
+    "registration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asToken": {
+          "type": "string",
+          "default": ""
+        },
+        "hsToken": {
+          "type": "string",
+          "default": ""
+        },
+        "serviceUrl": {
+          "type": "string",
+          "default": ""
+        },
+        "userRegex": {
+          "type": "string",
+          "default": ""
+        },
+        "aliasRegex": {
+          "type": "string",
+          "default": ""
+        },
+        "senderLocalpart": {
+          "type": "string",
+          "default": ""
+        },
+        "rateLimited": {
+          "type": "boolean",
+          "default": false
+        },
+        "createSynapseConfigMap": {
+          "type": "boolean",
+          "default": true
+        },
+        "synapseNamespace": {
+          "type": "string",
+          "default": ""
+        },
+        "synapseConfigMapName": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "telegram": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "apiID",
+        "apiHash"
+      ],
+      "properties": {
+        "apiID": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 0,
+          "description": "Telegram API ID from https://my.telegram.org/apps"
+        },
+        "apiHash": {
+          "type": "string",
+          "minLength": 1,
+          "default": "",
+          "description": "Telegram API hash from https://my.telegram.org/apps"
+        }
+      }
+    },
+    "bridge": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "usernameTemplate": {
+          "type": "string",
+          "default": "telegram_{{.}}"
+        },
+        "aliasTemplate": {
+          "type": "string",
+          "default": "telegram_{{.}}"
+        },
+        "resources": {
+          "type": "object",
+          "default": {},
+          "description": "Bridge container resource requests and limits."
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Additional raw YAML merged into generated config.yaml. Overlaps with Helm-managed keys fail template rendering.",
+      "properties": {
+        "extra": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "mautrix_telegram"
+        },
+        "user": {
+          "type": "string",
+          "default": "mautrix_telegram"
+        },
+        "password": {
+          "type": "string",
+          "default": "mautrix_telegram_password"
+        },
+        "connectionString": {
+          "type": "string",
+          "default": "",
+          "description": "Optional full DSN override. Required when postgres.enabled=false."
+        }
+      }
+    },
+    "postgres": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "repository": {
+              "type": "string",
+              "default": "postgres"
+            },
+            "tag": {
+              "type": "string",
+              "default": "16-alpine"
+            },
+            "pullPolicy": {
+              "type": "string",
+              "enum": [
+                "Always",
+                "IfNotPresent",
+                "Never"
+              ],
+              "default": "IfNotPresent"
+            }
+          }
+        },
+        "service": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535,
+              "default": 5432
+            }
+          }
+        },
+        "persistence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "accessMode": {
+              "type": "string",
+              "default": "ReadWriteOnce"
+            },
+            "size": {
+              "type": "string",
+              "default": "10Gi"
+            },
+            "storageClassName": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+        "resources": {
+          "type": "object",
+          "default": {}
+        }
+      }
+    },
+    "probes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "liveness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "path": {
+              "type": "string",
+              "default": "/_matrix/mau/live"
+            },
+            "initialDelaySeconds": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 20
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 30
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 5
+            },
+            "failureThreshold": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 3
+            }
+          }
+        },
+        "readiness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "path": {
+              "type": "string",
+              "default": "/_matrix/mau/ready"
+            },
+            "initialDelaySeconds": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 10
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 15
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 5
+            },
+            "failureThreshold": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 3
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+postgres:
+  enabled: false
+
+database:
+  connectionString: postgres://mautrix_telegram:replace_me@postgres.example.com:5432/mautrix_telegram
+
+homeserver:
+  domain: matrix.example.com
+
+telegram:
+  apiID: 12345678
+  apiHash: replace_with_telegram_api_hash
