@@ -454,6 +454,7 @@ jobs:
         if: steps.update.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.ESS_BOT_GITHUB_TOKEN || github.token }}
           commit-message: "${{ matrix.component }} Version Update to ${{ matrix.latest_tag }}"
           branch: "codex/${{ matrix.component }}-version-update-${{ matrix.latest_tag_slug }}"
           delete-branch: true
