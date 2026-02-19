@@ -36,7 +36,24 @@ jobs:
             }
 
             function normalizeTag(tag) {
-              return (tag || "").trim().replace(/^v/i, "").toLowerCase();
+              return (tag || "")
+                .trim()
+                .replace(/^release-/i, "")
+                .replace(/^v/i, "")
+                .toLowerCase();
+            }
+
+            function applyCurrentTagStyle(currentVersion, latestTag) {
+              const current = (currentVersion || "").trim();
+              const latest = (latestTag || "").trim();
+              const semverOnly = latest.match(/^v?(\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?)$/);
+
+              // Keep "release-" style for components that already use it in chart/manifests.
+              if (/^release-/i.test(current) && semverOnly && !/^release-/i.test(latest)) {
+                return `release-${semverOnly[1]}`;
+              }
+
+              return latest;
             }
 
             function parseSimpleField(content, key) {
@@ -259,7 +276,7 @@ jobs:
 
               try {
                 const release = await github.rest.repos.getLatestRelease({ owner, repo });
-                latestTag = release.data.tag_name;
+                latestTag = applyCurrentTagStyle(currentVersion, release.data.tag_name);
                 releaseUrl = release.data.html_url;
               } catch (error) {
                 core.warning(`Skipping ${component}: could not fetch latest release for ${upstreamRepo}: ${error.message}`);
@@ -342,6 +359,7 @@ jobs:
 
           parse_semver_triplet() {
             local raw="$1"
+            raw="${raw#[Rr]elease-}"
             raw="${raw#v}"
             raw="${raw#V}"
             raw="${raw%%-*}"
@@ -456,7 +474,7 @@ jobs:
         with:
           token: ${{ secrets.ESS_BOT_GITHUB_TOKEN || github.token }}
           commit-message: "${{ matrix.component }} Version Update to ${{ matrix.latest_tag }}"
-          branch: "codex/${{ matrix.component }}-version-update-${{ matrix.latest_tag_slug }}"
+          branch: "bump-action/${{ matrix.component }}-version-update-${{ matrix.latest_tag_slug }}"
           delete-branch: true
           title: "${{ matrix.component }} Version Update to ${{ matrix.latest_tag }}"
           body: |
