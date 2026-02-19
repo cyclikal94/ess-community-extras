@@ -12,7 +12,7 @@ host: ""
 
 image:
   repository: matrixdotorg/matrix-appservice-irc
-  tag: "release-4.0.0"
+  tag: "4.0.0"
   pullPolicy: IfNotPresent
 
 replicas: 1
