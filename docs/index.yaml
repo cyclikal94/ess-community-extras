@@ -40,6 +40,20 @@ entries:
     urls:
     - https://github.com/cyclikal94/ess-community-extras/releases/download/irc-bridge-0.1.0/irc-bridge-0.1.0.tgz
     version: 0.1.0
+  matrix-appservice-irc:
+  - apiVersion: v2
+    appVersion: release-4.0.0
+    created: "2026-02-26T20:32:52.017817053Z"
+    description: Helm chart for matrix-appservice-irc
+    digest: c23e29d8c70b3a7de63d235a2fa2c0d56681581871cfa5bdad240b975ba0e962
+    home: https://matrix-org.github.io/matrix-appservice-irc/latest/
+    name: matrix-appservice-irc
+    sources:
+    - https://github.com/matrix-org/matrix-appservice-irc
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/matrix-appservice-irc-0.9.1/matrix-appservice-irc-0.9.1.tgz
+    version: 0.9.1
   mautrix-telegram:
   - apiVersion: v2
     appVersion: v0.15.3
@@ -80,4 +94,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/ess-community-extras/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-02-18T11:58:04.40956691Z"
+generated: "2026-02-26T20:32:52.41500037Z"
