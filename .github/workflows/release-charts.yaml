@@ -25,23 +25,6 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4
 
-      - name: Ensure gh-pages branch exists
-        run: |
-          set -eu
-          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
-            echo "gh-pages branch already exists"
-            exit 0
-          fi
-
-          echo "Initializing gh-pages branch..."
-          git checkout --orphan gh-pages
-          git rm -rf . >/dev/null 2>&1 || true
-          touch .nojekyll
-          git add .nojekyll
-          git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" commit -m "Initialize gh-pages"
-          git push origin gh-pages
-          git checkout --detach "$GITHUB_SHA"
-
       - name: Lint charts
         run: |
           set -eu
@@ -68,24 +51,8 @@ jobs:
           skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Sync chart index to docs
-        run: |
-          set -euo pipefail
-          git fetch --depth=1 origin gh-pages
-          git checkout "${GITHUB_REF_NAME}"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          mkdir -p docs
-          git show origin/gh-pages:index.yaml > docs/index.yaml
-
-          if git diff --quiet -- docs/index.yaml; then
-            echo "docs/index.yaml already up to date"
-            exit 0
-          fi
-
-          git add docs/index.yaml
-          git commit -m "chore(charts): sync docs index"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          CR_PAGES_BRANCH: "main"
+          CR_PAGES_INDEX_PATH: "docs/index.yaml"
 
       - name: Enrich chart release notes
         if: steps.chart_releaser.outputs.changed_charts != ''

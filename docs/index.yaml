@@ -12,7 +12,7 @@ entries:
     - https://github.com/matrix-org/matrix-appservice-irc
     type: application
     urls:
-    - https://github.com/cyclikal94/ess-community-extras/releases/download/irc-bridge-0.9.1/irc-bridge-0.9.1.tgz
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/irc-bridge-0.9.1/irc-bridge-0.9.1.tgz
     version: 0.9.1
   - apiVersion: v2
     appVersion: release-4.0.0
@@ -25,7 +25,7 @@ entries:
     - https://github.com/matrix-org/matrix-appservice-irc
     type: application
     urls:
-    - https://github.com/cyclikal94/ess-community-extras/releases/download/irc-bridge-0.9.0/irc-bridge-0.9.0.tgz
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/irc-bridge-0.9.0/irc-bridge-0.9.0.tgz
     version: 0.9.0
   - apiVersion: v2
     appVersion: release-4.0.0
@@ -38,7 +38,7 @@ entries:
     - https://github.com/matrix-org/matrix-appservice-irc
     type: application
     urls:
-    - https://github.com/cyclikal94/ess-community-extras/releases/download/irc-bridge-0.1.0/irc-bridge-0.1.0.tgz
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/irc-bridge-0.1.0/irc-bridge-0.1.0.tgz
     version: 0.1.0
   matrix-appservice-irc:
   - apiVersion: v2
@@ -66,7 +66,7 @@ entries:
     - https://github.com/mautrix/telegram
     type: application
     urls:
-    - https://github.com/cyclikal94/ess-community-extras/releases/download/mautrix-telegram-0.1.0/mautrix-telegram-0.1.0.tgz
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-telegram-0.1.0/mautrix-telegram-0.1.0.tgz
     version: 0.1.0
   ntfy:
   - apiVersion: v2
@@ -81,7 +81,7 @@ entries:
     - https://github.com/binwiederhier/ntfy
     type: application
     urls:
-    - https://github.com/cyclikal94/ess-community-extras/releases/download/ntfy-0.9.0/ntfy-0.9.0.tgz
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.9.0/ntfy-0.9.0.tgz
     version: 0.9.0
   - apiVersion: v2
     appVersion: v2.17.0
@@ -92,6 +92,6 @@ entries:
     name: ntfy
     type: application
     urls:
-    - https://github.com/cyclikal94/ess-community-extras/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
 generated: "2026-02-26T20:32:52.41500037Z"
