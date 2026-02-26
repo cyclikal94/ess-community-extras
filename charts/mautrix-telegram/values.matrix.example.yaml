@@ -18,5 +18,5 @@ config:
   extra: |
     bridge:
       permissions:
-        "*": relay
+        "*": relaybot
         "exampleuser": admin
