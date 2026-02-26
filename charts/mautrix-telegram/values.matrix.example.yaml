@@ -11,8 +11,8 @@ telegram:
   apiHash: replace_with_telegram_api_hash
 
 bridge:
-  usernameTemplate: telegram_{{.}}
-  aliasTemplate: telegram_{{.}}
+  usernameTemplate: telegram_{userid}
+  aliasTemplate: telegram_{groupname}
 
 config:
   extra: |

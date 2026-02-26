@@ -191,10 +191,21 @@ appservice-registration-telegram.yaml
 {{- define "mautrix-telegram.renderTemplateRegex" -}}
 {{- $template := .template -}}
 {{- $field := .field -}}
-{{- if not (contains "{{.}}" $template) -}}
-{{- fail (printf "values.%s must contain '{{.}}' placeholder" $field) -}}
+{{- $normalized := include "mautrix-telegram.normalizeBridgeTemplate" (dict "template" $template "field" $field "legacyReplacement" "{placeholder}") -}}
+{{- regexReplaceAll "\\{[A-Za-z_][A-Za-z0-9_]*\\}" $normalized ".*" -}}
 {{- end -}}
-{{- replace "{{.}}" ".*" $template -}}
+
+{{- define "mautrix-telegram.normalizeBridgeTemplate" -}}
+{{- $template := .template -}}
+{{- $field := .field -}}
+{{- $legacyReplacement := .legacyReplacement -}}
+{{- if contains "{{.}}" $template -}}
+{{- replace "{{.}}" $legacyReplacement $template -}}
+{{- else if regexMatch "\\{[A-Za-z_][A-Za-z0-9_]*\\}" $template -}}
+{{- $template -}}
+{{- else -}}
+{{- fail (printf "values.%s must contain either '{{.}}' (legacy) or '{placeholder}'" $field) -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "mautrix-telegram.registrationUserRegex" -}}

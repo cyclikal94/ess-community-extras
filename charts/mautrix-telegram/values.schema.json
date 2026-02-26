@@ -195,11 +195,13 @@
       "properties": {
         "usernameTemplate": {
           "type": "string",
-          "default": "telegram_{{.}}"
+          "default": "telegram_{userid}",
+          "description": "Template for Matrix user localparts. Must include a placeholder (for example {userid}). Legacy {{.}} is also supported."
         },
         "aliasTemplate": {
           "type": "string",
-          "default": "telegram_{{.}}"
+          "default": "telegram_{groupname}",
+          "description": "Template for Matrix room aliases. Must include a placeholder (for example {groupname}). Legacy {{.}} is also supported."
         },
         "resources": {
           "type": "object",

@@ -59,8 +59,8 @@ telegram:
   apiHash: ""
 
 bridge:
-  usernameTemplate: telegram_{{.}}
-  aliasTemplate: telegram_{{.}}
+  usernameTemplate: telegram_{userid}
+  aliasTemplate: telegram_{groupname}
   resources: {}
 
 config:
