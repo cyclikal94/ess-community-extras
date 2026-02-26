@@ -14,6 +14,9 @@ spec:
     metadata:
       labels:
         {{- include "mautrix-telegram.componentSelectorLabels" (dict "context" . "component" "bridge") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config-secret.yaml") . | sha256sum }}
+        checksum/runtime-secrets: {{ include (print $.Template.BasePath "/runtime-secrets.yaml") . | sha256sum }}
     spec:
       containers:
         - name: {{ include "mautrix-telegram.name" . }}

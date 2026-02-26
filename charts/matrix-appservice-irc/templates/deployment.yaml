@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         {{- include "matrix-appservice-irc.componentSelectorLabels" (dict "context" . "component" "bridge") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/registration-tokens: {{ include (print $.Template.BasePath "/registration-token-secret.yaml") . | sha256sum }}
     spec:
       initContainers:
         {{- if and .Values.redis.enabled .Values.waitForRedis.enabled }}
