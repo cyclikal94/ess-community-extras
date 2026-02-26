@@ -1,3 +1,10 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    External Redis/Postgres example for mautrix-telegram.
+#  /    |    Disable bundled postgres and provide explicit connection value.
+#
+
 postgres:
   enabled: false
 

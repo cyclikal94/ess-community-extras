@@ -1,4 +1,6 @@
-# mautrix-telegram Helm Chart
+# mautrix-telegram
+
+A Matrix-Telegram hybrid puppeting/relaybot bridge. See [mautrix/telegram](https://github.com/mautrix/telegram) for details.
 
 ## Overview
 

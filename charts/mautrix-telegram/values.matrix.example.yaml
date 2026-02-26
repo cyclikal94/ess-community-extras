@@ -1,12 +1,16 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Matrix example with recommended config for mautrix-telegram.
+#  /    |    Ensure `domain` is your MXID `server-name` i.e. `matrix.org`.
+#
+
 homeserver:
   address: http://ess-synapse.ess.svc.cluster.local:8008
   domain: matrix.example.com
 
-appservice:
-  id: telegram
-  botUsername: telegrambot
-
 telegram:
+  # See https://docs.mau.fi/bridges/general/initial-config.html#mautrix-telegram for details
   apiID: 12345678
   apiHash: replace_with_telegram_api_hash
 
@@ -20,4 +24,4 @@ config:
     bridge:
       permissions:
         "*": relaybot
-        "exampleuser": admin
+        "@admin:example.com": admin

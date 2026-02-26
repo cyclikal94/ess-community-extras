@@ -1,4 +1,6 @@
-# matrix-appservice-irc Helm Chart
+# matrix-appservice-irc
+
+This is an IRC bridge for Matrix. See [matrix-org/matrix-appservice-irc](https://github.com/matrix-org/matrix-appservice-irc) for details.
 
 ## Overview
 

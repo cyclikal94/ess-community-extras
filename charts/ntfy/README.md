@@ -1,4 +1,6 @@
-# ntfy Helm Chart
+# ntfy
+
+ntfy (pronounced "notify") is a simple HTTP-based pub-sub notification service. See [binwiederhier/ntfy](https://github.com/binwiederhier/ntfy) for details.
 
 ## Overview
 
