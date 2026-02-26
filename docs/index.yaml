@@ -57,6 +57,19 @@ entries:
   mautrix-telegram:
   - apiVersion: v2
     appVersion: v0.15.3
+    created: "2026-02-26T22:31:21.302328118Z"
+    description: Helm chart for mautrix-telegram
+    digest: 53c5a480618514ae7a75e40318d7bc5f40ce76994f5f53355d988a1d27bc626f
+    home: https://docs.mau.fi/bridges/python/telegram/
+    name: mautrix-telegram
+    sources:
+    - https://github.com/mautrix/telegram
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-telegram-0.1.2/mautrix-telegram-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: v0.15.3
     created: "2026-02-26T21:56:09.406019911Z"
     description: Helm chart for mautrix-telegram
     digest: 2f731d708d1011e72d903bdb83550e883abd666110d7d0bad0e0ca8e3040acf0
@@ -107,4 +120,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-02-26T21:56:09.406061559Z"
+generated: "2026-02-26T22:31:21.302354498Z"
