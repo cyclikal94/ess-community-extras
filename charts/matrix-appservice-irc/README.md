@@ -158,11 +158,11 @@ helm upgrade --install matrix-appservice-irc ./charts/matrix-appservice-irc \
 
 ## Synapse Registration ConfigMap
 
-By default, this chart creates a duplicate registration ConfigMap in `registration.synapseNamespace` (defaulting to the Helm release namespace when unset).
+This chart can create a duplicate registration ConfigMap in `registration.synapseNamespace` (defaulting to the Helm release namespace when unset).
 
-Set `registration.synapseNamespace` if your Synapse namespace is different (for example `ess`).
+Set `registration.synapseNamespace` if your Synapse namespace is different (for example `ess`) and set `registration.createSynapseConfigMap` to `true`.
 
-For ESS, add the appservice ConfigMap in Synapse values:
+For ESS, add the appservice ConfigMap in Synapse values, this needs to be present in the same namespace as Synapse:
 
 ```yaml
 synapse:
