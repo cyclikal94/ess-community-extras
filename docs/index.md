@@ -1,12 +1,11 @@
 ---
 layout: page
-title: ESS Community Extras
+title: Matrix Helm Charts
 ---
 
-A collection of charts and configs to deploy services alongside ESS Community. See `k8s` for deployment.yml files to apply with `kubectl apply -f` or `helm` for helm charts.
+A collection of helm charts to deploy services alongside Matrix, with example `values.yaml` files, initially focused on [ESS Community](https://github.com/element-hq/ess-helm) but should work with any Matrix deployment.
 
 ## Components
 
-- `grafana`: Ingress for exposing Grafana (following helm chart install).
 - `ntfy`: ntfy notification service.
-- `irc-bridge`: IRC bridge using `matrix-appservice-irc`.
+- `matrix-appservice-irc`: IRC bridge using `matrix-appservice-irc`.

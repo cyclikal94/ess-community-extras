@@ -1,9 +1,0 @@
-apiVersion: v2
-name: irc-bridge
-description: Helm chart for matrix-appservice-irc
-home: https://matrix-org.github.io/matrix-appservice-irc/latest/
-sources:
-  - https://github.com/matrix-org/matrix-appservice-irc
-type: application
-version: 0.9.1
-appVersion: "release-4.0.0"

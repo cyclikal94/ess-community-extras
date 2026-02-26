@@ -1,0 +1,68 @@
+{{- if .Values.postgres.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "matrix-appservice-irc.postgresFullname" . }}
+  labels:
+    {{- include "matrix-appservice-irc.componentLabels" (dict "context" . "component" "postgres") | nindent 4 }}
+spec:
+  serviceName: {{ include "matrix-appservice-irc.postgresFullname" . }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "matrix-appservice-irc.componentSelectorLabels" (dict "context" . "component" "postgres") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "matrix-appservice-irc.componentSelectorLabels" (dict "context" . "component" "postgres") | nindent 8 }}
+    spec:
+      containers:
+        - name: postgres
+          image: {{ include "matrix-appservice-irc.postgresImage" . }}
+          imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.postgres.service.port }}
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "matrix-appservice-irc.postgresFullname" . }}
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "matrix-appservice-irc.postgresFullname" . }}
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "matrix-appservice-irc.postgresFullname" . }}
+                  key: POSTGRES_PASSWORD
+          {{- with .Values.postgres.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      {{- if not .Values.postgres.persistence.enabled }}
+      volumes:
+        - name: postgres-data
+          emptyDir: {}
+      {{- end }}
+  {{- if .Values.postgres.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes:
+          - {{ .Values.postgres.persistence.accessMode }}
+        resources:
+          requests:
+            storage: {{ .Values.postgres.persistence.size }}
+        {{- if .Values.postgres.persistence.storageClassName }}
+        storageClassName: {{ .Values.postgres.persistence.storageClassName }}
+        {{- end }}
+  {{- end }}
+{{- end }}

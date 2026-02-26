@@ -1,0 +1,135 @@
+# ntfy Helm Chart
+
+## Overview
+
+This chart deploys ntfy with a ConfigMap, Service, StatefulSet, and Ingress.
+
+## Prerequisites
+
+- Kubernetes cluster
+- Helm 3.x
+- Ingress controller (defaults assume `traefik`)
+- Default StorageClass (or set `persistence.storageClassName`)
+
+## Quick Start
+
+Create a minimal values file:
+
+```yaml
+host: ntfy.example.com
+```
+
+Install:
+
+```bash
+helm upgrade --install ntfy ./charts/ntfy -f ntfy-values.yaml
+```
+
+Install from published Helm repository:
+
+```bash
+helm repo add matrix-helm-charts https://cyclikal94.github.io/matrix-helm-charts
+helm repo update
+helm upgrade --install ntfy matrix-helm-charts/ntfy -n ntfy --create-namespace --values ntfy-values.yaml
+```
+
+## Naming
+
+- By default, resource names are release-scoped.
+- Example: release `prod` renders names like `prod-ntfy` and `prod-ntfy-ingress`.
+- Set `nameOverride` or `fullnameOverride` only when you need fixed/custom names.
+
+## Required Values
+
+- `host` is required.
+- Validation is enforced by `values.schema.json`; Helm will fail fast if `host` is missing or empty.
+- If deploying to Matrix, you should replace `visitor-request-limit-exempt-hosts` with your Synapse domain.
+
+## Linting
+
+Because `host` is required, lint with a values file:
+
+```bash
+helm lint ./charts/ntfy -f ./charts/ntfy/values.example.yaml
+```
+
+Or lint with your own values file containing at least:
+
+```yaml
+host: ntfy.example.com
+```
+
+## Example Values Files
+
+- `values.example.yaml`: absolute minimal chart input (`host` only).
+- `values.matrix.example.yaml`: recommended Matrix/ESS-focused ntfy config example.
+- `values.selfsigned.example.yaml`: self-signed/custom TLS secret example; typically merged with the Matrix example.
+
+## Defaults
+
+- All optional values and defaults are in `values.yaml`.
+- View defaults directly with:
+
+```bash
+helm show values ./charts/ntfy
+```
+
+## TLS Options
+
+### cert-manager (default)
+
+By default, the chart adds this ingress annotation:
+
+`cert-manager.io/cluster-issuer: letsencrypt-prod`
+
+You can change issuer:
+
+```yaml
+host: ntfy.example.com
+ingress:
+  clusterIssuer: letsencrypt-staging
+```
+
+### Self-signed or custom certificate secret
+
+Create a TLS secret in the target namespace:
+
+```bash
+kubectl -n <namespace> create secret tls ntfy-tls --cert=ntfy.crt --key=ntfy.key
+```
+
+Then disable issuer annotation and use your secret:
+
+```yaml
+host: ntfy.example.com
+ingress:
+  clusterIssuer: ""
+  tls:
+    enabled: true
+    secretName: ntfy-tls
+```
+
+Ready-to-use file: `values.selfsigned.example.yaml`
+
+You can supply multiple `values.yaml` files so you could also deploy with the `values.matrix.example.yaml `:
+
+```bash
+helm upgrade --install ntfy ./charts/ntfy \
+  -f charts/ntfy/values.matrix.example.yaml \
+  -f charts/ntfy/values.selfsigned.example.yaml
+```
+
+**Note:** Both examples define `host` so you should ensure both are correct (or the last provided will apply).
+
+## Matrix/ESS Example
+
+For Matrix/Element deployments, use custom ntfy server config for UnifiedPush-style access control (for example `auth-access` entries).
+
+Ready-to-use file: `values.matrix.example.yaml`
+
+## Verify
+
+```bash
+kubectl get pods,svc -l app.kubernetes.io/instance=ntfy -n ntfy
+kubectl get ingress -l app.kubernetes.io/instance=ntfy -n ntfy
+```

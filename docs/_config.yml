@@ -22,7 +22,7 @@ title: cyclikal.dev
 email: cyclikal@cyclikal.dev
 # description: >- # this means to ignore newlines until "baseurl:"
 #   Cyclikal.dev says Hello World!
-baseurl: "/ess-community-extras" # the subpath of your site, e.g. /blog
+baseurl: "/matrix-helm-charts" # the subpath of your site, e.g. /blog
 url: "https://cyclikal.dev" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 github_username:  cyclikal94
@@ -34,7 +34,7 @@ remote_theme: jekyll/minima@6b9b78dad3e5c9f733c901e10287465735b36169
 minima:
   skin: dark
   social_links:
-    - { platform: github,  user_url: "https://github.com/cyclikal94/ess-community-extras" }
+    - { platform: github,  user_url: "https://github.com/cyclikal94/matrix-helm-charts" }
 
 author:
   name: Cyclikal

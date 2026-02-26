@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "matrix-appservice-irc.fullname" . }}
+  labels:
+    {{- include "matrix-appservice-irc.componentLabels" (dict "context" . "component" "bridge") | nindent 4 }}
+spec:
+  selector:
+    {{- include "matrix-appservice-irc.componentSelectorLabels" (dict "context" . "component" "bridge") | nindent 4 }}
+  ports:
+    - name: appservice
+      protocol: TCP
+      port: {{ .Values.service.appservicePort }}
+      targetPort: appservice
+    - name: media-proxy
+      protocol: TCP
+      port: {{ .Values.service.mediaProxyPort }}
+      targetPort: media-proxy

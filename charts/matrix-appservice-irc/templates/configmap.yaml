@@ -1,0 +1,105 @@
+{{- $extra := dict -}}
+{{- if .Values.config.extra -}}
+{{- $parsed := fromYaml .Values.config.extra -}}
+{{- if and $parsed (not (kindIs "map" $parsed)) -}}
+{{- fail "values.config.extra must be a YAML mapping (object) at the top level" -}}
+{{- end -}}
+{{- if $parsed -}}
+{{- $extra = $parsed -}}
+{{- end -}}
+{{- end -}}
+
+{{- if hasKey $extra "homeserver" -}}
+{{- $v := index $extra "homeserver" -}}
+{{- if not (kindIs "map" $v) -}}
+{{- fail "values.config.extra.homeserver must be a YAML mapping when set" -}}
+{{- end -}}
+{{- if or (hasKey $v "url") (hasKey $v "domain") -}}
+{{- fail "values.config.extra cannot set homeserver.url or homeserver.domain; use values.homeserver.* instead" -}}
+{{- end -}}
+{{- end -}}
+
+{{- if hasKey $extra "ircService" -}}
+{{- $v := index $extra "ircService" -}}
+{{- if not (kindIs "map" $v) -}}
+{{- fail "values.config.extra.ircService must be a YAML mapping when set" -}}
+{{- end -}}
+{{- if hasKey $v "mediaProxy" -}}
+{{- $m := index $v "mediaProxy" -}}
+{{- if not (kindIs "map" $m) -}}
+{{- fail "values.config.extra.ircService.mediaProxy must be a YAML mapping when set" -}}
+{{- end -}}
+{{- if or (hasKey $m "signingKeyPath") (hasKey $m "ttlSeconds") (hasKey $m "bindPort") (hasKey $m "publicUrl") -}}
+{{- fail "values.config.extra cannot set ircService.mediaProxy.{signingKeyPath,ttlSeconds,bindPort,publicUrl}; use values.mediaProxy.* instead" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- if hasKey $extra "database" -}}
+{{- $v := index $extra "database" -}}
+{{- if not (kindIs "map" $v) -}}
+{{- fail "values.config.extra.database must be a YAML mapping when set" -}}
+{{- end -}}
+{{- if or (hasKey $v "engine") (hasKey $v "connectionString") -}}
+{{- fail "values.config.extra cannot set database.engine or database.connectionString; use values.database.* instead" -}}
+{{- end -}}
+{{- end -}}
+
+{{- if hasKey $extra "ircClients" -}}
+{{- $v := index $extra "ircClients" -}}
+{{- if not (kindIs "map" $v) -}}
+{{- fail "values.config.extra.ircClients must be a YAML mapping when set" -}}
+{{- end -}}
+{{- if hasKey $v "mode" -}}
+{{- fail "values.config.extra cannot set ircClients.mode; use values.ircClients.mode instead" -}}
+{{- end -}}
+{{- end -}}
+
+{{- if hasKey $extra "connectionPool" -}}
+{{- $v := index $extra "connectionPool" -}}
+{{- if not (kindIs "map" $v) -}}
+{{- fail "values.config.extra.connectionPool must be a YAML mapping when set" -}}
+{{- end -}}
+{{- if or (hasKey $v "redisUrl") (hasKey $v "persistConnectionsOnShutdown") -}}
+{{- fail "values.config.extra cannot set connectionPool.redisUrl or connectionPool.persistConnectionsOnShutdown; use values.connectionPool.* instead" -}}
+{{- end -}}
+{{- end -}}
+
+{{- $managed := dict
+  "homeserver" (dict
+    "url" .Values.homeserver.url
+    "domain" (include "matrix-appservice-irc.homeserverDomain" .)
+  )
+  "ircService" (dict
+    "mediaProxy" (dict
+      "signingKeyPath" .Values.mediaProxy.signingKeyPath
+      "ttlSeconds" .Values.mediaProxy.ttlSeconds
+      "bindPort" .Values.mediaProxy.bindPort
+      "publicUrl" (include "matrix-appservice-irc.mediaProxyPublicUrl" .)
+    )
+  )
+  "database" (dict
+    "engine" .Values.database.engine
+    "connectionString" (include "matrix-appservice-irc.databaseConnectionString" .)
+  )
+  "ircClients" (dict
+    "mode" .Values.ircClients.mode
+  )
+  "connectionPool" (dict
+    "redisUrl" (include "matrix-appservice-irc.redisUrl" .)
+    "persistConnectionsOnShutdown" .Values.connectionPool.persistConnectionsOnShutdown
+  )
+-}}
+{{- $mergedConfig := mustMergeOverwrite (dict) $extra $managed -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "matrix-appservice-irc.configMapName" . }}
+  labels:
+    {{- include "matrix-appservice-irc.componentLabels" (dict "context" . "component" "bridge") | nindent 4 }}
+data:
+  config.yaml: |
+{{ toYaml $mergedConfig | nindent 4 }}
+  appservice-registration-irc.yaml: |
+{{ include "matrix-appservice-irc.registrationConfig" . | indent 4 }}
