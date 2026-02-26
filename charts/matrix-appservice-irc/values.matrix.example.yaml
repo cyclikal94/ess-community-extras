@@ -14,6 +14,7 @@ homeserver:
   domain: matrix.example.com
 
 registration:
+  createSynapseConfigMap: true
   # Set if Synapse runs in a different namespace than this release.
   synapseNamespace: ess
 
