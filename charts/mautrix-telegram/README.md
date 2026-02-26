@@ -65,15 +65,11 @@ The chart renders registration in release namespace as:
 - ConfigMap: `<release>-mautrix-telegram-registration`
 - Key: `appservice-registration-telegram.yaml`
 
-By default, the chart also renders the same registration ConfigMap in `registration.synapseNamespace` when that namespace differs from the release namespace.
+By default, this chart creates a duplicate registration ConfigMap in `registration.synapseNamespace` (defaulting to the Helm release namespace when unset).
 
-Values:
+Set `registration.synapseNamespace` if your Synapse namespace is different (for example `ess`).
 
-- `registration.createSynapseConfigMap` (default `true`)
-- `registration.synapseNamespace` (default release namespace)
-- `registration.synapseConfigMapName` (optional override)
-
-For ESS Synapse values:
+For ESS, add the appservice ConfigMap in Synapse values:
 
 ```yaml
 synapse:
