@@ -69,6 +69,24 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: Sync chart index to docs
+        run: |
+          set -euo pipefail
+          git fetch --depth=1 origin gh-pages
+          git checkout "${GITHUB_REF_NAME}"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          mkdir -p docs
+          git show origin/gh-pages:index.yaml > docs/index.yaml
+
+          if git diff --quiet -- docs/index.yaml; then
+            echo "docs/index.yaml already up to date"
+            exit 0
+          fi
+
+          git add docs/index.yaml
+          git commit -m "chore(charts): sync docs index"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
       - name: Enrich chart release notes
         if: steps.chart_releaser.outputs.changed_charts != ''
         uses: actions/github-script@v7

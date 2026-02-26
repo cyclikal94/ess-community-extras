@@ -1,0 +1,83 @@
+apiVersion: v1
+entries:
+  irc-bridge:
+  - apiVersion: v2
+    appVersion: release-4.0.0
+    created: "2026-02-18T05:28:36.725893321Z"
+    description: Helm chart for matrix-appservice-irc
+    digest: 54e157186336b62350582faeea2e0a5191d3439a477df6b51f954f6594388c4a
+    home: https://matrix-org.github.io/matrix-appservice-irc/latest/
+    name: irc-bridge
+    sources:
+    - https://github.com/matrix-org/matrix-appservice-irc
+    type: application
+    urls:
+    - https://github.com/cyclikal94/ess-community-extras/releases/download/irc-bridge-0.9.1/irc-bridge-0.9.1.tgz
+    version: 0.9.1
+  - apiVersion: v2
+    appVersion: release-4.0.0
+    created: "2026-02-17T13:58:08.607554864Z"
+    description: Helm chart for matrix-appservice-irc
+    digest: 9e716ac384edffa0542d914fbb7317b1455e0919906de24dc11022c5a5dd03c9
+    home: https://matrix-org.github.io/matrix-appservice-irc/latest/
+    name: irc-bridge
+    sources:
+    - https://github.com/matrix-org/matrix-appservice-irc
+    type: application
+    urls:
+    - https://github.com/cyclikal94/ess-community-extras/releases/download/irc-bridge-0.9.0/irc-bridge-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
+    appVersion: release-4.0.0
+    created: "2026-02-17T12:51:12.25934288Z"
+    description: Helm chart for matrix-appservice-irc
+    digest: ad7f1f343013036d40282c80dcbd5ea833dde9b2546efe8558c2d3b709358ecc
+    home: https://matrix-org.github.io/matrix-appservice-irc/latest/
+    name: irc-bridge
+    sources:
+    - https://github.com/matrix-org/matrix-appservice-irc
+    type: application
+    urls:
+    - https://github.com/cyclikal94/ess-community-extras/releases/download/irc-bridge-0.1.0/irc-bridge-0.1.0.tgz
+    version: 0.1.0
+  mautrix-telegram:
+  - apiVersion: v2
+    appVersion: v0.15.3
+    created: "2026-02-18T11:58:04.409547544Z"
+    description: Helm chart for mautrix-telegram
+    digest: df879f5b0b0a70bdc51c2b8d4f31e27da0c4c657681d749c96497aeba74809ec
+    home: https://docs.mau.fi/bridges/python/telegram/
+    name: mautrix-telegram
+    sources:
+    - https://github.com/mautrix/telegram
+    type: application
+    urls:
+    - https://github.com/cyclikal94/ess-community-extras/releases/download/mautrix-telegram-0.1.0/mautrix-telegram-0.1.0.tgz
+    version: 0.1.0
+  ntfy:
+  - apiVersion: v2
+    appVersion: v2.17.0
+    created: "2026-02-12T05:09:25.33502784Z"
+    description: Helm chart for ntfy
+    digest: c105e3dd4417d50e8ccdd0dee2786f72cd4112465c0363c0a502c1d4d3982a30
+    home: https://ntfy.sh
+    icon: https://github.com/binwiederhier/ntfy/blob/main/web/public/static/images/ntfy.png
+    name: ntfy
+    sources:
+    - https://github.com/binwiederhier/ntfy
+    type: application
+    urls:
+    - https://github.com/cyclikal94/ess-community-extras/releases/download/ntfy-0.9.0/ntfy-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
+    appVersion: v2.17.0
+    created: "2026-02-11T14:45:35.618006847Z"
+    description: Helm chart for ntfy
+    digest: a9ba0496476aeb63ba306f29ab78a4a5203e6b43dd3bc948b33bbf3785150ad6
+    icon: https://github.com/binwiederhier/ntfy/blob/main/web/public/static/images/ntfy.png
+    name: ntfy
+    type: application
+    urls:
+    - https://github.com/cyclikal94/ess-community-extras/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
+    version: 0.2.0
+generated: "2026-02-18T11:58:04.40956691Z"
