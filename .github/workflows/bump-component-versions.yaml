@@ -274,6 +274,34 @@ jobs:
             return 1
           }
 
+          replace_chart_version_references() {
+            local chart_dir="$1"
+            local from_version="$2"
+            local to_version="$3"
+
+            if [[ -z "${from_version}" || -z "${to_version}" || "${from_version}" == "${to_version}" ]]; then
+              return 0
+            fi
+
+            local replaced_any=0
+            while IFS= read -r file; do
+              replaced_any=1
+              CURRENT_VERSION="${from_version}" LATEST_TAG="${to_version}" \
+                perl -0777 -i -pe 's/\Q$ENV{"CURRENT_VERSION"}\E/$ENV{"LATEST_TAG"}/g' "${file}"
+            done < <(grep -RIl --fixed-strings --exclude-dir=.git -- "${from_version}" "${chart_dir}" || true)
+
+            if (( replaced_any == 0 )); then
+              echo "No chart files required version replacement for '${from_version}'."
+              return 0
+            fi
+
+            if grep -RIn --fixed-strings --exclude-dir=.git -- "${from_version}" "${chart_dir}" >/dev/null; then
+              echo "Found unreplaced '${from_version}' references under ${chart_dir} after update." >&2
+              grep -RIn --fixed-strings --exclude-dir=.git -- "${from_version}" "${chart_dir}" >&2 || true
+              return 1
+            fi
+          }
+
           if read -r current_major current_minor current_patch < <(parse_semver_triplet "${CURRENT_VERSION}") \
              && read -r latest_major latest_minor latest_patch < <(parse_semver_triplet "${LATEST_TAG}"); then
             if (( latest_major > current_major )); then
@@ -318,17 +346,7 @@ jobs:
               exit 1
             fi
 
-            sed -Ei "s#^appVersion: .*#appVersion: \"${LATEST_TAG}\"#" "${CHART_DIR}/Chart.yaml"
-
-            if [ -f "${CHART_DIR}/values.yaml" ]; then
-              perl -0777 -i -pe 's{(^image:\s*\n(?:[ \t].*\n)*?[ \t]+tag:\s*)"?[^"\n#]+"?}{$1 . "\"" . $ENV{"LATEST_TAG"} . "\""}me' "${CHART_DIR}/values.yaml"
-            fi
-
-            if [ -f "${CHART_DIR}/values.schema.json" ]; then
-              tmp_json="$(mktemp)"
-              jq --arg tag "${LATEST_TAG}" '.properties.image.properties.tag.default = $tag' "${CHART_DIR}/values.schema.json" > "${tmp_json}"
-              mv "${tmp_json}" "${CHART_DIR}/values.schema.json"
-            fi
+            replace_chart_version_references "${CHART_DIR}" "${CURRENT_VERSION}" "${LATEST_TAG}"
           fi
 
           if git diff --quiet; then
