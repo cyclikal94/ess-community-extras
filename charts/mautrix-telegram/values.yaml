@@ -46,7 +46,7 @@ registration:
   # Optional override. Defaults to appservice.botUsername.
   senderLocalpart: ""
   rateLimited: false
-  createSynapseConfigMap: true
+  createSynapseConfigMap: false
   # Namespace for duplicate Synapse registration ConfigMap. Defaults to release namespace when empty.
   synapseNamespace: ""
   # Leave empty to derive from release name, e.g. "<release>-mautrix-telegram-registration".

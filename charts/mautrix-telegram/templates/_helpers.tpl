@@ -83,10 +83,11 @@ appservice-registration-telegram.yaml
 {{- end -}}
 
 {{- define "mautrix-telegram.telegramApiID" -}}
-{{- if lt (int .Values.telegram.apiID) 1 -}}
+{{- $apiID := int64 .Values.telegram.apiID -}}
+{{- if lt $apiID 1 -}}
 {{- fail "values.telegram.apiID is required and must be greater than 0" -}}
 {{- end -}}
-{{- .Values.telegram.apiID -}}
+{{- printf "%d" $apiID -}}
 {{- end -}}
 
 {{- define "mautrix-telegram.telegramApiHash" -}}
