@@ -9,3 +9,4 @@ A collection of helm charts to deploy services alongside Matrix, with example `v
 - `ntfy`: ntfy (pronounced "notify") is a simple HTTP-based pub-sub notification service. See [binwiederhier/ntfy](https://github.com/binwiederhier/ntfy) for details.
 - `matrix-appservice-irc`: This is an IRC bridge for Matrix. See [matrix-org/matrix-appservice-irc](https://github.com/matrix-org/matrix-appservice-irc) for details.
 - `mautrix-telegram`: A Matrix-Telegram hybrid puppeting/relaybot bridge. See [mautrix/telegram](https://github.com/mautrix/telegram) for details.
+- `mautrix-googlechat`: A Matrix-Google Chat puppeting bridge. See [mautrix/googlechat](https://github.com/mautrix/googlechat) for details.

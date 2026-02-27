@@ -1,0 +1,15 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    External Redis/Postgres example for mautrix-googlechat.
+#  /    |    Disable bundled postgres and provide explicit connection value.
+#
+
+postgres:
+  enabled: false
+
+database:
+  connectionString: postgres://mautrix_googlechat:replace_me@postgres.example.com:5432/mautrix_googlechat
+
+homeserver:
+  domain: matrix.example.com
