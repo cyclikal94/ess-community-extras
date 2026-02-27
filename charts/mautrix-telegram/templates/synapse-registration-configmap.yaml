@@ -1,5 +1,5 @@
-{{- $synapseNamespace := include "mautrix-telegram.synapseNamespace" . -}}
-{{- if and .Values.registration.createSynapseConfigMap (ne $synapseNamespace .Release.Namespace) }}
+{{- $synapseNamespace := .Values.registration.synapseNamespace | default "" | trim -}}
+{{- if and $synapseNamespace (ne $synapseNamespace .Release.Namespace) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

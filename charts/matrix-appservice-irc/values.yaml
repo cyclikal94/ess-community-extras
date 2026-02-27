@@ -124,8 +124,8 @@ registration:
     - irc
   # Optional override. Defaults to bridge service URL in release namespace.
   serviceUrl: ""
-  createSynapseConfigMap: true
-  # Namespace for duplicate Synapse registration ConfigMap. Defaults to release namespace when empty.
+  # Optional namespace for an additional Synapse registration ConfigMap copy.
+  # A cross-namespace copy is created only when this is non-empty and different from the release namespace.
   synapseNamespace: ""
   # Leave empty to derive from release name, e.g. "<release>-matrix-appservice-irc-registration".
   synapseConfigMapName: ""

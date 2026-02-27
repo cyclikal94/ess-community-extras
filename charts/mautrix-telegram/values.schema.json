@@ -180,13 +180,10 @@
           "type": "boolean",
           "default": false
         },
-        "createSynapseConfigMap": {
-          "type": "boolean",
-          "default": true
-        },
         "synapseNamespace": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "description": "Optional namespace for an additional registration ConfigMap copy. A cross-namespace copy is created only when set and different from the release namespace."
         },
         "synapseConfigMapName": {
           "type": "string",

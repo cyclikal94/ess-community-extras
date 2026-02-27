@@ -74,10 +74,6 @@ app.kubernetes.io/component: {{ .component }}
 appservice-registration-telegram.yaml
 {{- end -}}
 
-{{- define "mautrix-telegram.synapseNamespace" -}}
-{{- default .Release.Namespace .Values.registration.synapseNamespace -}}
-{{- end -}}
-
 {{- define "mautrix-telegram.homeserverDomain" -}}
 {{- required "values.homeserver.domain is required (example: matrix.example.com)" .Values.homeserver.domain -}}
 {{- end -}}

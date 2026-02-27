@@ -159,10 +159,6 @@ app.kubernetes.io/component: {{ .component }}
 {{- required "values.homeserver.domain is required (example: matrix.example.com)" .Values.homeserver.domain -}}
 {{- end -}}
 
-{{- define "matrix-appservice-irc.synapseNamespace" -}}
-{{- default .Release.Namespace .Values.registration.synapseNamespace -}}
-{{- end -}}
-
 {{- define "matrix-appservice-irc.registrationServiceUrl" -}}
 {{- if .Values.registration.serviceUrl -}}
 {{- .Values.registration.serviceUrl -}}

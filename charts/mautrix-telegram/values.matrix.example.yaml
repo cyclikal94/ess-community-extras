@@ -15,7 +15,6 @@ telegram:
   apiHash: replace_with_telegram_api_hash
 
 registration:
-  createSynapseConfigMap: true
   # Set if Synapse runs in a different namespace than this release.
   synapseNamespace: ess
 

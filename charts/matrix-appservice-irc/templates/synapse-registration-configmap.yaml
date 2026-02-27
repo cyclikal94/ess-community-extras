@@ -1,9 +1,10 @@
-{{- if .Values.registration.createSynapseConfigMap }}
+{{- $synapseNamespace := .Values.registration.synapseNamespace | default "" | trim -}}
+{{- if and $synapseNamespace (ne $synapseNamespace .Release.Namespace) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "matrix-appservice-irc.registrationConfigMapName" . }}
-  namespace: {{ include "matrix-appservice-irc.synapseNamespace" . }}
+  namespace: {{ $synapseNamespace }}
   labels:
     {{- include "matrix-appservice-irc.componentLabels" (dict "context" . "component" "registration") | nindent 4 }}
 data:

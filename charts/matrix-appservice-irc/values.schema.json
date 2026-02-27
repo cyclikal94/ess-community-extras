@@ -399,14 +399,10 @@
           "default": "",
           "description": "Optional appservice URL override in the registration file."
         },
-        "createSynapseConfigMap": {
-          "type": "boolean",
-          "default": true
-        },
         "synapseNamespace": {
           "type": "string",
           "default": "",
-          "description": "Namespace where duplicate registration ConfigMap should be created. Defaults to release namespace when empty."
+          "description": "Optional namespace for an additional registration ConfigMap copy. A cross-namespace copy is created only when set and different from the release namespace."
         },
         "synapseConfigMapName": {
           "type": "string",
