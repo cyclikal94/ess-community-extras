@@ -49,7 +49,7 @@ Install from published Helm repository:
 ```bash
 helm repo add matrix-helm-charts https://cyclikal94.github.io/matrix-helm-charts
 helm repo update
-helm upgrade --install mautrix-telegram matrix-helm-charts/mautrix-telegram -n telegram --create-namespace --values mautrix-telegram-values.yaml
+helm upgrade --install mautrix-telegram matrix-helm-charts/mautrix-telegram -n mautrix-telegram --create-namespace --values mautrix-telegram-values.yaml
 ```
 
 ## Required values
