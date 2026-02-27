@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mautrix-twitter
+description: Helm chart for mautrix-twitter
+home: https://docs.mau.fi/bridges/go/twitter/
+sources:
+  - https://github.com/mautrix/twitter
+type: application
+version: 0.1.0
+appVersion: "v25.11"

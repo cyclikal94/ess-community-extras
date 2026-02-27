@@ -1,0 +1,13 @@
+{{- $synapseNamespace := .Values.registration.synapseNamespace | default "" | trim -}}
+{{- if and $synapseNamespace (ne $synapseNamespace .Release.Namespace) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mautrix-twitter.registrationConfigMapName" . }}
+  namespace: {{ $synapseNamespace }}
+  labels:
+    {{- include "mautrix-twitter.componentLabels" (dict "context" . "component" "registration") | nindent 4 }}
+data:
+  {{ include "mautrix-twitter.registrationFileKey" . }}: |
+{{ include "mautrix-twitter.registrationConfig" . | indent 4 }}
+{{- end }}
