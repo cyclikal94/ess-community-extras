@@ -7,18 +7,20 @@ A collection of helm charts to deploy services alongside Matrix, with example `v
 
 ## Components
 
-- `ntfy`: ntfy (pronounced "notify") is a simple HTTP-based pub-sub notification service. See [binwiederhier/ntfy](https://github.com/binwiederhier/ntfy) for details.
-- `matrix-appservice-irc`: This is an IRC bridge for Matrix. See [matrix-org/matrix-appservice-irc](https://github.com/matrix-org/matrix-appservice-irc) for details.
-- `mautrix-telegram`: A Matrix-Telegram hybrid puppeting/relaybot bridge. See [mautrix/telegram](https://github.com/mautrix/telegram) for details.
-- `mautrix-googlechat`: A Matrix-Google Chat puppeting bridge. See [mautrix/googlechat](https://github.com/mautrix/googlechat) for details.
-- `mautrix-whatsapp`: A Matrix-WhatsApp puppeting bridge. See [mautrix/whatsapp](https://github.com/mautrix/whatsapp) for details.
-- `mautrix-discord`: A Matrix-Discord puppeting bridge. See [mautrix/discord](https://github.com/mautrix/discord) for details.
-- `mautrix-slack`: A Matrix-Slack puppeting bridge. See [mautrix/slack](https://github.com/mautrix/slack) for details.
-- `mautrix-gmessages`: A Matrix-Google Messages puppeting bridge. See [mautrix/gmessages](https://github.com/mautrix/gmessages) for details.
-- `mautrix-gvoice`: A Matrix-Google Voice puppeting bridge. See [mautrix/gvoice](https://github.com/mautrix/gvoice) for details.
-- `mautrix-signal`: A Matrix-Signal puppeting bridge. See [mautrix/signal](https://github.com/mautrix/signal) for details.
-- `mautrix-meta`: A Matrix-Meta puppeting bridge. See [mautrix/meta](https://github.com/mautrix/meta) for details.
-- `mautrix-twitter`: A Matrix-Twitter puppeting bridge. See [mautrix/twitter](https://github.com/mautrix/twitter) for details.
-- `mautrix-bluesky`: A Matrix-Bluesky puppeting bridge. See [mautrix/bluesky](https://github.com/mautrix/bluesky) for details.
-- `mautrix-linkedin`: A Matrix-LinkedIn puppeting bridge. See [mautrix/linkedin](https://github.com/mautrix/linkedin) for details.
-- `mautrix-zulip`: A Matrix-Zulip puppeting bridge. See [mautrix/zulip](https://github.com/mautrix/zulip) for details.
+| Component | Repository | Description |
+| --- | --- | --- |
+| `ntfy` | [binwiederhier/ntfy](https://github.com/binwiederhier/ntfy) | HTTP-based pub-sub notification service. Use to provide Matrix push notifications on Android without Google. |
+| `matrix-appservice-irc` | [matrix-org/matrix-appservice-irc](https://github.com/matrix-org/matrix-appservice-irc) | IRC bridge for Matrix. |
+| `mautrix-telegram` | [mautrix/telegram](https://github.com/mautrix/telegram) | A Matrix-Telegram hybrid puppeting/relaybot bridge. |
+| `mautrix-googlechat` | [mautrix/googlechat](https://github.com/mautrix/googlechat) | A Matrix-Google Chat puppeting bridge. |
+| `mautrix-whatsapp` | [mautrix/whatsapp](https://github.com/mautrix/whatsapp) | A Matrix-WhatsApp puppeting bridge based on [whatsmeow](https://github.com/tulir/whatsmeow). |
+| `mautrix-discord` | [mautrix/discord](https://github.com/mautrix/discord) | A Matrix-Discord puppeting bridge based on [discordgo](https://github.com/bwmarrin/discordgo). |
+| `mautrix-slack` | [mautrix/slack](https://github.com/mautrix/slack) | A Matrix-Slack puppeting bridge based on [slack-go](https://github.com/slack-go/slack). |
+| `mautrix-gmessages` | [mautrix/gmessages](https://github.com/mautrix/gmessages) | A Matrix-Google Messages puppeting bridge. |
+| `mautrix-gvoice` | [mautrix/gvoice](https://github.com/mautrix/gvoice) | A Matrix-Google Voice puppeting bridge. |
+| `mautrix-signal` | [mautrix/signal](https://github.com/mautrix/signal) | A Matrix-Signal puppeting bridge. |
+| `mautrix-meta` | [mautrix/meta](https://github.com/mautrix/meta) | A Matrix-Facebook Messenger and Instagram DM puppeting bridge. |
+| `mautrix-twitter` | [mautrix/twitter](https://github.com/mautrix/twitter) | A Matrix-Twitter DM puppeting bridge. |
+| `mautrix-bluesky` | [mautrix/bluesky](https://github.com/mautrix/bluesky) | A Matrix-Bluesky DM puppeting bridge. |
+| `mautrix-linkedin` | [mautrix/linkedin](https://github.com/mautrix/linkedin) | A Matrix-LinkedIn puppeting bridge. |
+| `mautrix-zulip` | [mautrix/zulip](https://github.com/mautrix/zulip) | A Matrix-Zulip puppeting bridge. |
