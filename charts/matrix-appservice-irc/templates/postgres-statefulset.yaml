@@ -19,8 +19,14 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/postgres-secret.yaml") . | sha256sum }}
     spec:
       {{- if .Values.postgres.podSecurityContext.enabled }}
+      {{- $podSecurityContext := omit .Values.postgres.podSecurityContext "enabled" }}
+      {{- with $podSecurityContext.seccompProfile }}
+      {{- if ne .type "Localhost" }}
+      {{- $podSecurityContext = merge (omit $podSecurityContext "seccompProfile") (dict "seccompProfile" (omit . "localhostProfile")) }}
+      {{- end }}
+      {{- end }}
       securityContext:
-        {{- toYaml (omit .Values.postgres.podSecurityContext "enabled") | nindent 8 }}
+        {{- toYaml $podSecurityContext | nindent 8 }}
       {{- end }}
       containers:
         - name: postgres

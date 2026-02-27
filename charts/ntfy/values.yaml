@@ -29,7 +29,6 @@ podSecurityContext:
   enabled: true
   seccompProfile:
     type: RuntimeDefault
-    localhostProfile: ""
 
 securityContext:
   enabled: true

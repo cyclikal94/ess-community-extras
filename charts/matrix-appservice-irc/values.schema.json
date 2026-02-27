@@ -504,8 +504,7 @@
                   "default": "RuntimeDefault"
                 },
                 "localhostProfile": {
-                  "type": "string",
-                  "default": ""
+                  "type": "string"
                 }
               },
               "if": {
@@ -674,8 +673,7 @@
                   "default": "RuntimeDefault"
                 },
                 "localhostProfile": {
-                  "type": "string",
-                  "default": ""
+                  "type": "string"
                 }
               },
               "if": {
@@ -809,8 +807,7 @@
               "default": "RuntimeDefault"
             },
             "localhostProfile": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           "if": {

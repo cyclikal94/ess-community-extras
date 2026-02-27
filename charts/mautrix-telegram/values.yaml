@@ -21,7 +21,6 @@ podSecurityContext:
   enabled: true
   seccompProfile:
     type: RuntimeDefault
-    localhostProfile: ""
 
 securityContext:
   enabled: true
@@ -116,7 +115,6 @@ postgres:
     enabled: true
     seccompProfile:
       type: RuntimeDefault
-      localhostProfile: ""
   securityContext:
     enabled: true
     allowPrivilegeEscalation: false

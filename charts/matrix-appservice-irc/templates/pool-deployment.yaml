@@ -16,8 +16,14 @@ spec:
         {{- include "matrix-appservice-irc.componentSelectorLabels" (dict "context" . "component" "pool") | nindent 8 }}
     spec:
       {{- if .Values.podSecurityContext.enabled }}
+      {{- $podSecurityContext := omit .Values.podSecurityContext "enabled" }}
+      {{- with $podSecurityContext.seccompProfile }}
+      {{- if ne .type "Localhost" }}
+      {{- $podSecurityContext = merge (omit $podSecurityContext "seccompProfile") (dict "seccompProfile" (omit . "localhostProfile")) }}
+      {{- end }}
+      {{- end }}
       securityContext:
-        {{- toYaml (omit .Values.podSecurityContext "enabled") | nindent 8 }}
+        {{- toYaml $podSecurityContext | nindent 8 }}
       {{- end }}
       {{- if and .Values.redis.enabled .Values.waitForRedis.enabled }}
       initContainers:

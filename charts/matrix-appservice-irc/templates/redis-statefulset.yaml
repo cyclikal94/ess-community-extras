@@ -17,8 +17,14 @@ spec:
         {{- include "matrix-appservice-irc.componentSelectorLabels" (dict "context" . "component" "redis") | nindent 8 }}
     spec:
       {{- if .Values.redis.podSecurityContext.enabled }}
+      {{- $podSecurityContext := omit .Values.redis.podSecurityContext "enabled" }}
+      {{- with $podSecurityContext.seccompProfile }}
+      {{- if ne .type "Localhost" }}
+      {{- $podSecurityContext = merge (omit $podSecurityContext "seccompProfile") (dict "seccompProfile" (omit . "localhostProfile")) }}
+      {{- end }}
+      {{- end }}
       securityContext:
-        {{- toYaml (omit .Values.redis.podSecurityContext "enabled") | nindent 8 }}
+        {{- toYaml $podSecurityContext | nindent 8 }}
       {{- end }}
       containers:
         - name: redis

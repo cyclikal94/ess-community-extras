@@ -19,8 +19,14 @@ spec:
         checksum/runtime-secrets: {{ include (print $.Template.BasePath "/runtime-secrets.yaml") . | sha256sum }}
     spec:
       {{- if .Values.podSecurityContext.enabled }}
+      {{- $podSecurityContext := omit .Values.podSecurityContext "enabled" }}
+      {{- with $podSecurityContext.seccompProfile }}
+      {{- if ne .type "Localhost" }}
+      {{- $podSecurityContext = merge (omit $podSecurityContext "seccompProfile") (dict "seccompProfile" (omit . "localhostProfile")) }}
+      {{- end }}
+      {{- end }}
       securityContext:
-        {{- toYaml (omit .Values.podSecurityContext "enabled") | nindent 8 }}
+        {{- toYaml $podSecurityContext | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ include "mautrix-telegram.name" . }}

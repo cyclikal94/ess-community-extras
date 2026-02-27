@@ -217,8 +217,7 @@
               "default": "RuntimeDefault"
             },
             "localhostProfile": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           "if": {
