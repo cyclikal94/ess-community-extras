@@ -220,6 +220,23 @@
               "type": "string",
               "default": ""
             }
+          },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Localhost"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "localhostProfile"
+            ],
+            "properties": {
+              "localhostProfile": {
+                "minLength": 1
+              }
+            }
           }
         }
       }
