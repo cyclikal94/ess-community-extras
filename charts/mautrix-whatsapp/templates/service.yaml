@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mautrix-whatsapp.fullname" . }}
+  labels:
+    {{- include "mautrix-whatsapp.componentLabels" (dict "context" . "component" "bridge") | nindent 4 }}
+spec:
+  publishNotReadyAddresses: {{ .Values.service.publishNotReadyAddresses }}
+  selector:
+    {{- include "mautrix-whatsapp.componentSelectorLabels" (dict "context" . "component" "bridge") | nindent 4 }}
+  ports:
+    - name: appservice
+      protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: appservice

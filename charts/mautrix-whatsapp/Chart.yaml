@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mautrix-whatsapp
+description: Helm chart for mautrix-whatsapp
+home: https://docs.mau.fi/bridges/go/whatsapp/
+sources:
+  - https://github.com/mautrix/whatsapp
+type: application
+version: 0.1.0
+appVersion: "v26.02"

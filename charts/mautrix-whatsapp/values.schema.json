@@ -1,0 +1,547 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "mautrix-whatsapp chart values",
+  "description": "Configuration values for deploying mautrix-whatsapp with this Helm chart.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "homeserver"
+  ],
+  "properties": {
+    "nameOverride": {
+      "type": "string",
+      "default": "",
+      "description": "Optional short name override used for labels and naming when fullnameOverride is empty."
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "default": "",
+      "description": "Optional full resource name override. When set, this takes precedence over nameOverride."
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string",
+          "default": "dock.mau.dev/mautrix/whatsapp"
+        },
+        "tag": {
+          "type": "string",
+          "default": "v26.02"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
+          "default": "IfNotPresent"
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 29317
+        },
+        "publishNotReadyAddresses": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "homeserver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "default": "http://ess-synapse.ess.svc.cluster.local:8008"
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1,
+          "default": "",
+          "description": "Matrix homeserver domain (e.g. matrix.example.com)."
+        }
+      }
+    },
+    "appservice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "default": "whatsapp"
+        },
+        "botUsername": {
+          "type": "string",
+          "default": "whatsappbot"
+        },
+        "address": {
+          "type": "string",
+          "default": ""
+        },
+        "hostname": {
+          "type": "string",
+          "default": "0.0.0.0"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 29317
+        },
+        "ephemeralEvents": {
+          "type": "boolean",
+          "default": true
+        },
+        "provisioning": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sharedSecret": {
+              "type": "string",
+              "default": "",
+              "description": "Provisioning API shared secret. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true and registration.managedSecret.enabled=true."
+            }
+          }
+        }
+      }
+    },
+    "registration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asToken": {
+          "type": "string",
+          "default": "",
+          "description": "Appservice as_token. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true and registration.managedSecret.enabled=true."
+        },
+        "hsToken": {
+          "type": "string",
+          "default": "",
+          "description": "Appservice hs_token. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true and registration.managedSecret.enabled=true."
+        },
+        "existingSecret": {
+          "type": "string",
+          "default": "",
+          "description": "Existing Secret name with keys asToken/hsToken/provisioningSharedSecret. When set, chart-managed runtime Secret is not created."
+        },
+        "managedSecret": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Controls creation and naming of chart-managed runtime Secret.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+        "autoGenerate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-generate missing runtime secrets only when using chart-managed Secret mode."
+        },
+        "serviceUrl": {
+          "type": "string",
+          "default": ""
+        },
+        "userRegex": {
+          "type": "string",
+          "default": ""
+        },
+        "aliasRegex": {
+          "type": "string",
+          "default": ""
+        },
+        "senderLocalpart": {
+          "type": "string",
+          "default": ""
+        },
+        "rateLimited": {
+          "type": "boolean",
+          "default": false
+        },
+        "synapseNamespace": {
+          "type": "string",
+          "default": "",
+          "description": "Optional namespace for an additional registration ConfigMap copy. A cross-namespace copy is created only when set and different from the release namespace."
+        },
+        "synapseConfigMapName": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "bridge": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "usernameTemplate": {
+          "type": "string",
+          "default": "whatsapp_{userid}",
+          "description": "Template for Matrix user localparts. Must include a placeholder (for example {userid}). Legacy {{.}} is also supported."
+        },
+        "aliasTemplate": {
+          "type": "string",
+          "default": "whatsapp_{groupname}",
+          "description": "Template for Matrix room aliases. Must include a placeholder (for example {groupname}). Legacy {{.}} is also supported."
+        },
+        "resources": {
+          "type": "object",
+          "default": {},
+          "description": "Bridge container resource requests and limits."
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Additional raw YAML merged into generated config.yaml. Overlaps with Helm-managed keys fail template rendering.",
+      "properties": {
+        "extra": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "mautrix_whatsapp"
+        },
+        "user": {
+          "type": "string",
+          "default": "mautrix_whatsapp"
+        },
+        "password": {
+          "type": "string",
+          "default": "mautrix_whatsapp_password"
+        },
+        "connectionString": {
+          "type": "string",
+          "default": "",
+          "description": "Optional full DSN override. Required when postgres.enabled=false."
+        }
+      }
+    },
+    "postgres": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "repository": {
+              "type": "string",
+              "default": "postgres"
+            },
+            "tag": {
+              "type": "string",
+              "default": "16-alpine"
+            },
+            "pullPolicy": {
+              "type": "string",
+              "enum": [
+                "Always",
+                "IfNotPresent",
+                "Never"
+              ],
+              "default": "IfNotPresent"
+            }
+          }
+        },
+        "service": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535,
+              "default": 5432
+            }
+          }
+        },
+        "persistence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "accessMode": {
+              "type": "string",
+              "default": "ReadWriteOnce"
+            },
+            "size": {
+              "type": "string",
+              "default": "10Gi"
+            },
+            "storageClassName": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+        "podSecurityContext": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "seccompProfile": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "RuntimeDefault",
+                    "Localhost",
+                    "Unconfined"
+                  ],
+                  "default": "RuntimeDefault"
+                },
+                "localhostProfile": {
+                  "type": "string"
+                }
+              },
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "Localhost"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "localhostProfile"
+                ],
+                "properties": {
+                  "localhostProfile": {
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "securityContext": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "type": "boolean",
+              "default": false
+            },
+            "readOnlyRootFilesystem": {
+              "type": "boolean",
+              "default": false
+            },
+            "capabilities": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "resources": {
+          "type": "object",
+          "default": {}
+        }
+      }
+    },
+    "probes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "liveness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "path": {
+              "type": "string",
+              "default": "/_matrix/mau/live"
+            },
+            "initialDelaySeconds": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 20
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 30
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 5
+            },
+            "failureThreshold": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 3
+            }
+          }
+        },
+        "readiness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "path": {
+              "type": "string",
+              "default": "/_matrix/mau/ready"
+            },
+            "initialDelaySeconds": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 10
+            },
+            "periodSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 15
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 5
+            },
+            "failureThreshold": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 3
+            }
+          }
+        }
+      }
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "seccompProfile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "RuntimeDefault",
+                "Localhost",
+                "Unconfined"
+              ],
+              "default": "RuntimeDefault"
+            },
+            "localhostProfile": {
+              "type": "string"
+            }
+          },
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Localhost"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "localhostProfile"
+            ],
+            "properties": {
+              "localhostProfile": {
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "securityContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "allowPrivilegeEscalation": {
+          "type": "boolean",
+          "default": false
+        },
+        "readOnlyRootFilesystem": {
+          "type": "boolean",
+          "default": false
+        },
+        "capabilities": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "drop": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                "ALL"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
