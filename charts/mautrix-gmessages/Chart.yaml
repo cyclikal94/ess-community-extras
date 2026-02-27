@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mautrix-gmessages
+description: Helm chart for mautrix-gmessages
+home: https://docs.mau.fi/bridges/go/gmessages/
+sources:
+  - https://github.com/mautrix/gmessages
+type: application
+version: 0.1.0
+appVersion: "v26.02"
