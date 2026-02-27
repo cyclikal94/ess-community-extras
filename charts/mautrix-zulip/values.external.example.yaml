@@ -1,0 +1,15 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    External Redis/Postgres example for mautrix-zulip.
+#  /    |    Disable bundled postgres and provide explicit connection value.
+#
+
+postgres:
+  enabled: false
+
+database:
+  connectionString: postgres://mautrix_zulip:replace_me@postgres.example.com:5432/mautrix_zulip
+
+homeserver:
+  domain: matrix.example.com

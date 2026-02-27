@@ -20,3 +20,4 @@ A collection of helm charts to deploy services alongside Matrix, with example `v
 - `mautrix-twitter`: A Matrix-Twitter puppeting bridge. See [mautrix/twitter](https://github.com/mautrix/twitter) for details.
 - `mautrix-bluesky`: A Matrix-Bluesky puppeting bridge. See [mautrix/bluesky](https://github.com/mautrix/bluesky) for details.
 - `mautrix-linkedin`: A Matrix-LinkedIn puppeting bridge. See [mautrix/linkedin](https://github.com/mautrix/linkedin) for details.
+- `mautrix-zulip`: A Matrix-Zulip puppeting bridge. See [mautrix/zulip](https://github.com/mautrix/zulip) for details.
