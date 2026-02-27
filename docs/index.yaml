@@ -43,6 +43,19 @@ entries:
   matrix-appservice-irc:
   - apiVersion: v2
     appVersion: release-4.0.0
+    created: "2026-02-27T11:00:16.709234571Z"
+    description: Helm chart for matrix-appservice-irc
+    digest: 2df3637fe986c2b3db323c2e952055b8c78ff37a75b762bffbf65cff98f7ae48
+    home: https://matrix-org.github.io/matrix-appservice-irc/latest/
+    name: matrix-appservice-irc
+    sources:
+    - https://github.com/matrix-org/matrix-appservice-irc
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/matrix-appservice-irc-0.9.12/matrix-appservice-irc-0.9.12.tgz
+    version: 0.9.12
+  - apiVersion: v2
+    appVersion: release-4.0.0
     created: "2026-02-27T10:48:26.60191132Z"
     description: Helm chart for matrix-appservice-irc
     digest: 76f3d93ae85b119aaf1c40206ecf62a8aa48d2c444f292a62cf22dcef75ddd6b
@@ -266,4 +279,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-02-27T10:48:26.859564997Z"
+generated: "2026-02-27T11:00:16.92425069Z"
