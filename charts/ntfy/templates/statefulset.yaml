@@ -17,6 +17,10 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
+      {{- if .Values.podSecurityContext.enabled }}
+      securityContext:
+        {{- toYaml (omit .Values.podSecurityContext "enabled") | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ include "ntfy.name" . }}
           image: {{ include "ntfy.image" . }}
@@ -26,6 +30,10 @@ spec:
           ports:
             - containerPort: {{ .Values.service.port }}
               name: http
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            {{- toYaml (omit .Values.securityContext "enabled") | nindent 12 }}
+          {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

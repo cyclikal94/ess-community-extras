@@ -17,11 +17,19 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/registration-tokens: {{ include (print $.Template.BasePath "/registration-token-secret.yaml") . | sha256sum }}
     spec:
+      {{- if .Values.podSecurityContext.enabled }}
+      securityContext:
+        {{- toYaml (omit .Values.podSecurityContext "enabled") | nindent 8 }}
+      {{- end }}
       initContainers:
         {{- if and .Values.redis.enabled .Values.waitForRedis.enabled }}
         - name: wait-for-redis
           image: {{ include "matrix-appservice-irc.waitForRedisImage" . }}
           imagePullPolicy: {{ .Values.waitForRedis.image.pullPolicy }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            {{- toYaml (omit .Values.securityContext "enabled") | nindent 12 }}
+          {{- end }}
           command:
             - /bin/sh
             - -lc
@@ -35,6 +43,10 @@ spec:
         - name: generate-media-proxy-signing-key
           image: {{ include "matrix-appservice-irc.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            {{- toYaml (omit .Values.securityContext "enabled") | nindent 12 }}
+          {{- end }}
           command:
             - /bin/sh
             - -lc
@@ -64,6 +76,10 @@ spec:
               containerPort: {{ .Values.service.appservicePort }}
             - name: media-proxy
               containerPort: {{ .Values.mediaProxy.bindPort }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            {{- toYaml (omit .Values.securityContext "enabled") | nindent 12 }}
+          {{- end }}
           {{- with .Values.bridge.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

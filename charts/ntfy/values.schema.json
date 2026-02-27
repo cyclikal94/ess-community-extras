@@ -4,7 +4,9 @@
   "description": "Configuration values for deploying ntfy with this Helm chart.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["host"],
+  "required": [
+    "host"
+  ],
   "properties": {
     "nameOverride": {
       "type": "string",
@@ -192,6 +194,77 @@
       "type": "object",
       "description": "Container resource requests and limits for ntfy.",
       "default": {}
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "seccompProfile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "RuntimeDefault",
+                "Localhost",
+                "Unconfined"
+              ],
+              "default": "RuntimeDefault"
+            },
+            "localhostProfile": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        }
+      }
+    },
+    "securityContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "allowPrivilegeEscalation": {
+          "type": "boolean",
+          "default": false
+        },
+        "readOnlyRootFilesystem": {
+          "type": "boolean",
+          "default": false
+        },
+        "capabilities": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "drop": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                "ALL"
+              ]
+            },
+            "add": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [
+                "NET_BIND_SERVICE"
+              ]
+            }
+          }
+        }
+      }
     }
   }
 }

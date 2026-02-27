@@ -15,11 +15,19 @@ spec:
       labels:
         {{- include "matrix-appservice-irc.componentSelectorLabels" (dict "context" . "component" "pool") | nindent 8 }}
     spec:
+      {{- if .Values.podSecurityContext.enabled }}
+      securityContext:
+        {{- toYaml (omit .Values.podSecurityContext "enabled") | nindent 8 }}
+      {{- end }}
       {{- if and .Values.redis.enabled .Values.waitForRedis.enabled }}
       initContainers:
         - name: wait-for-redis
           image: {{ include "matrix-appservice-irc.waitForRedisImage" . }}
           imagePullPolicy: {{ .Values.waitForRedis.image.pullPolicy }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            {{- toYaml (omit .Values.securityContext "enabled") | nindent 12 }}
+          {{- end }}
           command:
             - /bin/sh
             - -lc
@@ -49,6 +57,10 @@ spec:
           ports:
             - name: metrics
               containerPort: {{ .Values.pool.metricsPort }}
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            {{- toYaml (omit .Values.securityContext "enabled") | nindent 12 }}
+          {{- end }}
           {{- with .Values.pool.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
