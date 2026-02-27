@@ -1,0 +1,15 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    External Redis/Postgres example for mautrix-discord.
+#  /    |    Disable bundled postgres and provide explicit connection value.
+#
+
+postgres:
+  enabled: false
+
+database:
+  connectionString: postgres://mautrix_discord:replace_me@postgres.example.com:5432/mautrix_discord
+
+homeserver:
+  domain: matrix.example.com

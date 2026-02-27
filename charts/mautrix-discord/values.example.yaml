@@ -1,0 +1,9 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Absolute minimal values example file for mautrix-discord.
+#  /    |    You should probably check `values.matrix.example.yaml`.
+#
+
+homeserver:
+  domain: matrix.example.com

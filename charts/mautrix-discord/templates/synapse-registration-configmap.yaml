@@ -1,0 +1,13 @@
+{{- $synapseNamespace := .Values.registration.synapseNamespace | default "" | trim -}}
+{{- if and $synapseNamespace (ne $synapseNamespace .Release.Namespace) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mautrix-discord.registrationConfigMapName" . }}
+  namespace: {{ $synapseNamespace }}
+  labels:
+    {{- include "mautrix-discord.componentLabels" (dict "context" . "component" "registration") | nindent 4 }}
+data:
+  {{ include "mautrix-discord.registrationFileKey" . }}: |
+{{ include "mautrix-discord.registrationConfig" . | indent 4 }}
+{{- end }}
