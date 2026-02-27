@@ -1,0 +1,13 @@
+{{- $synapseNamespace := .Values.registration.synapseNamespace | default "" | trim -}}
+{{- if and $synapseNamespace (ne $synapseNamespace .Release.Namespace) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mautrix-linkedin.registrationConfigMapName" . }}
+  namespace: {{ $synapseNamespace }}
+  labels:
+    {{- include "mautrix-linkedin.componentLabels" (dict "context" . "component" "registration") | nindent 4 }}
+data:
+  {{ include "mautrix-linkedin.registrationFileKey" . }}: |
+{{ include "mautrix-linkedin.registrationConfig" . | indent 4 }}
+{{- end }}
