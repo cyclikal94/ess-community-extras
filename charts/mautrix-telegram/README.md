@@ -139,6 +139,13 @@ database:
 
 See: `values.external.example.yaml`
 
+## Example Values Files
+
+- `values.example.yaml`: absolute minimal chart input.
+- `values.matrix.example.yaml`: recommended Matrix/ESS-focused mautrix-telegram config example.
+- `values.external.example.yaml`: external Postgres example.
+- `values.secrets.yaml`: external Secret example for runtime secrets.
+
 ## Liveness/Readiness probes
 
 Endpoints are available at:

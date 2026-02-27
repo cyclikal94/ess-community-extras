@@ -16,13 +16,14 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/registration-tokens: {{ include (print $.Template.BasePath "/registration-token-secret.yaml") . | sha256sum }}
+        checksum/media-proxy-signing-key: {{ include (print $.Template.BasePath "/media-proxy-signing-key-secret.yaml") . | sha256sum }}
     spec:
       {{- if .Values.podSecurityContext.enabled }}
       securityContext:
         {{- toYaml (omit .Values.podSecurityContext "enabled") | nindent 8 }}
       {{- end }}
+      {{- if and .Values.redis.enabled .Values.waitForRedis.enabled }}
       initContainers:
-        {{- if and .Values.redis.enabled .Values.waitForRedis.enabled }}
         - name: wait-for-redis
           image: {{ include "matrix-appservice-irc.waitForRedisImage" . }}
           imagePullPolicy: {{ .Values.waitForRedis.image.pullPolicy }}
@@ -39,25 +40,7 @@ spec:
                 echo "waiting for redis..."
                 sleep {{ .Values.waitForRedis.sleepSeconds }}
               done
-        {{- end }}
-        - name: generate-media-proxy-signing-key
-          image: {{ include "matrix-appservice-irc.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.securityContext.enabled }}
-          securityContext:
-            {{- toYaml (omit .Values.securityContext "enabled") | nindent 12 }}
-          {{- end }}
-          command:
-            - /bin/sh
-            - -lc
-            - |
-              set -eu
-              if [ ! -s {{ .Values.mediaProxy.signingKeyPath }} ]; then
-                node /app/lib/generate-signing-key.js > {{ .Values.mediaProxy.signingKeyPath }}
-              fi
-          volumeMounts:
-            - name: media-proxy-signing-key
-              mountPath: /data
+      {{- end }}
       containers:
         - name: {{ include "matrix-appservice-irc.name" . }}
           image: {{ include "matrix-appservice-irc.image" . }}
@@ -94,7 +77,9 @@ spec:
               subPath: appservice-registration-irc.yaml
               readOnly: true
             - name: media-proxy-signing-key
-              mountPath: /data
+              mountPath: {{ .Values.mediaProxy.signingKeyPath }}
+              subPath: {{ .Values.mediaProxy.signingKeySecretKey }}
+              readOnly: true
       volumes:
         - name: bridge-config
           configMap:
@@ -109,4 +94,8 @@ spec:
               - key: appservice-registration-irc.yaml
                 path: appservice-registration-irc.yaml
         - name: media-proxy-signing-key
-          emptyDir: {}
+          secret:
+            secretName: {{ include "matrix-appservice-irc.mediaProxySigningKeySecretName" . }}
+            items:
+              - key: {{ .Values.mediaProxy.signingKeySecretKey | quote }}
+                path: {{ .Values.mediaProxy.signingKeySecretKey | quote }}

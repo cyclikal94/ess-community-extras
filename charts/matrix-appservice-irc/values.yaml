@@ -66,7 +66,21 @@ homeserver:
   domain: ""
 
 mediaProxy:
+  # Path in the container where the media proxy signing key file is mounted.
   signingKeyPath: /data/media-proxy-signing-key.jwk
+  # Inline signing key file content (JWK JSON). If empty, sourced from mediaProxy.existingSecret when set; otherwise auto-generated when mediaProxy.autoGenerate=true.
+  signingKey: ""
+  # Secret data key used for the signing key file.
+  signingKeySecretKey: media-proxy-signing-key.jwk
+  # Existing Secret containing key mediaProxy.signingKeySecretKey. When set, no chart-managed signing key Secret is created.
+  existingSecret: ""
+  managedSecret:
+    # Create a chart-managed signing key Secret when existingSecret is not set.
+    enabled: true
+    # Optional override for the managed Secret name.
+    name: ""
+  # Auto-generate missing signing key only when using a chart-managed Secret.
+  autoGenerate: true
   ttlSeconds: 3600
   bindPort: 11111
   publicUrl: ""

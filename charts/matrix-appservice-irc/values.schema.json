@@ -216,7 +216,45 @@
       "properties": {
         "signingKeyPath": {
           "type": "string",
-          "default": "/data/media-proxy-signing-key.jwk"
+          "default": "/data/media-proxy-signing-key.jwk",
+          "description": "Path in container where media proxy signing key file is mounted."
+        },
+        "signingKey": {
+          "type": "string",
+          "default": "",
+          "description": "Inline media proxy signing key file content (JWK JSON). If empty, sourced from mediaProxy.existingSecret when set; otherwise auto-generated when mediaProxy.autoGenerate=true and mediaProxy.managedSecret.enabled=true."
+        },
+        "signingKeySecretKey": {
+          "type": "string",
+          "default": "media-proxy-signing-key.jwk",
+          "minLength": 1,
+          "pattern": "^[^/]+$",
+          "description": "Secret data key used for media proxy signing key file."
+        },
+        "existingSecret": {
+          "type": "string",
+          "default": "",
+          "description": "Existing Secret name containing mediaProxy.signingKeySecretKey. When set, chart-managed signing key Secret is not created."
+        },
+        "managedSecret": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Controls creation and naming of chart-managed media proxy signing key Secret.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+        "autoGenerate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-generate missing signing key only when using chart-managed Secret mode."
         },
         "ttlSeconds": {
           "type": "integer",

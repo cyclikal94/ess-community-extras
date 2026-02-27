@@ -62,6 +62,18 @@ openssl rand -hex 32
 openssl rand -hex 32
 ```
 
+## Media Proxy Signing Key
+
+`mediaProxy.signingKeyPath` now mounts from a Kubernetes Secret (instead of ephemeral `emptyDir` storage).
+
+If `mediaProxy.signingKey` is unset, the chart resolves it in this order:
+
+- from `mediaProxy.existingSecret` using key `mediaProxy.signingKeySecretKey` when set
+- from chart-managed Secret (default `<release>-matrix-appservice-irc-media-proxy-signing-key`) when it already exists
+- auto-generated key content when `mediaProxy.autoGenerate=true` and `mediaProxy.managedSecret.enabled=true` (default behavior)
+
+For deterministic GitOps rendering, set `mediaProxy.autoGenerate=false` and provide key content directly or via a pre-created `mediaProxy.existingSecret`.
+
 ## Bridge Config Model
 
 `config.extra` is parsed as YAML and merged into generated `config.yaml`.
@@ -106,6 +118,7 @@ homeserver:
 - `values.matrix.example.yaml`: recommended Matrix/ESS-focused matrix-appservice-irc config example.
 - `values.selfsigned.example.yaml`: self-signed/custom TLS secret example; typically merged with the Matrix example.
 - `values.external.example.yaml`: external Redis/Postgres example.
+- `values.secrets.yaml`: external Secret example for registration/media-proxy signing key management.
 
 ## Defaults
 

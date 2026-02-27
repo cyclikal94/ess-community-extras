@@ -118,6 +118,43 @@ app.kubernetes.io/component: {{ .component }}
 {{- end -}}
 {{- end -}}
 
+{{- define "matrix-appservice-irc.mediaProxySigningKeySecretName" -}}
+{{- if .Values.mediaProxy.existingSecret -}}
+{{- .Values.mediaProxy.existingSecret -}}
+{{- else if .Values.mediaProxy.managedSecret.name -}}
+{{- .Values.mediaProxy.managedSecret.name -}}
+{{- else -}}
+{{- printf "%s-media-proxy-signing-key" (include "matrix-appservice-irc.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "matrix-appservice-irc.ensureMediaProxySigningKey" -}}
+{{- if not (hasKey .Values.mediaProxy "_computedSigningKey") -}}
+{{- $useExistingSecret := ne (.Values.mediaProxy.existingSecret | default "") "" -}}
+{{- $managedSecretEnabled := and (not $useExistingSecret) .Values.mediaProxy.managedSecret.enabled -}}
+{{- $secretName := include "matrix-appservice-irc.mediaProxySigningKeySecretName" . -}}
+{{- $secretKey := .Values.mediaProxy.signingKeySecretKey -}}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace $secretName -}}
+{{- $signingKey := .Values.mediaProxy.signingKey | default "" -}}
+{{- if and (eq $signingKey "") $existing (hasKey $existing.data $secretKey) -}}
+{{- $signingKey = (index $existing.data $secretKey | b64dec) -}}
+{{- end -}}
+{{- if eq $signingKey "" -}}
+{{- if and .Values.mediaProxy.autoGenerate $managedSecretEnabled -}}
+{{- $signingKey = (dict "kty" "oct" "alg" "HS512" "k" (randAlphaNum 64) "key_ops" (list "sign" "verify")) | toJson -}}
+{{- else -}}
+{{- fail (printf "mediaProxy.signingKey is required when missing from secret %q key %q (set mediaProxy.signingKey, set mediaProxy.existingSecret to a populated Secret, or enable mediaProxy.autoGenerate with mediaProxy.managedSecret.enabled=true)" $secretName $secretKey) -}}
+{{- end -}}
+{{- end -}}
+{{- $_ := set .Values.mediaProxy "_computedSigningKey" $signingKey -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "matrix-appservice-irc.mediaProxySigningKey" -}}
+{{- include "matrix-appservice-irc.ensureMediaProxySigningKey" . -}}
+{{- index .Values.mediaProxy "_computedSigningKey" -}}
+{{- end -}}
+
 {{- define "matrix-appservice-irc.homeserverDomain" -}}
 {{- required "values.homeserver.domain is required (example: matrix.example.com)" .Values.homeserver.domain -}}
 {{- end -}}
