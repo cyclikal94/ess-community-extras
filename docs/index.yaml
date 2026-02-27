@@ -43,6 +43,19 @@ entries:
   matrix-appservice-irc:
   - apiVersion: v2
     appVersion: release-4.0.0
+    created: "2026-02-27T10:04:57.62519266Z"
+    description: Helm chart for matrix-appservice-irc
+    digest: d2a9318ed6024b119cfeaeb8722bc33c8f4df3f00df5af30f36fcf30e4636cd7
+    home: https://matrix-org.github.io/matrix-appservice-irc/latest/
+    name: matrix-appservice-irc
+    sources:
+    - https://github.com/matrix-org/matrix-appservice-irc
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/matrix-appservice-irc-0.9.9/matrix-appservice-irc-0.9.9.tgz
+    version: 0.9.9
+  - apiVersion: v2
+    appVersion: release-4.0.0
     created: "2026-02-27T09:22:31.721016629Z"
     description: Helm chart for matrix-appservice-irc
     digest: b452ef80f8aee62ee6c9ae39d5a6fb76e35d9a8ca302b468c180345cc371c14c
@@ -81,6 +94,19 @@ entries:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/matrix-appservice-irc-0.9.1/matrix-appservice-irc-0.9.1.tgz
     version: 0.9.1
   mautrix-telegram:
+  - apiVersion: v2
+    appVersion: v0.15.3
+    created: "2026-02-27T10:04:57.812281475Z"
+    description: Helm chart for mautrix-telegram
+    digest: 7a7a4bdcd2bc399fa2f1992de04ae1979ba50b2dfc83f4c40b51bd5287dbac59
+    home: https://docs.mau.fi/bridges/python/telegram/
+    name: mautrix-telegram
+    sources:
+    - https://github.com/mautrix/telegram
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-telegram-0.1.9/mautrix-telegram-0.1.9.tgz
+    version: 0.1.9
   - apiVersion: v2
     appVersion: v0.15.3
     created: "2026-02-27T09:22:31.887137154Z"
@@ -149,6 +175,20 @@ entries:
   ntfy:
   - apiVersion: v2
     appVersion: v2.17.0
+    created: "2026-02-27T10:04:57.993871472Z"
+    description: Helm chart for ntfy
+    digest: 17dbaa76bb5af49966031bf889e1a551e0cf081d7e437ec89f821f2e51888b3d
+    home: https://ntfy.sh
+    icon: https://github.com/binwiederhier/ntfy/blob/main/web/public/static/images/ntfy.png
+    name: ntfy
+    sources:
+    - https://github.com/binwiederhier/ntfy
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.9.3/ntfy-0.9.3.tgz
+    version: 0.9.3
+  - apiVersion: v2
+    appVersion: v2.17.0
     created: "2026-02-27T09:22:32.042132341Z"
     description: Helm chart for ntfy
     digest: 72c7a93346016b7a04a42b79f208b4767ef9ebf1f68cfce59bdc353e11dddb6b
@@ -186,4 +226,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-02-27T09:22:32.042174299Z"
+generated: "2026-02-27T10:04:57.993918299Z"
