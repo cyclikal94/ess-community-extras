@@ -119,6 +119,20 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/matrix-appservice-irc-0.9.1/matrix-appservice-irc-0.9.1.tgz
     version: 0.9.1
+  mautrix-googlechat:
+  - apiVersion: v2
+    appVersion: v0.5.2
+    created: "2026-02-27T11:44:36.676252633Z"
+    description: Helm chart for mautrix-googlechat
+    digest: 2944d28cb7e5cc9c22a0a734e7cdbdf2233d1f7fc471d60678acaaea3d5cad49
+    home: https://docs.mau.fi/bridges/python/googlechat/
+    name: mautrix-googlechat
+    sources:
+    - https://github.com/mautrix/googlechat
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-googlechat-0.1.0/mautrix-googlechat-0.1.0.tgz
+    version: 0.1.0
   mautrix-telegram:
   - apiVersion: v2
     appVersion: v0.15.3
@@ -279,4 +293,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-02-27T11:00:16.92425069Z"
+generated: "2026-02-27T11:44:36.67629886Z"
