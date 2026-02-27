@@ -1,0 +1,12 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    Absolute minimal values example file for mautrix-meta.
+#  /    |    You should probably check `values.matrix.example.yaml`.
+#
+
+homeserver:
+  domain: matrix.example.com
+
+meta:
+  mode: messenger

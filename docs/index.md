@@ -17,3 +17,4 @@ A collection of helm charts to deploy services alongside Matrix, with example `v
 - `mautrix-gmessages`: A Matrix-Google Messages puppeting bridge. See [mautrix/gmessages](https://github.com/mautrix/gmessages) for details.
 - `mautrix-gvoice`: A Matrix-Google Voice puppeting bridge. See [mautrix/gvoice](https://github.com/mautrix/gvoice) for details.
 - `mautrix-signal`: A Matrix-Signal puppeting bridge. See [mautrix/signal](https://github.com/mautrix/signal) for details.
+- `mautrix-meta`: A Matrix-Meta puppeting bridge. See [mautrix/meta](https://github.com/mautrix/meta) for details.
