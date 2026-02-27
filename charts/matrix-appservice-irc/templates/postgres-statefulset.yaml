@@ -18,10 +18,18 @@ spec:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/postgres-secret.yaml") . | sha256sum }}
     spec:
+      {{- if .Values.postgres.podSecurityContext.enabled }}
+      securityContext:
+        {{- toYaml (omit .Values.postgres.podSecurityContext "enabled") | nindent 8 }}
+      {{- end }}
       containers:
         - name: postgres
           image: {{ include "matrix-appservice-irc.postgresImage" . }}
           imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+          {{- if .Values.postgres.securityContext.enabled }}
+          securityContext:
+            {{- toYaml (omit .Values.postgres.securityContext "enabled") | nindent 12 }}
+          {{- end }}
           ports:
             - name: postgres
               containerPort: {{ .Values.postgres.service.port }}

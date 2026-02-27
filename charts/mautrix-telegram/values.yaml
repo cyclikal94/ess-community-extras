@@ -111,6 +111,17 @@ postgres:
     accessMode: ReadWriteOnce
     size: 10Gi
     storageClassName: ""
+  podSecurityContext:
+    enabled: true
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    enabled: true
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
   resources: {}
 
 probes:

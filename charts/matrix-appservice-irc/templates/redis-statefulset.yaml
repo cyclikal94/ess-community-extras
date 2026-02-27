@@ -16,10 +16,18 @@ spec:
       labels:
         {{- include "matrix-appservice-irc.componentSelectorLabels" (dict "context" . "component" "redis") | nindent 8 }}
     spec:
+      {{- if .Values.redis.podSecurityContext.enabled }}
+      securityContext:
+        {{- toYaml (omit .Values.redis.podSecurityContext "enabled") | nindent 8 }}
+      {{- end }}
       containers:
         - name: redis
           image: {{ include "matrix-appservice-irc.redisImage" . }}
           imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          {{- if .Values.redis.securityContext.enabled }}
+          securityContext:
+            {{- toYaml (omit .Values.redis.securityContext "enabled") | nindent 12 }}
+          {{- end }}
           args:
             {{- toYaml .Values.redis.args | nindent 12 }}
           ports:
