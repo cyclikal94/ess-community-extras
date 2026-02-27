@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mautrix-slack.registrationConfigMapName" . }}
+  labels:
+    {{- include "mautrix-slack.componentLabels" (dict "context" . "component" "registration") | nindent 4 }}
+data:
+  {{ include "mautrix-slack.registrationFileKey" . }}: |
+{{ include "mautrix-slack.registrationConfig" . | indent 4 }}

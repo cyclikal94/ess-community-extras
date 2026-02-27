@@ -12,3 +12,4 @@ A collection of helm charts to deploy services alongside Matrix, with example `v
 - `mautrix-googlechat`: A Matrix-Google Chat puppeting bridge. See [mautrix/googlechat](https://github.com/mautrix/googlechat) for details.
 - `mautrix-whatsapp`: A Matrix-WhatsApp puppeting bridge. See [mautrix/whatsapp](https://github.com/mautrix/whatsapp) for details.
 - `mautrix-discord`: A Matrix-Discord puppeting bridge. See [mautrix/discord](https://github.com/mautrix/discord) for details.
+- `mautrix-slack`: A Matrix-Slack puppeting bridge. See [mautrix/slack](https://github.com/mautrix/slack) for details.
