@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mautrix-bluesky
+description: Helm chart for mautrix-bluesky
+home: https://docs.mau.fi/bridges/go/bluesky/
+sources:
+  - https://github.com/mautrix/bluesky
+type: application
+version: 0.1.0
+appVersion: "v25.10"

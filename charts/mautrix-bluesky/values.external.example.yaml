@@ -1,0 +1,15 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    External Redis/Postgres example for mautrix-bluesky.
+#  /    |    Disable bundled postgres and provide explicit connection value.
+#
+
+postgres:
+  enabled: false
+
+database:
+  connectionString: postgres://mautrix_bluesky:replace_me@postgres.example.com:5432/mautrix_bluesky
+
+homeserver:
+  domain: matrix.example.com
