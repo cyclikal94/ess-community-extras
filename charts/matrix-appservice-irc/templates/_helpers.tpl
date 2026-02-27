@@ -167,11 +167,19 @@ app.kubernetes.io/component: {{ .component }}
 {{- end -}}
 
 {{- define "matrix-appservice-irc.registrationTokenSecretName" -}}
+{{- if .Values.registration.existingSecret -}}
+{{- .Values.registration.existingSecret -}}
+{{- else if .Values.registration.managedSecret.name -}}
+{{- .Values.registration.managedSecret.name -}}
+{{- else -}}
 {{- printf "%s-registration-tokens" (include "matrix-appservice-irc.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "matrix-appservice-irc.ensureRegistrationTokens" -}}
 {{- if not (hasKey .Values.registration "_computedTokens") -}}
+{{- $useExistingSecret := ne (.Values.registration.existingSecret | default "") "" -}}
+{{- $managedSecretEnabled := and (not $useExistingSecret) .Values.registration.managedSecret.enabled -}}
 {{- $secretName := include "matrix-appservice-irc.registrationTokenSecretName" . -}}
 {{- $existing := lookup "v1" "Secret" .Release.Namespace $secretName -}}
 {{- $asToken := .Values.registration.asToken | default "" -}}
@@ -183,10 +191,18 @@ app.kubernetes.io/component: {{ .component }}
 {{- $hsToken = (index $existing.data "hsToken" | b64dec) -}}
 {{- end -}}
 {{- if eq $asToken "" -}}
+{{- if and .Values.registration.autoGenerate $managedSecretEnabled -}}
 {{- $asToken = (randAlphaNum 64 | sha256sum) -}}
+{{- else -}}
+{{- fail (printf "registration.asToken is required when missing from secret %q (set registration.asToken, set registration.existingSecret to a populated Secret, or enable registration.autoGenerate with registration.managedSecret.enabled=true)" $secretName) -}}
+{{- end -}}
 {{- end -}}
 {{- if eq $hsToken "" -}}
+{{- if and .Values.registration.autoGenerate $managedSecretEnabled -}}
 {{- $hsToken = (randAlphaNum 64 | sha256sum) -}}
+{{- else -}}
+{{- fail (printf "registration.hsToken is required when missing from secret %q (set registration.hsToken, set registration.existingSecret to a populated Secret, or enable registration.autoGenerate with registration.managedSecret.enabled=true)" $secretName) -}}
+{{- end -}}
 {{- end -}}
 {{- $_ := set .Values.registration "_computedTokens" (dict "asToken" $asToken "hsToken" $hsToken) -}}
 {{- end -}}

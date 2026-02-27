@@ -315,12 +315,37 @@
         "asToken": {
           "type": "string",
           "default": "",
-          "description": "Appservice as_token. Auto-generated when empty."
+          "description": "Appservice as_token. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true and registration.managedSecret.enabled=true."
         },
         "hsToken": {
           "type": "string",
           "default": "",
-          "description": "Appservice hs_token. Auto-generated when empty."
+          "description": "Appservice hs_token. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true and registration.managedSecret.enabled=true."
+        },
+        "existingSecret": {
+          "type": "string",
+          "default": "",
+          "description": "Existing Secret name with keys asToken/hsToken. When set, chart-managed registration token Secret is not created."
+        },
+        "managedSecret": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Controls creation and naming of chart-managed registration token Secret.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+        "autoGenerate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-generate missing registration tokens only when using chart-managed Secret mode."
         },
         "protocols": {
           "type": "array",

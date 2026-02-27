@@ -94,9 +94,18 @@ registration:
   id: irc
   senderLocalpart: appservice-irc
   rateLimited: false
-  # If empty, auto-generated as 64-hex-char values (equivalent shape to `openssl rand -hex 32`).
+  # If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true.
   asToken: ""
   hsToken: ""
+  # Existing Secret containing keys `asToken` and `hsToken`. When set, no chart-managed token Secret is created.
+  existingSecret: ""
+  managedSecret:
+    # Create a chart-managed token Secret when existingSecret is not set.
+    enabled: true
+    # Optional override for the managed Secret name.
+    name: ""
+  # Auto-generate missing tokens only when using a chart-managed Secret.
+  autoGenerate: true
   protocols:
     - irc
   # Optional override. Defaults to bridge service URL in release namespace.

@@ -82,13 +82,21 @@ synapse:
 
 ## Runtime secret generation
 
-If unset, the chart auto-generates and persists these in `<release>-mautrix-telegram-runtime-secrets`:
+If unset, the chart resolves these in this order:
+
+- from `registration.existingSecret` (keys `asToken`, `hsToken`, `provisioningSharedSecret`) when set
+- from chart-managed Secret (default `<release>-mautrix-telegram-runtime-secrets`) when it already exists
+- auto-generated 64-hex-char values when `registration.autoGenerate=true` and `registration.managedSecret.enabled=true` (default behavior)
+
+The resolved values are used for:
 
 - `registration.asToken`
 - `registration.hsToken`
 - `appservice.provisioning.sharedSecret`
 
 Do not set these to `generate`; leave empty for chart-managed generation.
+
+For deterministic GitOps rendering, set `registration.autoGenerate=false` and provide secrets directly or via a pre-created `registration.existingSecret`.
 
 ## Bridge config model
 

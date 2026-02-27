@@ -44,13 +44,23 @@ appservice:
   port: 29317
   ephemeralEvents: true
   provisioning:
-    # Optional override. Auto-generated and persisted when empty.
+    # Optional override. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true.
     sharedSecret: ""
 
 registration:
-  # If empty, auto-generated and persisted in a Secret.
+  # If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true.
   asToken: ""
   hsToken: ""
+  # Existing Secret containing keys `asToken`, `hsToken`, and `provisioningSharedSecret`.
+  # When set, no chart-managed runtime Secret is created.
+  existingSecret: ""
+  managedSecret:
+    # Create a chart-managed runtime Secret when existingSecret is not set.
+    enabled: true
+    # Optional override for the managed Secret name.
+    name: ""
+  # Auto-generate missing runtime secrets only when using a chart-managed Secret.
+  autoGenerate: true
   # Optional override. Defaults to appservice.address value.
   serviceUrl: ""
   # Optional overrides. If empty, derived from bridge username/alias templates.

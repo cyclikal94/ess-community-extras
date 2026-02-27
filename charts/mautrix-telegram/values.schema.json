@@ -115,7 +115,7 @@
             "sharedSecret": {
               "type": "string",
               "default": "",
-              "description": "Provisioning API shared secret. Auto-generated and persisted when empty."
+              "description": "Provisioning API shared secret. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true and registration.managedSecret.enabled=true."
             }
           }
         }
@@ -127,11 +127,38 @@
       "properties": {
         "asToken": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "description": "Appservice as_token. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true and registration.managedSecret.enabled=true."
         },
         "hsToken": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "description": "Appservice hs_token. If empty, sourced from registration.existingSecret when set; otherwise auto-generated when registration.autoGenerate=true and registration.managedSecret.enabled=true."
+        },
+        "existingSecret": {
+          "type": "string",
+          "default": "",
+          "description": "Existing Secret name with keys asToken/hsToken/provisioningSharedSecret. When set, chart-managed runtime Secret is not created."
+        },
+        "managedSecret": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Controls creation and naming of chart-managed runtime Secret.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        },
+        "autoGenerate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-generate missing runtime secrets only when using chart-managed Secret mode."
         },
         "serviceUrl": {
           "type": "string",

@@ -48,7 +48,12 @@ helm upgrade --install matrix-appservice-irc matrix-helm-charts/matrix-appservic
 - `host` is required.
 - `homeserver.domain` is required and should match Synapse `server_name`.
 - Validation is enforced by `values.schema.json`; Helm will fail fast when required values are missing or empty.
-- `registration.asToken` and `registration.hsToken` are optional; when omitted, the chart auto-generates 64-hex-char tokens and persists them in `<release>-matrix-appservice-irc-registration-tokens`.
+- `registration.asToken` and `registration.hsToken` are optional; when omitted, the chart resolves them in this order:
+  - from `registration.existingSecret` (keys `asToken`/`hsToken`) when set
+  - from chart-managed Secret (default `<release>-matrix-appservice-irc-registration-tokens`) when it already exists
+  - auto-generated 64-hex-char values when `registration.autoGenerate=true` and `registration.managedSecret.enabled=true` (default behavior)
+
+For deterministic GitOps rendering, set `registration.autoGenerate=false` and provide tokens directly or via a pre-created `registration.existingSecret`.
 
 You can still provide tokens manually if desired:
 

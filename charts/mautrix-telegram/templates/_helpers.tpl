@@ -125,11 +125,19 @@ appservice-registration-telegram.yaml
 {{- end -}}
 
 {{- define "mautrix-telegram.runtimeSecretName" -}}
+{{- if .Values.registration.existingSecret -}}
+{{- .Values.registration.existingSecret -}}
+{{- else if .Values.registration.managedSecret.name -}}
+{{- .Values.registration.managedSecret.name -}}
+{{- else -}}
 {{- printf "%s-runtime-secrets" (include "mautrix-telegram.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "mautrix-telegram.ensureRuntimeSecrets" -}}
 {{- if not (hasKey .Values.registration "_computedRuntimeSecrets") -}}
+{{- $useExistingSecret := ne (.Values.registration.existingSecret | default "") "" -}}
+{{- $managedSecretEnabled := and (not $useExistingSecret) .Values.registration.managedSecret.enabled -}}
 {{- $secretName := include "mautrix-telegram.runtimeSecretName" . -}}
 {{- $existing := lookup "v1" "Secret" .Release.Namespace $secretName -}}
 {{- $asToken := .Values.registration.asToken | default "" -}}
@@ -154,13 +162,25 @@ appservice-registration-telegram.yaml
 {{- $provisioning = (index $existing.data "provisioningSharedSecret" | b64dec) -}}
 {{- end -}}
 {{- if eq $asToken "" -}}
+{{- if and .Values.registration.autoGenerate $managedSecretEnabled -}}
 {{- $asToken = (randAlphaNum 64 | sha256sum) -}}
+{{- else -}}
+{{- fail (printf "registration.asToken is required when missing from secret %q (set registration.asToken, set registration.existingSecret to a populated Secret, or enable registration.autoGenerate with registration.managedSecret.enabled=true)" $secretName) -}}
+{{- end -}}
 {{- end -}}
 {{- if eq $hsToken "" -}}
+{{- if and .Values.registration.autoGenerate $managedSecretEnabled -}}
 {{- $hsToken = (randAlphaNum 64 | sha256sum) -}}
+{{- else -}}
+{{- fail (printf "registration.hsToken is required when missing from secret %q (set registration.hsToken, set registration.existingSecret to a populated Secret, or enable registration.autoGenerate with registration.managedSecret.enabled=true)" $secretName) -}}
+{{- end -}}
 {{- end -}}
 {{- if eq $provisioning "" -}}
+{{- if and .Values.registration.autoGenerate $managedSecretEnabled -}}
 {{- $provisioning = (randAlphaNum 64 | sha256sum) -}}
+{{- else -}}
+{{- fail (printf "appservice.provisioning.sharedSecret is required when missing from secret %q (set appservice.provisioning.sharedSecret, set registration.existingSecret to a populated Secret, or enable registration.autoGenerate with registration.managedSecret.enabled=true)" $secretName) -}}
+{{- end -}}
 {{- end -}}
 {{- $_ := set .Values.registration "_computedRuntimeSecrets" (dict "asToken" $asToken "hsToken" $hsToken "provisioningSharedSecret" $provisioning) -}}
 {{- end -}}
