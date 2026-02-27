@@ -1,7 +1,7 @@
 #      .
 #     / V\
 #   / `  /
-#  <<   |    These are the defualt values for ntfy.
+#  <<   |    These are the default values for ntfy.
 #  /    |    You should look at the values examples for what to actually apply.
 #
 
@@ -29,6 +29,7 @@ podSecurityContext:
   enabled: true
   seccompProfile:
     type: RuntimeDefault
+    localhostProfile: ""
 
 securityContext:
   enabled: true
