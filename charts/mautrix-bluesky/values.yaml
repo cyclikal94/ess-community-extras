@@ -10,7 +10,7 @@ fullnameOverride: ""
 
 image:
   repository: dock.mau.dev/mautrix/bluesky
-  tag: "v25.10"
+  tag: "v0.2510.0"
   pullPolicy: IfNotPresent
 
 service:

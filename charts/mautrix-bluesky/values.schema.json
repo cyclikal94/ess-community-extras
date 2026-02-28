@@ -28,7 +28,7 @@
         },
         "tag": {
           "type": "string",
-          "default": "v25.10"
+          "default": "v0.2510.0"
         },
         "pullPolicy": {
           "type": "string",
