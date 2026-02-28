@@ -5,5 +5,5 @@ home: https://docs.mau.fi/bridges/go/twitter/
 sources:
   - https://github.com/mautrix/twitter
 type: application
-version: 0.1.0
-appVersion: "v25.11"
+version: 0.1.1
+appVersion: "v0.2511.0"
