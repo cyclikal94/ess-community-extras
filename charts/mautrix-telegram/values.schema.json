@@ -249,22 +249,53 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "name": {
-          "type": "string",
-          "default": "mautrix_telegram"
-        },
-        "user": {
-          "type": "string",
-          "default": "mautrix_telegram"
-        },
-        "password": {
-          "type": "string",
-          "default": "mautrix_telegram_password"
-        },
-        "connectionString": {
-          "type": "string",
-          "default": "",
-          "description": "Optional full DSN override. Required when postgres.enabled=false."
+        "postgres": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "type": "string",
+              "default": "",
+              "description": "Optional override. Defaults to bundled Postgres service name when postgres.enabled=true."
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535,
+              "default": 5432
+            },
+            "user": {
+              "type": "string",
+              "default": "mautrix_telegram"
+            },
+            "password": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "default": "mautrix_telegram_password"
+                }
+              }
+            },
+            "database": {
+              "type": "string",
+              "default": "mautrix_telegram"
+            },
+            "sslMode": {
+              "type": "string",
+              "default": "disable",
+              "enum": [
+                "",
+                "disable",
+                "allow",
+                "prefer",
+                "require",
+                "verify-ca",
+                "verify-full"
+              ]
+            }
+          }
         }
       }
     },

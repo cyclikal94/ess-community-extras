@@ -125,7 +125,14 @@ postgres:
   enabled: false
 
 database:
-  connectionString: postgres://mautrix_googlechat:replace_me@postgres.example.com:5432/mautrix_googlechat
+  postgres:
+    host: postgres.example.com
+    port: 5432
+    user: mautrix_googlechat
+    password:
+      value: replace_me
+    database: mautrix_googlechat
+    sslMode: prefer
 ```
 
 See: `values.external.example.yaml`

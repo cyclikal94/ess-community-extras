@@ -176,13 +176,45 @@ app.kubernetes.io/component: {{ .component }}
 {{- end -}}
 
 {{- define "matrix-appservice-irc.databaseConnectionString" -}}
-{{- if .Values.database.connectionString -}}
-{{- .Values.database.connectionString -}}
-{{- else if .Values.postgres.enabled -}}
-{{- printf "postgres://%s:%s@%s:%v/%s" .Values.database.user .Values.database.password (include "matrix-appservice-irc.postgresFullname" .) .Values.postgres.service.port .Values.database.name -}}
-{{- else -}}
-{{- required "values.database.connectionString is required when postgres.enabled=false" .Values.database.connectionString -}}
+{{- $postgres := .Values.database.postgres | default dict -}}
+{{- $host := (get $postgres "host") | default "" -}}
+{{- $port := (get $postgres "port") | default 5432 -}}
+{{- if and (eq $host "") .Values.postgres.enabled -}}
+{{- $host = include "matrix-appservice-irc.postgresFullname" . -}}
+{{- $port = .Values.postgres.service.port -}}
 {{- end -}}
+{{- if eq $host "" -}}
+{{- fail "values.database.postgres.host is required when postgres.enabled=false" -}}
+{{- end -}}
+{{- $database := include "matrix-appservice-irc.databasePostgresDatabase" . -}}
+{{- $user := include "matrix-appservice-irc.databasePostgresUser" . -}}
+{{- $password := include "matrix-appservice-irc.databasePostgresPassword" . -}}
+{{- $sslMode := (get $postgres "sslMode") | default "" -}}
+{{- $connectionString := printf "postgres://%s:%s@%s:%v/%s" ($user | urlquery) ($password | urlquery) $host $port ($database | urlquery) -}}
+{{- if ne $sslMode "" -}}
+{{- printf "%s?sslmode=%s" $connectionString ($sslMode | urlquery) -}}
+{{- else -}}
+{{- $connectionString -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "matrix-appservice-irc.databasePostgresDatabase" -}}
+{{- $postgres := .Values.database.postgres | default dict -}}
+{{- $database := (get $postgres "database") | default "" -}}
+{{- required "values.database.postgres.database is required" $database -}}
+{{- end -}}
+
+{{- define "matrix-appservice-irc.databasePostgresUser" -}}
+{{- $postgres := .Values.database.postgres | default dict -}}
+{{- $user := (get $postgres "user") | default "" -}}
+{{- required "values.database.postgres.user is required" $user -}}
+{{- end -}}
+
+{{- define "matrix-appservice-irc.databasePostgresPassword" -}}
+{{- $postgres := .Values.database.postgres | default dict -}}
+{{- $passwordCfg := (get $postgres "password") | default dict -}}
+{{- $password := (get $passwordCfg "value") | default "" -}}
+{{- required "values.database.postgres.password.value is required" $password -}}
 {{- end -}}
 
 {{- define "matrix-appservice-irc.redisUrl" -}}

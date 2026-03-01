@@ -92,11 +92,15 @@ config:
   extra: ""
 
 database:
-  name: mautrix_telegram
-  user: mautrix_telegram
-  password: mautrix_telegram_password
-  # Optional override. Required when postgres.enabled is false.
-  connectionString: ""
+  postgres:
+    # Optional override. Defaults to bundled Postgres service when postgres.enabled=true.
+    host: ""
+    port: 5432
+    user: mautrix_telegram
+    password:
+      value: mautrix_telegram_password
+    database: mautrix_telegram
+    sslMode: prefer
 
 postgres:
   enabled: true

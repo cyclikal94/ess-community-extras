@@ -86,11 +86,15 @@ config:
   extra: ""
 
 database:
-  name: mautrix_googlechat
-  user: mautrix_googlechat
-  password: mautrix_googlechat_password
-  # Optional override. Required when postgres.enabled is false.
-  connectionString: ""
+  postgres:
+    # Optional override. Defaults to bundled Postgres service when postgres.enabled=true.
+    host: ""
+    port: 5432
+    user: mautrix_googlechat
+    password:
+      value: mautrix_googlechat_password
+    database: mautrix_googlechat
+    sslMode: prefer
 
 postgres:
   enabled: true

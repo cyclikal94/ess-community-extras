@@ -314,22 +314,53 @@
           "type": "string",
           "default": "postgres"
         },
-        "name": {
-          "type": "string",
-          "default": "matrix_irc"
-        },
-        "user": {
-          "type": "string",
-          "default": "matrix_irc"
-        },
-        "password": {
-          "type": "string",
-          "default": "matrix_irc_password"
-        },
-        "connectionString": {
-          "type": "string",
-          "default": "",
-          "description": "Optional full DSN override. Required when postgres.enabled=false."
+        "postgres": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "type": "string",
+              "default": "",
+              "description": "Optional override. Defaults to bundled Postgres service name when postgres.enabled=true."
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535,
+              "default": 5432
+            },
+            "user": {
+              "type": "string",
+              "default": "matrix_irc"
+            },
+            "password": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "default": "matrix_irc_password"
+                }
+              }
+            },
+            "database": {
+              "type": "string",
+              "default": "matrix_irc"
+            },
+            "sslMode": {
+              "type": "string",
+              "default": "disable",
+              "enum": [
+                "",
+                "disable",
+                "allow",
+                "prefer",
+                "require",
+                "verify-ca",
+                "verify-full"
+              ]
+            }
+          }
         }
       }
     },

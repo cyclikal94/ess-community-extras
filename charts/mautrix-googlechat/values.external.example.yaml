@@ -1,15 +1,22 @@
 #      .
 #     / V\
 #   / `  /
-#  <<   |    External Redis/Postgres example for mautrix-googlechat.
-#  /    |    Disable bundled postgres and provide explicit connection value.
+#  <<   |    External Postgres example for mautrix-googlechat.
+#  /    |    Disable bundled postgres and provide explicit connection fields.
 #
 
 postgres:
   enabled: false
 
 database:
-  connectionString: postgres://mautrix_googlechat:replace_me@postgres.example.com:5432/mautrix_googlechat
+  postgres:
+    host: postgres.example.com
+    port: 5432
+    user: mautrix_googlechat
+    password:
+      value: replace_me
+    database: mautrix_googlechat
+    sslMode: prefer
 
 homeserver:
   domain: matrix.example.com

@@ -98,11 +98,15 @@ config:
 
 database:
   engine: postgres
-  name: matrix_irc
-  user: matrix_irc
-  password: matrix_irc_password
-  # Optional override. Required when postgres.enabled is false.
-  connectionString: ""
+  postgres:
+    # Optional override. Defaults to bundled Postgres service when postgres.enabled=true.
+    host: ""
+    port: 5432
+    user: matrix_irc
+    password:
+      value: matrix_irc_password
+    database: matrix_irc
+    sslMode: prefer
 
 registration:
   id: irc

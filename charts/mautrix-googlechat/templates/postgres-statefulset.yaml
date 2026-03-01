@@ -38,9 +38,9 @@ spec:
           {{- end }}
           env:
             - name: POSTGRES_DB
-              value: {{ .Values.database.name | quote }}
+              value: {{ include "mautrix-googlechat.databasePostgresDatabase" . | quote }}
             - name: POSTGRES_USER
-              value: {{ .Values.database.user | quote }}
+              value: {{ include "mautrix-googlechat.databasePostgresUser" . | quote }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:

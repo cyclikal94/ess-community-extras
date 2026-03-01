@@ -205,7 +205,14 @@ redis:
   enabled: false
   url: redis://redis.example.com:6379/0
 database:
-  connectionString: postgres://matrix_irc:replace_me@postgres.example.com:5432/matrix_irc
+  postgres:
+    host: postgres.example.com
+    port: 5432
+    user: matrix_irc
+    password:
+      value: replace_me
+    database: matrix_irc
+    sslMode: prefer
 ```
 
 ## Verify
