@@ -1,9 +1,0 @@
-apiVersion: v2
-name: mautrix-linkedin
-description: Helm chart for mautrix-linkedin
-home: https://docs.mau.fi/bridges/go/linkedin/
-sources:
-  - https://github.com/mautrix/linkedin
-type: application
-version: 0.1.0
-appVersion: "v26.02"

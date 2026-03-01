@@ -1,9 +1,0 @@
-apiVersion: v2
-name: mautrix-slack
-description: Helm chart for mautrix-slack
-home: https://docs.mau.fi/bridges/go/slack/
-sources:
-  - https://github.com/mautrix/slack
-type: application
-version: 0.1.0
-appVersion: "v26.02"

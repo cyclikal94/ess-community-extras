@@ -14,14 +14,3 @@ A collection of helm charts to deploy services alongside Matrix, with example `v
 | `matrix-appservice-irc` | `0.9.12` | `release-4.0.0` | [matrix-org/matrix-appservice-irc](https://github.com/matrix-org/matrix-appservice-irc) | IRC bridge for Matrix. |
 | `mautrix-telegram` | `0.9.0` | `v0.15.3` | [mautrix/telegram](https://github.com/mautrix/telegram) | A Matrix-Telegram hybrid puppeting/relaybot bridge. |
 | `mautrix-googlechat` | `0.1.0` | `v0.5.2` | [mautrix/googlechat](https://github.com/mautrix/googlechat) | A Matrix-Google Chat puppeting bridge. |
-| `mautrix-whatsapp` | `0.1.0` | `v26.02` | [mautrix/whatsapp](https://github.com/mautrix/whatsapp) | A Matrix-WhatsApp puppeting bridge based on [whatsmeow](https://github.com/tulir/whatsmeow). |
-| `mautrix-discord` | `0.1.0` | `v0.7.6` | [mautrix/discord](https://github.com/mautrix/discord) | A Matrix-Discord puppeting bridge based on [discordgo](https://github.com/bwmarrin/discordgo). |
-| `mautrix-slack` | `0.1.0` | `v26.02` | [mautrix/slack](https://github.com/mautrix/slack) | A Matrix-Slack puppeting bridge based on [slack-go](https://github.com/slack-go/slack). |
-| `mautrix-gmessages` | `0.1.0` | `v26.02` | [mautrix/gmessages](https://github.com/mautrix/gmessages) | A Matrix-Google Messages puppeting bridge. |
-| `mautrix-gvoice` | `0.1.0` | `v25.11` | [mautrix/gvoice](https://github.com/mautrix/gvoice) | A Matrix-Google Voice puppeting bridge. |
-| `mautrix-signal` | `0.1.0` | `v26.02` | [mautrix/signal](https://github.com/mautrix/signal) | A Matrix-Signal puppeting bridge. |
-| `mautrix-meta` | `0.1.0` | `v26.02` | [mautrix/meta](https://github.com/mautrix/meta) | A Matrix-Facebook Messenger and Instagram DM puppeting bridge. |
-| `mautrix-twitter` | `0.1.0` | `v25.11` | [mautrix/twitter](https://github.com/mautrix/twitter) | A Matrix-Twitter DM puppeting bridge. |
-| `mautrix-bluesky` | `0.1.0` | `v25.10` | [mautrix/bluesky](https://github.com/mautrix/bluesky) | A Matrix-Bluesky DM puppeting bridge. |
-| `mautrix-linkedin` | `0.1.0` | `v26.02` | [mautrix/linkedin](https://github.com/mautrix/linkedin) | A Matrix-LinkedIn puppeting bridge. |
-| `mautrix-zulip` | `0.1.0` | `v25.11` | [mautrix/zulip](https://github.com/mautrix/zulip) | A Matrix-Zulip puppeting bridge. |

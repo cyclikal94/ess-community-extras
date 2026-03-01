@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "mautrix-gmessages.registrationConfigMapName" . }}
-  labels:
-    {{- include "mautrix-gmessages.componentLabels" (dict "context" . "component" "registration") | nindent 4 }}
-data:
-  {{ include "mautrix-gmessages.registrationFileKey" . }}: |
-{{ include "mautrix-gmessages.registrationConfig" . | indent 4 }}
