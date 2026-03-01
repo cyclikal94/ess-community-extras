@@ -149,6 +149,19 @@ entries:
     version: 0.1.0
   mautrix-gmessages:
   - apiVersion: v2
+    appVersion: v0.2602.0
+    created: "2026-03-01T20:23:37.832156748Z"
+    description: Helm chart for mautrix-gmessages
+    digest: 92ccef3f84f58942edf58b089d7b4320a7ef512739b7f7ce3b2f509fdd6b211b
+    home: https://docs.mau.fi/bridges/go/gmessages/
+    name: mautrix-gmessages
+    sources:
+    - https://github.com/mautrix/gmessages
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-gmessages-0.1.1/mautrix-gmessages-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: v26.02
     created: "2026-02-27T12:55:26.723343722Z"
     description: Helm chart for mautrix-gmessages
@@ -460,4 +473,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-02-27T13:03:30.710055771Z"
+generated: "2026-03-01T20:23:37.832212472Z"
