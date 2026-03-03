@@ -113,7 +113,8 @@ The chart reserves and manages these paths:
 - `appservice.bot.username`
 - `appservice.as_token`
 - `appservice.hs_token`
-- `appservice.database`
+- `database.type`
+- `database.uri`
 
 If `config.extra` overlaps any managed path, template rendering fails.
 

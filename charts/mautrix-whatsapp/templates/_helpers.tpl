@@ -68,6 +68,16 @@ appservice-registration-whatsapp.yaml
 {{- end -}}
 {{- end -}}
 
+{{- if hasKey $extra "database" -}}
+{{- $database := index $extra "database" -}}
+{{- if not (kindIs "map" $database) -}}
+{{- fail "values.config.extra.database must be a YAML mapping when set" -}}
+{{- end -}}
+{{- if or (hasKey $database "type") (hasKey $database "uri") -}}
+{{- fail "values.config.extra cannot set database.type or database.uri; use values.database.* instead" -}}
+{{- end -}}
+{{- end -}}
+
 {{- $bot := .Values.appservice.bot | default dict -}}
 {{- $managed := dict
   "homeserver" (dict
@@ -78,13 +88,16 @@ appservice-registration-whatsapp.yaml
     "address" (include "mautrix-go-base.appserviceAddress" .)
     "hostname" .Values.appservice.hostname
     "port" .Values.appservice.port
-    "database" (include "mautrix-go-base.databaseConnectionString" .)
     "id" .Values.appservice.id
     "as_token" (include "mautrix-go-base.runtimeSecretValue" (dict "root" . "key" "asToken"))
     "hs_token" (include "mautrix-go-base.runtimeSecretValue" (dict "root" . "key" "hsToken"))
     "bot" (dict
       "username" ((get $bot "username") | default "")
     )
+  )
+  "database" (dict
+    "type" "postgres"
+    "uri" (include "mautrix-go-base.databaseConnectionString" .)
   )
 -}}
 {{- $merged := mustMergeOverwrite (dict) $extra $managed -}}
