@@ -1,9 +1,0 @@
-apiVersion: v2
-name: mautrix-googlechat
-description: Helm chart for mautrix-googlechat
-home: https://docs.mau.fi/bridges/python/googlechat/
-sources:
-  - https://github.com/mautrix/googlechat
-type: application
-version: 0.9.0
-appVersion: "v0.5.2"

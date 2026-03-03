@@ -1,4 +1,7 @@
-.DS_Store
-**/.DS_Store
-testing
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
+Gemfile.lock
 charts/*/charts/*.tgz
