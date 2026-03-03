@@ -9,6 +9,10 @@ on:
       - ".github/workflows/release-charts.yaml"
   workflow_dispatch:
 
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: read
@@ -61,8 +65,8 @@ jobs:
           skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_PAGES_BRANCH: "main"
-          CR_PAGES_INDEX_PATH: "docs/index.yaml"
+          CR_PAGES_BRANCH: "gh-pages"
+          CR_PAGES_INDEX_PATH: "index.yaml"
 
       - name: Log in to GHCR
         if: steps.chart_releaser.outputs.changed_charts != ''

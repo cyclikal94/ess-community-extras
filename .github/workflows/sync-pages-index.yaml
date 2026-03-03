@@ -1,0 +1,81 @@
+name: Sync Pages Index
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "README.md"
+      - ".github/scripts/render-pages-index.sh"
+      - ".github/workflows/sync-pages-index.yaml"
+  workflow_dispatch:
+
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git author
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Render index.md from README.md
+        id: render
+        run: |
+          set -euo pipefail
+          output_path="$(mktemp)"
+          .github/scripts/render-pages-index.sh README.md "${output_path}"
+          {
+            echo "output_path=${output_path}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Update gh-pages branch index.md
+        env:
+          OUTPUT_PATH: ${{ steps.render.outputs.output_path }}
+        run: |
+          set -euo pipefail
+
+          cleanup() {
+            rm -f "${OUTPUT_PATH}"
+            git worktree remove --force .gh-pages-worktree >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch origin gh-pages
+            git worktree add -B gh-pages .gh-pages-worktree origin/gh-pages
+          else
+            git worktree add .gh-pages-worktree
+            (
+              cd .gh-pages-worktree
+              git checkout --orphan gh-pages
+              git rm -rf . >/dev/null 2>&1 || true
+            )
+          fi
+
+          cp "${OUTPUT_PATH}" .gh-pages-worktree/index.md
+
+          (
+            cd .gh-pages-worktree
+            git add index.md
+
+            if git diff --cached --quiet; then
+              echo "No index.md changes to publish."
+              exit 0
+            fi
+
+            git commit -m "chore(pages): sync index.md from README"
+            git push origin gh-pages
+          )
