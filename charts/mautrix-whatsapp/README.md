@@ -10,6 +10,7 @@ This chart deploys `mautrix-whatsapp` with:
 - Bridge `Service` with `publishNotReadyAddresses: true`
 - Runtime config `Secret` (`config.yaml`)
 - Registration ConfigMap in release namespace and optional duplicate in Synapse namespace
+- Automatic double puppeting registration resources (runtime Secret + ConfigMap)
 - Optional bundled Postgres `StatefulSet`
 
 Default image/app version tracks upstream image/git tag `v0.2602.0` (release `v26.02`).
@@ -95,6 +96,40 @@ synapse:
       configMapKey: appservice-registration-whatsapp.yaml
 ```
 
+## Double Puppeting
+
+Automatic double puppeting is enabled by default (`doublePuppet.enabled=true`).
+
+The chart manages:
+
+- `double_puppet.secrets[homeserver.domain]` in bridge config
+- a second appservice registration ConfigMap for double puppeting
+- optional double puppet runtime Secret values (`asToken`, `hsToken`, `senderLocalpart`)
+
+Default double puppet registration ID is:
+
+- `doublepuppet-<mautrix-go-base-version>`
+
+You can override this with `doublePuppet.registration.id`.
+Default ConfigMap name is `<doublePuppet.registration.id>-registration` (override with `doublePuppet.registration.configMapName`).
+
+Reuse behavior:
+
+- When `doublePuppet.reuseExisting.enabled=true` (default), the chart looks up an existing double puppet registration ConfigMap in Synapse namespace and reuses its `as_token` when found.
+- On RBAC/API lookup failures, rendering fails fast.
+
+You can still define other bridgev2 `double_puppet` fields in `config.baseExtra` (for example `servers` and `allow_discovery`).
+Do not set the local homeserver entry in `double_puppet.secrets`; Helm manages that key.
+
+When not reusing an existing registration, add the double puppet registration ConfigMap to Synapse appservices:
+
+```yaml
+synapse:
+  appservices:
+    - configMap: <doublePuppet registration configmap name>
+      configMapKey: appservice-registration-doublepuppet.yaml
+```
+
 ## Runtime secret generation
 
 If unset, the chart resolves these in this order:
@@ -137,8 +172,10 @@ The chart reserves and manages these paths:
 - `database.type`
 - `database.uri`
 - `logging`
+- `double_puppet.secrets[homeserver.domain]`
 
 If `config.baseExtra` overlaps any managed path, template rendering fails.
+You may set `double_puppet.servers`, `double_puppet.allow_discovery`, and non-local `double_puppet.secrets` entries in `config.baseExtra`.
 
 `bridge.permissions` is required by bridgev2 and should be set in `config.baseExtra`.
 

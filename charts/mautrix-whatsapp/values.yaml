@@ -76,6 +76,36 @@ registration:
   # Leave empty to derive from release name, e.g. "<release>-mautrix-whatsapp-registration".
   synapseConfigMapName: ""
 
+doublePuppet:
+  enabled: true
+  registration:
+    # Optional override. Defaults to "doublepuppet-<mautrix-go-base-version>".
+    id: ""
+    # If empty, resolved from registration.existingSecret, reuseExisting ConfigMap, managed Secret, or auto-generate.
+    asToken: ""
+    hsToken: ""
+    senderLocalpart: ""
+    # Existing Secret containing keys `asToken`, `hsToken`, and `senderLocalpart`.
+    # When set, chart-managed double puppet runtime Secret is not created.
+    existingSecret: ""
+    managedSecret:
+      # Create a chart-managed double puppet runtime Secret when existingSecret is not set.
+      enabled: true
+      # Optional override for managed Secret name.
+      name: ""
+    # Auto-generate missing double puppet registration values when using chart-managed Secret mode.
+    autoGenerate: true
+    rateLimited: false
+    # Optional override. Defaults to "<doublePuppet.registration.id>-registration".
+    configMapName: ""
+    fileKey: appservice-registration-doublepuppet.yaml
+  reuseExisting:
+    # Look up existing Synapse double puppet registration ConfigMap and reuse tokens when found.
+    enabled: true
+    # Optional overrides for reuse lookup source.
+    configMapName: ""
+    fileKey: ""
+
 bridge:
   resources: {}
 

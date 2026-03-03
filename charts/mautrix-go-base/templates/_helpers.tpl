@@ -164,6 +164,297 @@ app.kubernetes.io/component: {{ .component }}
 {{- end -}}
 {{- end -}}
 
+{{- define "mautrix-go-base.doublePuppetEnabled" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- if hasKey $doublePuppet "enabled" -}}
+{{- if (get $doublePuppet "enabled") -}}true{{- else -}}false{{- end -}}
+{{- else -}}
+true
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetBaseVersion" -}}
+{{- $version := "" -}}
+{{- range $dependency := .Chart.Dependencies -}}
+{{- if eq $dependency.Name "mautrix-go-base" -}}
+{{- $version = $dependency.Version -}}
+{{- end -}}
+{{- end -}}
+{{- if eq $version "" -}}
+{{- fail "unable to resolve mautrix-go-base dependency version from chart dependencies; set values.doublePuppet.registration.id explicitly" -}}
+{{- end -}}
+{{- $version | lower | replace "+" "-" -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetRegistrationID" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $registration := (get $doublePuppet "registration") | default dict -}}
+{{- $id := (get $registration "id") | default "" -}}
+{{- if ne $id "" -}}
+{{- $id -}}
+{{- else -}}
+{{- printf "doublepuppet-%s" (include "mautrix-go-base.doublePuppetBaseVersion" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetRegistrationFileKey" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $registration := (get $doublePuppet "registration") | default dict -}}
+{{- $fileKey := (get $registration "fileKey") | default "" -}}
+{{- if ne $fileKey "" -}}
+{{- $fileKey -}}
+{{- else -}}
+{{- include (printf "%s.doublePuppetRegistrationFileKey" .Chart.Name) . -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetRegistrationConfigMapName" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $registration := (get $doublePuppet "registration") | default dict -}}
+{{- $name := (get $registration "configMapName") | default "" -}}
+{{- if ne $name "" -}}
+{{- $name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-registration" (include "mautrix-go-base.doublePuppetRegistrationID" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetRuntimeSecretName" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $registration := (get $doublePuppet "registration") | default dict -}}
+{{- $existingSecret := (get $registration "existingSecret") | default "" -}}
+{{- $managedSecret := (get $registration "managedSecret") | default dict -}}
+{{- $managedName := (get $managedSecret "name") | default "" -}}
+{{- if ne $existingSecret "" -}}
+{{- $existingSecret -}}
+{{- else if ne $managedName "" -}}
+{{- $managedName -}}
+{{- else -}}
+{{- printf "%s-doublepuppet-runtime-secrets" (include "mautrix-go-base.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetSynapseNamespace" -}}
+{{- $synapseNamespace := .Values.registration.synapseNamespace | default "" | trim -}}
+{{- if ne $synapseNamespace "" -}}
+{{- $synapseNamespace -}}
+{{- else -}}
+{{- .Release.Namespace -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetReuseEnabled" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $reuse := (get $doublePuppet "reuseExisting") | default dict -}}
+{{- if hasKey $reuse "enabled" -}}
+{{- if (get $reuse "enabled") -}}true{{- else -}}false{{- end -}}
+{{- else -}}
+true
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetReuseConfigMapName" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $reuse := (get $doublePuppet "reuseExisting") | default dict -}}
+{{- $name := (get $reuse "configMapName") | default "" -}}
+{{- if ne $name "" -}}
+{{- $name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- include "mautrix-go-base.doublePuppetRegistrationConfigMapName" . -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetReuseFileKey" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $reuse := (get $doublePuppet "reuseExisting") | default dict -}}
+{{- $fileKey := (get $reuse "fileKey") | default "" -}}
+{{- if ne $fileKey "" -}}
+{{- $fileKey -}}
+{{- else -}}
+{{- include "mautrix-go-base.doublePuppetRegistrationFileKey" . -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetUserRegex" -}}
+{{ include (printf "%s.doublePuppetUserRegex" .Chart.Name) . }}
+{{- end -}}
+
+{{- define "mautrix-go-base.ensureDoublePuppetRegistrationData" -}}
+{{- if eq (include "mautrix-go-base.doublePuppetEnabled" .) "true" -}}
+{{- if not (hasKey .Values "doublePuppet") -}}
+{{- $_ := set .Values "doublePuppet" (dict) -}}
+{{- end -}}
+{{- $doublePuppet := .Values.doublePuppet -}}
+{{- if not (hasKey $doublePuppet "_computedRegistration") -}}
+{{- $registration := (get $doublePuppet "registration") | default dict -}}
+{{- $existingSecretName := (get $registration "existingSecret") | default "" -}}
+{{- $managedSecret := (get $registration "managedSecret") | default dict -}}
+{{- $managedSecretEnabled := false -}}
+{{- if eq $existingSecretName "" -}}
+{{- if hasKey $managedSecret "enabled" -}}
+{{- $managedSecretEnabled = (get $managedSecret "enabled") -}}
+{{- else -}}
+{{- $managedSecretEnabled = true -}}
+{{- end -}}
+{{- end -}}
+{{- $autoGenerate := true -}}
+{{- if hasKey $registration "autoGenerate" -}}
+{{- $autoGenerate = (get $registration "autoGenerate") -}}
+{{- end -}}
+
+{{- $computed := dict
+  "reuseFound" false
+  "reuseNamespace" (include "mautrix-go-base.doublePuppetSynapseNamespace" .)
+  "reuseConfigMapName" (include "mautrix-go-base.doublePuppetReuseConfigMapName" .)
+  "reuseFileKey" (include "mautrix-go-base.doublePuppetReuseFileKey" .)
+-}}
+
+{{- if eq (include "mautrix-go-base.doublePuppetReuseEnabled" .) "true" -}}
+{{- $reuseNamespace := include "mautrix-go-base.doublePuppetSynapseNamespace" . -}}
+{{- $reuseConfigMapName := include "mautrix-go-base.doublePuppetReuseConfigMapName" . -}}
+{{- $reuseFileKey := include "mautrix-go-base.doublePuppetReuseFileKey" . -}}
+{{- $reuseConfigMap := lookup "v1" "ConfigMap" $reuseNamespace $reuseConfigMapName -}}
+{{- if $reuseConfigMap -}}
+{{- if not (hasKey $reuseConfigMap.data $reuseFileKey) -}}
+{{- fail (printf "doublePuppet reuse configmap %s/%s does not contain key %q" $reuseNamespace $reuseConfigMapName $reuseFileKey) -}}
+{{- end -}}
+{{- $reuseRegistrationRaw := index $reuseConfigMap.data $reuseFileKey -}}
+{{- $reuseRegistration := fromYaml $reuseRegistrationRaw -}}
+{{- if and (kindIs "map" $reuseRegistration) (hasKey $reuseRegistration "Error") -}}
+{{- fail (printf "doublePuppet reuse configmap %s/%s key %q must be valid YAML mapping" $reuseNamespace $reuseConfigMapName $reuseFileKey) -}}
+{{- end -}}
+{{- if not (kindIs "map" $reuseRegistration) -}}
+{{- fail (printf "doublePuppet reuse configmap %s/%s key %q must be a YAML mapping" $reuseNamespace $reuseConfigMapName $reuseFileKey) -}}
+{{- end -}}
+{{- $reuseAsToken := (get $reuseRegistration "as_token") | default "" -}}
+{{- if eq $reuseAsToken "" -}}
+{{- fail (printf "doublePuppet reuse configmap %s/%s key %q must contain as_token" $reuseNamespace $reuseConfigMapName $reuseFileKey) -}}
+{{- end -}}
+{{- $_ := set $computed "reuseFound" true -}}
+{{- $_ := set $computed "asTokenFromReuse" $reuseAsToken -}}
+{{- $_ := set $computed "hsTokenFromReuse" ((get $reuseRegistration "hs_token") | default "") -}}
+{{- $_ := set $computed "senderLocalpartFromReuse" ((get $reuseRegistration "sender_localpart") | default "") -}}
+{{- end -}}
+{{- end -}}
+
+{{- $existingSecret := dict -}}
+{{- if ne $existingSecretName "" -}}
+{{- $existingSecret = (lookup "v1" "Secret" .Release.Namespace $existingSecretName) | default dict -}}
+{{- end -}}
+{{- $managedSecretName := include "mautrix-go-base.doublePuppetRuntimeSecretName" . -}}
+{{- $managedRuntimeSecret := dict -}}
+{{- if and (eq $existingSecretName "") $managedSecretEnabled -}}
+{{- $managedRuntimeSecret = (lookup "v1" "Secret" .Release.Namespace $managedSecretName) | default dict -}}
+{{- end -}}
+
+{{- $keys := list "asToken" "hsToken" "senderLocalpart" -}}
+{{- range $idx, $key := $keys -}}
+{{- $value := (get $registration $key) | default "" -}}
+{{- if eq $value "generate" -}}
+{{- fail (printf "values.doublePuppet.registration.%s must not be set to 'generate'; leave empty for auto-generation" $key) -}}
+{{- end -}}
+{{- if and (eq $value "") (ne $existingSecretName "") -}}
+{{- if and $existingSecret (hasKey $existingSecret "data") (hasKey $existingSecret.data $key) -}}
+{{- $value = (index $existingSecret.data $key | b64dec) -}}
+{{- else -}}
+{{- fail (printf "doublePuppet.registration.%s is required when missing from secret %q (set doublePuppet.registration.%s, populate doublePuppet.registration.existingSecret, or enable auto-generation with managed secret mode)" $key $existingSecretName $key) -}}
+{{- end -}}
+{{- end -}}
+{{- if and (eq $value "") (eq $key "asToken") (get $computed "reuseFound") -}}
+{{- $value = (get $computed "asTokenFromReuse") | default "" -}}
+{{- end -}}
+{{- if and (eq $value "") (eq $key "hsToken") (get $computed "reuseFound") -}}
+{{- $value = (get $computed "hsTokenFromReuse") | default "" -}}
+{{- end -}}
+{{- if and (eq $value "") (eq $key "senderLocalpart") (get $computed "reuseFound") -}}
+{{- $value = (get $computed "senderLocalpartFromReuse") | default "" -}}
+{{- end -}}
+{{- if and (eq $value "") $managedRuntimeSecret (hasKey $managedRuntimeSecret "data") (hasKey $managedRuntimeSecret.data $key) -}}
+{{- $value = (index $managedRuntimeSecret.data $key | b64dec) -}}
+{{- end -}}
+{{- if eq $value "" -}}
+{{- if and $autoGenerate $managedSecretEnabled -}}
+{{- $value = (randAlphaNum 64 | sha256sum) -}}
+{{- else -}}
+{{- fail (printf "doublePuppet.registration.%s is required (set doublePuppet.registration.%s, provide existingSecret, or enable auto-generation with managed secret mode)" $key $key) -}}
+{{- end -}}
+{{- end -}}
+{{- $_ := set $computed $key $value -}}
+{{- end -}}
+
+{{- $_ := set $doublePuppet "_computedRegistration" $computed -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetRegistrationValue" -}}
+{{- $root := .root -}}
+{{- $key := .key -}}
+{{- include "mautrix-go-base.ensureDoublePuppetRegistrationData" $root -}}
+{{- $doublePuppet := $root.Values.doublePuppet | default dict -}}
+{{- $computed := (get $doublePuppet "_computedRegistration") | default dict -}}
+{{- if not (hasKey $computed $key) -}}
+{{- fail (printf "computed doublePuppet registration values missing key %q" $key) -}}
+{{- end -}}
+{{- index $computed $key -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetReuseFound" -}}
+{{- include "mautrix-go-base.ensureDoublePuppetRegistrationData" . -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $computed := (get $doublePuppet "_computedRegistration") | default dict -}}
+{{- if (get $computed "reuseFound") -}}true{{- else -}}false{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetShouldRenderPrimaryConfigMap" -}}
+{{- if ne (include "mautrix-go-base.doublePuppetEnabled" .) "true" -}}
+false
+{{- else -}}
+{{- include "mautrix-go-base.ensureDoublePuppetRegistrationData" . -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $computed := (get $doublePuppet "_computedRegistration") | default dict -}}
+{{- $reuseFound := (get $computed "reuseFound") | default false -}}
+{{- $reuseNamespace := (get $computed "reuseNamespace") | default .Release.Namespace -}}
+{{- $reuseConfigMapName := (get $computed "reuseConfigMapName") | default "" -}}
+{{- $targetConfigMapName := include "mautrix-go-base.doublePuppetRegistrationConfigMapName" . -}}
+{{- if and $reuseFound (eq $reuseNamespace .Release.Namespace) (eq $reuseConfigMapName $targetConfigMapName) -}}
+false
+{{- else -}}
+true
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetShouldRenderSynapseConfigMap" -}}
+{{- if ne (include "mautrix-go-base.doublePuppetEnabled" .) "true" -}}
+false
+{{- else -}}
+{{- $synapseNamespace := .Values.registration.synapseNamespace | default "" | trim -}}
+{{- if or (eq $synapseNamespace "") (eq $synapseNamespace .Release.Namespace) -}}
+false
+{{- else if eq (include "mautrix-go-base.doublePuppetReuseFound" .) "true" -}}
+false
+{{- else -}}
+true
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetRegistrationConfig" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $registration := (get $doublePuppet "registration") | default dict -}}
+id: {{ include "mautrix-go-base.doublePuppetRegistrationID" . | quote }}
+url: null
+as_token: {{ include "mautrix-go-base.doublePuppetRegistrationValue" (dict "root" . "key" "asToken") | quote }}
+hs_token: {{ include "mautrix-go-base.doublePuppetRegistrationValue" (dict "root" . "key" "hsToken") | quote }}
+sender_localpart: {{ include "mautrix-go-base.doublePuppetRegistrationValue" (dict "root" . "key" "senderLocalpart") | quote }}
+rate_limited: {{ if hasKey $registration "rateLimited" }}{{ get $registration "rateLimited" }}{{ else }}false{{ end }}
+namespaces:
+  users:
+    - exclusive: false
+      regex: {{ include "mautrix-go-base.doublePuppetUserRegex" . | squote }}
+{{- end -}}
+
 {{- define "mautrix-go-base.parseYamlMap" -}}
 {{- $field := required "mautrix-go-base.parseYamlMap: field is required" .field -}}
 {{- $raw := .value | default "" | trim -}}
@@ -249,6 +540,22 @@ false
 {{- if hasKey $networkExtra "network" -}}
 {{- fail "values.config.networkExtra must contain raw network keys, not a nested network block" -}}
 {{- end -}}
+{{- if and (eq (include "mautrix-go-base.doublePuppetEnabled" .) "true") (hasKey $baseExtra "double_puppet") -}}
+{{- $doublePuppetCfg := index $baseExtra "double_puppet" -}}
+{{- if not (kindIs "map" $doublePuppetCfg) -}}
+{{- fail "values.config.baseExtra.double_puppet must be a YAML mapping when set" -}}
+{{- end -}}
+{{- if hasKey $doublePuppetCfg "secrets" -}}
+{{- $doublePuppetSecrets := index $doublePuppetCfg "secrets" -}}
+{{- if not (kindIs "map" $doublePuppetSecrets) -}}
+{{- fail "values.config.baseExtra.double_puppet.secrets must be a YAML mapping when set" -}}
+{{- end -}}
+{{- $homeserverDomain := include "mautrix-go-base.homeserverDomain" . -}}
+{{- if hasKey $doublePuppetSecrets $homeserverDomain -}}
+{{- fail (printf "values.config.baseExtra.double_puppet.secrets cannot set %s; local homeserver double puppeting is managed by Helm" $homeserverDomain) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
 
 {{- include "mautrix-go-base.validateReservedPaths" (dict
   "data" $baseExtra
@@ -288,12 +595,25 @@ false
   )
 -}}
 
+{{- $managedDoublePuppet := dict -}}
+{{- if eq (include "mautrix-go-base.doublePuppetEnabled" .) "true" -}}
+{{- $homeserverDomain := include "mautrix-go-base.homeserverDomain" . -}}
+{{- $managedDoublePuppet = dict
+  "double_puppet" (dict
+    "secrets" (dict
+      $homeserverDomain (printf "as_token:%s" (include "mautrix-go-base.doublePuppetRegistrationValue" (dict "root" . "key" "asToken"))
+      )
+    )
+  )
+-}}
+{{- end -}}
+
 {{- $networkBlock := dict -}}
 {{- if gt (len $networkExtra) 0 -}}
 {{- $networkBlock = dict "network" $networkExtra -}}
 {{- end -}}
 
-{{- $merged := mustMergeOverwrite (dict) $baseExtra $networkBlock $managed $managedLogging -}}
+{{- $merged := mustMergeOverwrite (dict) $baseExtra $networkBlock $managed $managedLogging $managedDoublePuppet -}}
 {{ toYaml $merged }}
 {{- end -}}
 

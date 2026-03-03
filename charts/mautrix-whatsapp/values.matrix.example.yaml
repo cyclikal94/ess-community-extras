@@ -15,6 +15,13 @@ registration:
 
 logging: info
 
+doublePuppet:
+  enabled: true
+  # Optional overrides for shared registration behavior:
+  # registration:
+  #   id: doublepuppet-<mautrix-go-base-version>
+  #   asToken: ""
+
 config:
   baseExtra: |
     bridge:

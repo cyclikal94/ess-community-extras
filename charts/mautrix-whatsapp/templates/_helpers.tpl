@@ -24,6 +24,15 @@ appservice-registration-whatsapp.yaml
 {{ include "mautrix-go-base.registrationConfig" . }}
 {{- end -}}
 
+{{- define "mautrix-whatsapp.doublePuppetRegistrationFileKey" -}}
+appservice-registration-doublepuppet.yaml
+{{- end -}}
+
+{{- define "mautrix-whatsapp.doublePuppetUserRegex" -}}
+{{- $domain := include "mautrix-go-base.homeserverDomain" . -}}
+{{- printf "@.*:%s" (replace "." "\\\\." $domain) -}}
+{{- end -}}
+
 {{- define "mautrix-whatsapp.reservedBasePaths" -}}
 homeserver.address,homeserver.domain,appservice.address,appservice.hostname,appservice.port,appservice.id,appservice.bot.username,appservice.as_token,appservice.hs_token,database.type,database.uri
 {{- end -}}

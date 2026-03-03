@@ -36,6 +36,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config-secret.yaml") . | sha256sum }}
         checksum/runtime-secrets: {{ include (print $.Template.BasePath "/runtime-secrets.yaml") . | sha256sum }}
+        checksum/doublepuppet-runtime-secrets: {{ include "mautrix-go-base.doublePuppetRuntimeSecret" . | sha256sum }}
     spec:
       {{- if .Values.podSecurityContext.enabled }}
       {{- $podSecurityContext := omit .Values.podSecurityContext "enabled" }}
@@ -124,6 +125,36 @@ stringData:
 {{- end }}
 {{- end -}}
 
+{{- define "mautrix-go-base.doublePuppetRuntimeSecret" -}}
+{{- if eq (include "mautrix-go-base.doublePuppetEnabled" .) "true" -}}
+{{- $doublePuppet := .Values.doublePuppet | default dict -}}
+{{- $registration := (get $doublePuppet "registration") | default dict -}}
+{{- $existingSecretName := (get $registration "existingSecret") | default "" -}}
+{{- $managedSecret := (get $registration "managedSecret") | default dict -}}
+{{- $managedSecretEnabled := false -}}
+{{- if eq $existingSecretName "" -}}
+{{- if hasKey $managedSecret "enabled" -}}
+{{- $managedSecretEnabled = (get $managedSecret "enabled") -}}
+{{- else -}}
+{{- $managedSecretEnabled = true -}}
+{{- end -}}
+{{- end -}}
+{{- if $managedSecretEnabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "mautrix-go-base.doublePuppetRuntimeSecretName" . }}
+  labels:
+    {{- include "mautrix-go-base.componentLabels" (dict "context" . "component" "doublepuppet-registration") | nindent 4 }}
+type: Opaque
+stringData:
+  asToken: {{ include "mautrix-go-base.doublePuppetRegistrationValue" (dict "root" . "key" "asToken") | quote }}
+  hsToken: {{ include "mautrix-go-base.doublePuppetRegistrationValue" (dict "root" . "key" "hsToken") | quote }}
+  senderLocalpart: {{ include "mautrix-go-base.doublePuppetRegistrationValue" (dict "root" . "key" "senderLocalpart") | quote }}
+{{- end }}
+{{- end -}}
+{{- end -}}
+
 {{- define "mautrix-go-base.configSecret" -}}
 {{- $configYaml := include (printf "%s.mergedConfig" .Chart.Name) . -}}
 {{- $parsed := fromYaml $configYaml -}}
@@ -167,6 +198,35 @@ metadata:
 data:
   {{ include (printf "%s.registrationFileKey" .Chart.Name) . }}: |
 {{ include (printf "%s.registrationConfig" .Chart.Name) . | indent 4 }}
+{{- end }}
+{{- end -}}
+
+{{- define "mautrix-go-base.doublePuppetRegistrationConfigMap" -}}
+{{- if eq (include "mautrix-go-base.doublePuppetShouldRenderPrimaryConfigMap" .) "true" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mautrix-go-base.doublePuppetRegistrationConfigMapName" . }}
+  labels:
+    {{- include "mautrix-go-base.componentLabels" (dict "context" . "component" "doublepuppet-registration") | nindent 4 }}
+data:
+  {{ include "mautrix-go-base.doublePuppetRegistrationFileKey" . }}: |
+{{ include "mautrix-go-base.doublePuppetRegistrationConfig" . | indent 4 }}
+{{- end }}
+{{- end -}}
+
+{{- define "mautrix-go-base.synapseDoublePuppetRegistrationConfigMap" -}}
+{{- if eq (include "mautrix-go-base.doublePuppetShouldRenderSynapseConfigMap" .) "true" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mautrix-go-base.doublePuppetRegistrationConfigMapName" . }}
+  namespace: {{ include "mautrix-go-base.doublePuppetSynapseNamespace" . }}
+  labels:
+    {{- include "mautrix-go-base.componentLabels" (dict "context" . "component" "doublepuppet-registration") | nindent 4 }}
+data:
+  {{ include "mautrix-go-base.doublePuppetRegistrationFileKey" . }}: |
+{{ include "mautrix-go-base.doublePuppetRegistrationConfig" . | indent 4 }}
 {{- end }}
 {{- end -}}
 

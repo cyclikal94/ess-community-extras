@@ -257,6 +257,94 @@
         }
       }
     },
+    "doublePuppet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "registration": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "default": ""
+            },
+            "asToken": {
+              "type": "string",
+              "default": "",
+              "description": "Double puppet appservice as_token. If empty, sourced from registration.existingSecret, reuseExisting ConfigMap, managed Secret, or auto-generated."
+            },
+            "hsToken": {
+              "type": "string",
+              "default": "",
+              "description": "Double puppet appservice hs_token. If empty, sourced from registration.existingSecret, reuseExisting ConfigMap, managed Secret, or auto-generated."
+            },
+            "senderLocalpart": {
+              "type": "string",
+              "default": "",
+              "description": "Double puppet appservice sender_localpart. If empty, sourced from registration.existingSecret, reuseExisting ConfigMap, managed Secret, or auto-generated."
+            },
+            "existingSecret": {
+              "type": "string",
+              "default": "",
+              "description": "Existing Secret name with keys asToken/hsToken/senderLocalpart for double puppeting."
+            },
+            "managedSecret": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "name": {
+                  "type": "string",
+                  "default": ""
+                }
+              }
+            },
+            "autoGenerate": {
+              "type": "boolean",
+              "default": true
+            },
+            "rateLimited": {
+              "type": "boolean",
+              "default": false
+            },
+            "configMapName": {
+              "type": "string",
+              "default": ""
+            },
+            "fileKey": {
+              "type": "string",
+              "default": "appservice-registration-doublepuppet.yaml"
+            }
+          }
+        },
+        "reuseExisting": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "configMapName": {
+              "type": "string",
+              "default": ""
+            },
+            "fileKey": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        }
+      }
+    },
     "bridge": {
       "type": "object",
       "additionalProperties": false,
@@ -271,12 +359,12 @@
     "config": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Split bridgev2 config extras. baseExtra merges at root, networkExtra is nested under network. Overlaps with Helm-managed keys fail template rendering. logging is managed by top-level values.logging.",
+      "description": "Split bridgev2 config extras. baseExtra merges at root, networkExtra is nested under network. Overlaps with Helm-managed keys fail template rendering. logging and local double_puppet secret are managed by top-level values.",
       "properties": {
         "baseExtra": {
           "type": "string",
           "default": "",
-          "description": "Shared bridgev2 config YAML merged at top-level. Must be a YAML map and must not contain top-level network."
+          "description": "Shared bridgev2 config YAML merged at top-level. Must be a YAML map and must not contain top-level network or logging."
         },
         "networkExtra": {
           "type": "string",

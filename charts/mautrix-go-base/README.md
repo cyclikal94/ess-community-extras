@@ -25,6 +25,8 @@ A wrapper chart that depends on this library must define these helpers:
 - `<chart>.registrationFileKey`: appservice registration configmap key name.
 - `<chart>.registrationConfig`: registration YAML document.
 - `<chart>.defaultRegistrationUserRegex`: default user namespace regex when `registration.userRegex` is empty.
+- `<chart>.doublePuppetRegistrationFileKey`: default double puppet registration configmap key name.
+- `<chart>.doublePuppetUserRegex`: regex for double puppet registration users namespace.
 
 `mautrix-go-base.bridgev2MergedConfig` performs strict parsing/validation and merge:
 
@@ -34,7 +36,8 @@ A wrapper chart that depends on this library must define these helpers:
 4. Fail if `networkExtra` contains nested `network`.
 5. Fail on overlaps with wrapper-declared reserved paths.
 6. Inject managed bridge logging as stdout `pretty-colored` with `min_level` from top-level `values.logging` (default `info`).
-7. Merge as: `baseExtra` + `{network: networkExtra}` + `managedConfig` + managed logging (managed wins).
+7. Inject managed local double puppet secret at `double_puppet.secrets[homeserver.domain]`.
+8. Merge as: `baseExtra` + `{network: networkExtra}` + `managedConfig` + managed logging + managed double puppet (managed wins).
 
 ## Kubernetes Behavior
 
@@ -59,6 +62,8 @@ Use `mautrix-whatsapp` as the scaffold:
 - `managedConfig`
 - `reservedBasePaths`
 - `reservedNetworkPaths`
+- `doublePuppetRegistrationFileKey`
+- `doublePuppetUserRegex`
 - `mergedConfig` include call to `mautrix-go-base.bridgev2MergedConfig`
 - any bridge-specific config defaults
 4. Keep Kubernetes runtime shape unchanged unless bridge behavior requires it.
