@@ -337,6 +337,23 @@ entries:
   mautrix-whatsapp:
   - apiVersion: v2
     appVersion: v0.2602.0
+    created: "2026-03-03T13:19:39.175813075Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 0.1.3
+    description: Helm chart for mautrix-whatsapp
+    digest: 5ed216ef53408f75cd1b2a5819b02713ba120a838748a752ee6450b934ecbfa5
+    home: https://docs.mau.fi/bridges/go/whatsapp/
+    name: mautrix-whatsapp
+    sources:
+    - https://github.com/mautrix/whatsapp
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-whatsapp-0.1.5/mautrix-whatsapp-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: v0.2602.0
     created: "2026-03-03T13:06:25.298851456Z"
     dependencies:
     - name: mautrix-go-base
@@ -502,4 +519,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-03-03T13:06:25.298943436Z"
+generated: "2026-03-03T13:19:39.175908545Z"
