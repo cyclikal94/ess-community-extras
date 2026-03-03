@@ -1,0 +1,22 @@
+#      .
+#     / V\
+#   / `  /
+#  <<   |    External Postgres example for mautrix-twitter.
+#  /    |    Disable bundled postgres and provide explicit connection fields.
+#
+
+postgres:
+  enabled: false
+
+database:
+  postgres:
+    host: postgres.example.com
+    port: 5432
+    user: mautrix_twitter
+    password:
+      value: replace_me
+    database: mautrix_twitter
+    sslMode: prefer
+
+homeserver:
+  domain: matrix.example.com
