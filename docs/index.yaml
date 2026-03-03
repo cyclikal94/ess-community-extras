@@ -135,6 +135,20 @@ entries:
   mautrix-go-base:
   - apiVersion: v2
     appVersion: 0.0.0
+    created: "2026-03-03T11:51:09.934174731Z"
+    description: Shared library templates for mautrix Go bridge Helm charts
+    digest: a5c198440b0c068071a3d9bae73ab8c9048b66535a1662be0246b28560ec8ff0
+    home: https://docs.mau.fi/bridges/go/
+    name: mautrix-go-base
+    sources:
+    - https://github.com/mautrix
+    - https://github.com/cyclikal94/matrix-helm-charts
+    type: library
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-go-base-0.1.1/mautrix-go-base-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 0.0.0
     created: "2026-03-03T10:32:49.608896098Z"
     description: Shared library templates for mautrix Go bridge Helm charts
     digest: 18bc9394e77468aa2c2f6ef71987c52b5eb8eca91ef66f4df2fa9da9de210d91
@@ -295,6 +309,23 @@ entries:
   mautrix-whatsapp:
   - apiVersion: v2
     appVersion: v0.2602.0
+    created: "2026-03-03T11:51:10.118728906Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 0.1.1
+    description: Helm chart for mautrix-whatsapp
+    digest: 87d1540bcd3c4af3e2813cdb19d4030eff4432bfe6dd596d217ed19360c2efe8
+    home: https://docs.mau.fi/bridges/go/whatsapp/
+    name: mautrix-whatsapp
+    sources:
+    - https://github.com/mautrix/whatsapp
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-whatsapp-0.1.2/mautrix-whatsapp-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: v0.2602.0
     created: "2026-03-03T11:25:24.304293645Z"
     dependencies:
     - name: mautrix-go-base
@@ -409,4 +440,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-03-03T11:25:24.491249655Z"
+generated: "2026-03-03T11:51:10.118830165Z"
