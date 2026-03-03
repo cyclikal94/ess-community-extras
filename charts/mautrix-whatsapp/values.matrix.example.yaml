@@ -14,8 +14,10 @@ registration:
   synapseNamespace: ess
 
 config:
-  extra: |
+  baseExtra: |
     bridge:
       permissions:
         "*": relay
         "@admin:example.com": admin
+  networkExtra: |
+    # os_name: Mautrix-WhatsApp bridge

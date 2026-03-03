@@ -257,11 +257,17 @@
     "config": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Additional raw YAML merged into generated config.yaml. Overlaps with Helm-managed keys fail template rendering.",
+      "description": "Split bridgev2 config extras. baseExtra merges at root, networkExtra is nested under network. Overlaps with Helm-managed keys fail template rendering.",
       "properties": {
-        "extra": {
+        "baseExtra": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "description": "Shared bridgev2 config YAML merged at top-level. Must be a YAML map and must not contain top-level network."
+        },
+        "networkExtra": {
+          "type": "string",
+          "default": "",
+          "description": "Bridge-specific network config YAML merged under top-level network. Must be a YAML map and must not include nested network."
         }
       }
     },

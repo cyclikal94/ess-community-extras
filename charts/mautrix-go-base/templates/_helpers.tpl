@@ -164,6 +164,121 @@ app.kubernetes.io/component: {{ .component }}
 {{- end -}}
 {{- end -}}
 
+{{- define "mautrix-go-base.parseYamlMap" -}}
+{{- $field := required "mautrix-go-base.parseYamlMap: field is required" .field -}}
+{{- $raw := .value | default "" | trim -}}
+{{- if eq $raw "" -}}
+{}
+{{- else -}}
+{{- $parsed := fromYaml $raw -}}
+{{- if and (kindIs "map" $parsed) (hasKey $parsed "Error") -}}
+{{- fail (printf "%s must be valid YAML mapping (object) at the top level" $field) -}}
+{{- end -}}
+{{- if not (kindIs "map" $parsed) -}}
+{{- fail (printf "%s must be a YAML mapping (object) at the top level" $field) -}}
+{{- end -}}
+{{ toYaml $parsed }}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.pathConflictsWithReserved" -}}
+{{- $data := .data | default dict -}}
+{{- $path := .path | default "" | trim -}}
+{{- if eq $path "" -}}
+false
+{{- else -}}
+{{- $parts := splitList "." $path -}}
+{{- $state := dict "current" $data "conflict" false -}}
+{{- range $idx, $part := $parts -}}
+{{- if not (get $state "conflict") -}}
+{{- $current := get $state "current" -}}
+{{- if not (kindIs "map" $current) -}}
+{{- $_ := set $state "conflict" true -}}
+{{- else if hasKey $current $part -}}
+{{- if eq $idx (sub (len $parts) 1) -}}
+{{- $_ := set $state "conflict" true -}}
+{{- else -}}
+{{- $_ := set $state "current" (index $current $part) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- if get $state "conflict" -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.validateReservedPaths" -}}
+{{- $data := .data | default dict -}}
+{{- $field := required "mautrix-go-base.validateReservedPaths: field is required" .field -}}
+{{- $pathsRaw := .paths | default "" -}}
+{{- $displayPrefix := .displayPrefix | default "" -}}
+{{- $hint := .hint | default "use first-class values instead" -}}
+{{- $paths := splitList "," (replace "\n" "," $pathsRaw) -}}
+{{- range $idx, $pathValue := $paths -}}
+{{- $path := $pathValue | trim -}}
+{{- if ne $path "" -}}
+{{- $conflicts := include "mautrix-go-base.pathConflictsWithReserved" (dict "data" $data "path" $path) -}}
+{{- if eq $conflicts "true" -}}
+{{- fail (printf "%s cannot set %s%s; %s" $field $displayPrefix $path $hint) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "mautrix-go-base.bridgev2MergedConfig" -}}
+{{- $config := .Values.config | default dict -}}
+{{- $baseExtra := fromYaml (include "mautrix-go-base.parseYamlMap" (dict
+  "field" "values.config.baseExtra"
+  "value" ((get $config "baseExtra") | default "")
+)) -}}
+{{- $networkExtra := fromYaml (include "mautrix-go-base.parseYamlMap" (dict
+  "field" "values.config.networkExtra"
+  "value" ((get $config "networkExtra") | default "")
+)) -}}
+
+{{- if hasKey $baseExtra "network" -}}
+{{- fail "values.config.baseExtra cannot set network; use values.config.networkExtra for bridge-specific network config" -}}
+{{- end -}}
+{{- if hasKey $networkExtra "network" -}}
+{{- fail "values.config.networkExtra must contain raw network keys, not a nested network block" -}}
+{{- end -}}
+
+{{- include "mautrix-go-base.validateReservedPaths" (dict
+  "data" $baseExtra
+  "field" "values.config.baseExtra"
+  "paths" (include (printf "%s.reservedBasePaths" .Chart.Name) .)
+  "hint" "use first-class values instead"
+) -}}
+{{- include "mautrix-go-base.validateReservedPaths" (dict
+  "data" $networkExtra
+  "field" "values.config.networkExtra"
+  "paths" (include (printf "%s.reservedNetworkPaths" .Chart.Name) .)
+  "displayPrefix" "network."
+  "hint" "use first-class values instead"
+) -}}
+
+{{- $managedRaw := include (printf "%s.managedConfig" .Chart.Name) . -}}
+{{- $managed := fromYaml $managedRaw -}}
+{{- if and (kindIs "map" $managed) (hasKey $managed "Error") -}}
+{{- fail (printf "%s.managedConfig must render valid YAML mapping" .Chart.Name) -}}
+{{- end -}}
+{{- if not (kindIs "map" $managed) -}}
+{{- fail (printf "%s.managedConfig must render a YAML mapping" .Chart.Name) -}}
+{{- end -}}
+
+{{- $networkBlock := dict -}}
+{{- if gt (len $networkExtra) 0 -}}
+{{- $networkBlock = dict "network" $networkExtra -}}
+{{- end -}}
+
+{{- $merged := mustMergeOverwrite (dict) $baseExtra $networkBlock $managed -}}
+{{ toYaml $merged }}
+{{- end -}}
+
 {{- define "mautrix-go-base.ensureRuntimeSecrets" -}}
 {{- if not (hasKey .Values.registration "_computedRuntimeSecrets") -}}
 {{- $keysRaw := include (printf "%s.runtimeSecretKeys" .Chart.Name) . | trim -}}

@@ -76,9 +76,14 @@ bridge:
   resources: {}
 
 config:
-  # Raw bridge config YAML merged into generated config.yaml.
+  # Shared bridgev2 config YAML merged at top-level in generated config.yaml.
   # If this overlaps with Helm-managed keys, template rendering fails.
-  extra: ""
+  # Do not place `network` here; use config.networkExtra for bridge-specific config.
+  baseExtra: ""
+  # Bridge-specific mautrix-whatsapp network config YAML.
+  # This is automatically nested under top-level `network:` in generated config.yaml.
+  # Do not include a `network:` key in this block.
+  networkExtra: ""
 
 database:
   postgres:

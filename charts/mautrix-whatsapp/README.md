@@ -100,7 +100,13 @@ For deterministic GitOps rendering, set `registration.autoGenerate=false` and pr
 
 ## Bridge config model
 
-`config.extra` is merged into generated `config.yaml`.
+Bridge config is split into two channels:
+
+- `config.baseExtra`: shared bridgev2 config merged at top-level. See upstream bridgev2 example in [`mautrix/go`](https://github.com/mautrix/go/blob/main/bridgev2/matrix/mxmain/example-config.yaml).
+- `config.networkExtra`: bridge-specific config merged under top-level `network`. See upstream WhatsApp connector example in [`mautrix/whatsapp`](https://github.com/mautrix/whatsapp/blob/main/pkg/connector/example-config.yaml).
+
+`config.networkExtra` must contain raw network keys only (not a nested `network:` block).
+`config.baseExtra` must not contain top-level `network`.
 
 The chart reserves and manages these paths:
 
@@ -116,7 +122,23 @@ The chart reserves and manages these paths:
 - `database.type`
 - `database.uri`
 
-If `config.extra` overlaps any managed path, template rendering fails.
+If `config.baseExtra` overlaps any managed path, template rendering fails.
+
+`bridge.permissions` is required by bridgev2 and should be set in `config.baseExtra`.
+
+Example:
+
+```yaml
+config:
+  baseExtra: |
+    bridge:
+      permissions:
+        "*": relay
+        "@admin:example.com": admin
+  networkExtra: |
+    os_name: Mautrix-WhatsApp bridge
+    browser_name: Linux
+```
 
 ## Postgres
 

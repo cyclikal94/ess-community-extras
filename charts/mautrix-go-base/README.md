@@ -6,7 +6,7 @@ Shared Helm library chart for mautrix Go bridge wrappers.
 
 This chart centralizes Kubernetes resource templates and shared helper logic so bridge-specific charts only define:
 
-- bridge-specific config merge and reserved key checks
+- bridge-specific managed config and reserved path declarations
 - bridge command and startup args
 - registration file key and regex defaults
 - chart metadata, schema, and examples
@@ -18,10 +18,21 @@ A wrapper chart that depends on this library must define these helpers:
 - `<chart>.runtimeSecretKeys`: YAML list of runtime secret keys in `values.registration`.
 - `<chart>.bridgeCommand`: YAML list for container `command`.
 - `<chart>.bridgeArgs`: YAML list for container `args`.
-- `<chart>.mergedConfig`: final merged bridge config as YAML mapping.
+- `<chart>.managedConfig`: Helm-managed config YAML mapping.
+- `<chart>.reservedBasePaths`: comma-separated reserved dotted paths in `config.baseExtra`.
+- `<chart>.reservedNetworkPaths`: comma-separated reserved dotted paths in `config.networkExtra` (relative to `network`).
+- `<chart>.mergedConfig`: final merged bridge config as YAML mapping (normally include `mautrix-go-base.bridgev2MergedConfig`).
 - `<chart>.registrationFileKey`: appservice registration configmap key name.
 - `<chart>.registrationConfig`: registration YAML document.
 - `<chart>.defaultRegistrationUserRegex`: default user namespace regex when `registration.userRegex` is empty.
+
+`mautrix-go-base.bridgev2MergedConfig` performs strict parsing/validation and merge:
+
+1. Parse `values.config.baseExtra` and `values.config.networkExtra` as YAML maps.
+2. Fail if `baseExtra` contains top-level `network`.
+3. Fail if `networkExtra` contains nested `network`.
+4. Fail on overlaps with wrapper-declared reserved paths.
+5. Merge as: `baseExtra` + `{network: networkExtra}` + `managedConfig` (managed wins).
 
 ## Kubernetes Behavior
 
@@ -43,7 +54,10 @@ Use `mautrix-whatsapp` as the scaffold:
 3. Update wrapper helpers in `templates/_helpers.tpl`:
 - `registrationFileKey`
 - `defaultRegistrationUserRegex`
-- `mergedConfig` reserved path checks
+- `managedConfig`
+- `reservedBasePaths`
+- `reservedNetworkPaths`
+- `mergedConfig` include call to `mautrix-go-base.bridgev2MergedConfig`
 - any bridge-specific config defaults
 4. Keep Kubernetes runtime shape unchanged unless bridge behavior requires it.
 5. Update `values.yaml`, `values.schema.json`, and examples.

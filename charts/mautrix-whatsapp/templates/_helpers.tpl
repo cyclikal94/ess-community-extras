@@ -24,60 +24,14 @@ appservice-registration-whatsapp.yaml
 {{ include "mautrix-go-base.registrationConfig" . }}
 {{- end -}}
 
-{{- define "mautrix-whatsapp.mergedConfig" -}}
-{{- $extra := dict -}}
-{{- if .Values.config.extra -}}
-{{- $parsed := fromYaml .Values.config.extra -}}
-{{- if and (kindIs "map" $parsed) (hasKey $parsed "Error") -}}
-{{- fail "values.config.extra must be valid YAML mapping (object) at the top level" -}}
-{{- end -}}
-{{- if and $parsed (not (kindIs "map" $parsed)) -}}
-{{- fail "values.config.extra must be a YAML mapping (object) at the top level" -}}
-{{- end -}}
-{{- if $parsed -}}
-{{- $extra = $parsed -}}
-{{- end -}}
+{{- define "mautrix-whatsapp.reservedBasePaths" -}}
+homeserver.address,homeserver.domain,appservice.address,appservice.hostname,appservice.port,appservice.id,appservice.bot.username,appservice.as_token,appservice.hs_token,database.type,database.uri
 {{- end -}}
 
-{{- if hasKey $extra "homeserver" -}}
-{{- $homeserver := index $extra "homeserver" -}}
-{{- if not (kindIs "map" $homeserver) -}}
-{{- fail "values.config.extra.homeserver must be a YAML mapping when set" -}}
-{{- end -}}
-{{- if or (hasKey $homeserver "address") (hasKey $homeserver "domain") -}}
-{{- fail "values.config.extra cannot set homeserver.address or homeserver.domain; use values.homeserver.* instead" -}}
-{{- end -}}
+{{- define "mautrix-whatsapp.reservedNetworkPaths" -}}
 {{- end -}}
 
-{{- if hasKey $extra "appservice" -}}
-{{- $appservice := index $extra "appservice" -}}
-{{- if not (kindIs "map" $appservice) -}}
-{{- fail "values.config.extra.appservice must be a YAML mapping when set" -}}
-{{- end -}}
-{{- if or (hasKey $appservice "address") (hasKey $appservice "hostname") (hasKey $appservice "port") (hasKey $appservice "database") (hasKey $appservice "id") (hasKey $appservice "as_token") (hasKey $appservice "hs_token") -}}
-{{- fail "values.config.extra cannot set appservice.{address,hostname,port,database,id,as_token,hs_token}; use first-class values instead" -}}
-{{- end -}}
-{{- if hasKey $appservice "bot" -}}
-{{- $bot := index $appservice "bot" -}}
-{{- if not (kindIs "map" $bot) -}}
-{{- fail "values.config.extra.appservice.bot must be a YAML mapping when set" -}}
-{{- end -}}
-{{- if hasKey $bot "username" -}}
-{{- fail "values.config.extra cannot set appservice.bot.username; use values.appservice.bot.username instead" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{- if hasKey $extra "database" -}}
-{{- $database := index $extra "database" -}}
-{{- if not (kindIs "map" $database) -}}
-{{- fail "values.config.extra.database must be a YAML mapping when set" -}}
-{{- end -}}
-{{- if or (hasKey $database "type") (hasKey $database "uri") -}}
-{{- fail "values.config.extra cannot set database.type or database.uri; use values.database.* instead" -}}
-{{- end -}}
-{{- end -}}
-
+{{- define "mautrix-whatsapp.managedConfig" -}}
 {{- $bot := .Values.appservice.bot | default dict -}}
 {{- $managed := dict
   "homeserver" (dict
@@ -100,6 +54,9 @@ appservice-registration-whatsapp.yaml
     "uri" (include "mautrix-go-base.databaseConnectionString" .)
   )
 -}}
-{{- $merged := mustMergeOverwrite (dict) $extra $managed -}}
-{{ toYaml $merged }}
+{{ toYaml $managed }}
+{{- end -}}
+
+{{- define "mautrix-whatsapp.mergedConfig" -}}
+{{ include "mautrix-go-base.bridgev2MergedConfig" . }}
 {{- end -}}
