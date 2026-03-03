@@ -280,6 +280,20 @@ entries:
   ntfy:
   - apiVersion: v2
     appVersion: v2.17.0
+    created: "2026-03-03T08:28:31.441633562Z"
+    description: Helm chart for ntfy
+    digest: 40de6e916ef0cc874646786cd9ed4c825324fbefa4a0a9ddc644eb867542c9ed
+    home: https://ntfy.sh
+    icon: https://github.com/binwiederhier/ntfy/blob/main/web/public/static/images/ntfy.png
+    name: ntfy
+    sources:
+    - https://github.com/binwiederhier/ntfy
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.9.6/ntfy-0.9.6.tgz
+    version: 0.9.6
+  - apiVersion: v2
+    appVersion: v2.17.0
     created: "2026-02-27T10:48:26.859495426Z"
     description: Helm chart for ntfy
     digest: 89858928246d54e340a9bc3348d7048153044ed07ae51c78a9df6f3e9dd83955
@@ -345,4 +359,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-03-01T21:36:03.585381006Z"
+generated: "2026-03-03T08:28:31.441717119Z"
