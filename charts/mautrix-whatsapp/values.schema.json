@@ -123,6 +123,20 @@
         }
       }
     },
+    "logging": {
+      "type": "string",
+      "default": "info",
+      "description": "Bridge log level for chart-managed stdout logging config.",
+      "enum": [
+        "panic",
+        "fatal",
+        "error",
+        "warn",
+        "info",
+        "debug",
+        "trace"
+      ]
+    },
     "homeserver": {
       "type": "object",
       "additionalProperties": false,
@@ -257,7 +271,7 @@
     "config": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Split bridgev2 config extras. baseExtra merges at root, networkExtra is nested under network. Overlaps with Helm-managed keys fail template rendering.",
+      "description": "Split bridgev2 config extras. baseExtra merges at root, networkExtra is nested under network. Overlaps with Helm-managed keys fail template rendering. logging is managed by top-level values.logging.",
       "properties": {
         "baseExtra": {
           "type": "string",

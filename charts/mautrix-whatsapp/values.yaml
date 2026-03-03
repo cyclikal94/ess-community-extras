@@ -31,6 +31,10 @@ securityContext:
     drop:
       - ALL
 
+# Bridge log level for chart-managed stdout logging config.
+# Valid: panic, fatal, error, warn, info, debug, trace
+logging: info
+
 homeserver:
   address: http://ess-synapse.ess.svc.cluster.local:8008
   # Required: Matrix domain used by homeserver config and registration regex entries.
@@ -78,6 +82,7 @@ bridge:
 config:
   # Shared bridgev2 config YAML merged at top-level in generated config.yaml.
   # If this overlaps with Helm-managed keys, template rendering fails.
+  # Do not place `logging` here; use top-level `logging`.
   # Do not place `network` here; use config.networkExtra for bridge-specific config.
   baseExtra: ""
   # Bridge-specific mautrix-whatsapp network config YAML.

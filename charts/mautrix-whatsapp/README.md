@@ -62,6 +62,20 @@ helm upgrade --install mautrix-whatsapp matrix-helm-charts/mautrix-whatsapp -n m
 
 Validation is enforced by `values.schema.json`.
 
+## Logging
+
+Set top-level `logging` to control bridge log level.
+
+Allowed values:
+
+- `panic`
+- `fatal`
+- `error`
+- `warn`
+- `info`
+- `debug`
+- `trace`
+
 ## Registration ConfigMap model
 
 The chart renders registration in release namespace as:
@@ -107,6 +121,7 @@ Bridge config is split into two channels:
 
 `config.networkExtra` must contain raw network keys only (not a nested `network:` block).
 `config.baseExtra` must not contain top-level `network`.
+`config.baseExtra` must not contain top-level `logging`; use top-level `logging` value instead.
 
 The chart reserves and manages these paths:
 
@@ -121,6 +136,7 @@ The chart reserves and manages these paths:
 - `appservice.hs_token`
 - `database.type`
 - `database.uri`
+- `logging`
 
 If `config.baseExtra` overlaps any managed path, template rendering fails.
 
@@ -129,6 +145,8 @@ If `config.baseExtra` overlaps any managed path, template rendering fails.
 Example:
 
 ```yaml
+logging: debug
+
 config:
   baseExtra: |
     bridge:
@@ -138,6 +156,16 @@ config:
   networkExtra: |
     os_name: Mautrix-WhatsApp bridge
     browser_name: Linux
+```
+
+The chart always injects bridge logging config as:
+
+```yaml
+logging:
+  min_level: <values.logging>
+  writers:
+    - type: stdout
+      format: pretty-colored
 ```
 
 ## Postgres

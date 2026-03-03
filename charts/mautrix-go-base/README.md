@@ -30,9 +30,11 @@ A wrapper chart that depends on this library must define these helpers:
 
 1. Parse `values.config.baseExtra` and `values.config.networkExtra` as YAML maps.
 2. Fail if `baseExtra` contains top-level `network`.
-3. Fail if `networkExtra` contains nested `network`.
-4. Fail on overlaps with wrapper-declared reserved paths.
-5. Merge as: `baseExtra` + `{network: networkExtra}` + `managedConfig` (managed wins).
+3. Fail if `baseExtra` contains top-level `logging` (use top-level `values.logging`).
+4. Fail if `networkExtra` contains nested `network`.
+5. Fail on overlaps with wrapper-declared reserved paths.
+6. Inject managed bridge logging as stdout `pretty-colored` with `min_level` from top-level `values.logging` (default `info`).
+7. Merge as: `baseExtra` + `{network: networkExtra}` + `managedConfig` + managed logging (managed wins).
 
 ## Kubernetes Behavior
 

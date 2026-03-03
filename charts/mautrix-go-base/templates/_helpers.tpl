@@ -243,6 +243,9 @@ false
 {{- if hasKey $baseExtra "network" -}}
 {{- fail "values.config.baseExtra cannot set network; use values.config.networkExtra for bridge-specific network config" -}}
 {{- end -}}
+{{- if hasKey $baseExtra "logging" -}}
+{{- fail "values.config.baseExtra cannot set logging; use values.logging instead" -}}
+{{- end -}}
 {{- if hasKey $networkExtra "network" -}}
 {{- fail "values.config.networkExtra must contain raw network keys, not a nested network block" -}}
 {{- end -}}
@@ -270,12 +273,27 @@ false
 {{- fail (printf "%s.managedConfig must render a YAML mapping" .Chart.Name) -}}
 {{- end -}}
 
+{{- $logLevel := (.Values.logging | default "info" | toString | lower) -}}
+{{- $allowedLevels := list "panic" "fatal" "error" "warn" "info" "debug" "trace" -}}
+{{- if not (has $logLevel $allowedLevels) -}}
+{{- fail "values.logging must be one of: panic, fatal, error, warn, info, debug, trace" -}}
+{{- end -}}
+{{- $managedLogging := dict
+  "logging" (dict
+    "min_level" $logLevel
+    "writers" (list (dict
+      "type" "stdout"
+      "format" "pretty-colored"
+    ))
+  )
+-}}
+
 {{- $networkBlock := dict -}}
 {{- if gt (len $networkExtra) 0 -}}
 {{- $networkBlock = dict "network" $networkExtra -}}
 {{- end -}}
 
-{{- $merged := mustMergeOverwrite (dict) $baseExtra $networkBlock $managed -}}
+{{- $merged := mustMergeOverwrite (dict) $baseExtra $networkBlock $managed $managedLogging -}}
 {{ toYaml $merged }}
 {{- end -}}
 

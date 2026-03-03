@@ -1,6 +1,6 @@
 dependencies:
 - name: mautrix-go-base
   repository: file://../mautrix-go-base
-  version: 0.1.1
-digest: sha256:56ce175fd6a0dabdc171de4a7d161f233a4c552dfee140ac69b79dbbd2339306
-generated: "2026-03-03T11:48:21.560712Z"
+  version: 0.1.2
+digest: sha256:2c0d70618ca98fd7adc88fcca9fa086de3505817a4e617f288f2f79cafb5f5cd
+generated: "2026-03-03T12:11:05.107851Z"
