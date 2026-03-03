@@ -44,7 +44,13 @@ Install:
 helm upgrade --install mautrix-telegram ./charts/mautrix-telegram -f mautrix-telegram-values.yaml
 ```
 
-Install from published Helm repository:
+Install from published OCI registry (preferred):
+
+```bash
+helm upgrade --install mautrix-telegram oci://ghcr.io/cyclikal94/matrix-helm-charts/mautrix-telegram -n mautrix-telegram --create-namespace --values mautrix-telegram-values.yaml
+```
+
+Install from published Helm repository (legacy-compatible):
 
 ```bash
 helm repo add matrix-helm-charts https://cyclikal94.github.io/matrix-helm-charts

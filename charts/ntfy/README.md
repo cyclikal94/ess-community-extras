@@ -27,7 +27,13 @@ Install:
 helm upgrade --install ntfy ./charts/ntfy -f ntfy-values.yaml
 ```
 
-Install from published Helm repository:
+Install from published OCI registry (preferred):
+
+```bash
+helm upgrade --install ntfy oci://ghcr.io/cyclikal94/matrix-helm-charts/ntfy -n ntfy --create-namespace --values ntfy-values.yaml
+```
+
+Install from published Helm repository (legacy-compatible):
 
 ```bash
 helm repo add matrix-helm-charts https://cyclikal94.github.io/matrix-helm-charts

@@ -29,7 +29,13 @@ Install:
 helm upgrade --install matrix-appservice-irc ./charts/matrix-appservice-irc -f matrix-appservice-irc-values.yaml
 ```
 
-Install from published Helm repository:
+Install from published OCI registry (preferred):
+
+```bash
+helm upgrade --install matrix-appservice-irc oci://ghcr.io/cyclikal94/matrix-helm-charts/matrix-appservice-irc -n matrix-appservice-irc --create-namespace --values matrix-appservice-irc-values.yaml
+```
+
+Install from published Helm repository (legacy-compatible):
 
 ```bash
 helm repo add matrix-helm-charts https://cyclikal94.github.io/matrix-helm-charts

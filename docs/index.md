@@ -7,6 +7,26 @@ title: Matrix Helm Charts
 
 A collection of helm charts to deploy services alongside Matrix, with example `values.yaml` files, initially focused on [ESS Community](https://github.com/element-hq/ess-helm) but should work with any Matrix deployment.
 
+## Usage
+
+### OCI Registry (Preferred)
+
+All charts are published as OCI artifacts on GHCR:
+
+```bash
+helm upgrade --install <release-name> oci://ghcr.io/cyclikal94/matrix-helm-charts/<chart-name> --namespace <namespace> --create-namespace --values <values-file>
+```
+
+### HTTP Registry (Legacy-Compatible)
+
+The legacy index-based repository remains available:
+
+```bash
+helm repo add matrix-helm-charts https://cyclikal94.github.io/matrix-helm-charts
+helm repo update
+helm upgrade --install <release-name> matrix-helm-charts/<chart-name> --namespace <namespace> --create-namespace --values <values-file>
+```
+
 ## Components
 
 | Component | Helm Chart Version | App Version | Repository | Description |

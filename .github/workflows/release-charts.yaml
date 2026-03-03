@@ -12,6 +12,7 @@ on:
 permissions:
   contents: write
   pull-requests: read
+  packages: write
 
 jobs:
   release:
@@ -62,6 +63,60 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_PAGES_BRANCH: "main"
           CR_PAGES_INDEX_PATH: "docs/index.yaml"
+
+      - name: Log in to GHCR
+        if: steps.chart_releaser.outputs.changed_charts != ''
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Publish changed charts to OCI
+        if: steps.chart_releaser.outputs.changed_charts != ''
+        env:
+          CHANGED_CHARTS: ${{ steps.chart_releaser.outputs.changed_charts }}
+          OCI_REGISTRY: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
+        run: |
+          set -euo pipefail
+
+          normalize_chart_name() {
+            local value="$1"
+            value="$(echo "$value" | sed -E 's#^[[:space:]]+##; s#[[:space:]]+$##')"
+            value="$(echo "$value" | sed -E 's#^\.?/*##; s#/*$##; s#^charts/##; s#/Chart\.ya?ml$##I')"
+            echo "$value"
+          }
+
+          chart_list="$(printf '%s\n' "${CHANGED_CHARTS}" \
+            | tr ',' '\n' \
+            | while IFS= read -r entry; do
+                normalize_chart_name "$entry"
+              done \
+            | awk 'NF && !seen[$0]++')"
+
+          if [ -z "${chart_list}" ]; then
+            echo "No changed charts resolved for OCI publishing."
+            exit 0
+          fi
+
+          package_dir="$(mktemp -d)"
+          trap 'rm -rf "${package_dir}"' EXIT
+
+          echo "Publishing charts to oci://${OCI_REGISTRY}"
+          printf '%s\n' "${chart_list}" | while IFS= read -r chart; do
+            if [ ! -f "charts/${chart}/Chart.yaml" ]; then
+              echo "Skipping ${chart}: charts/${chart}/Chart.yaml not found"
+              continue
+            fi
+
+            echo "Packaging ${chart}"
+            helm package "charts/${chart}" --destination "${package_dir}"
+            package_file="$(find "${package_dir}" -maxdepth 1 -type f -name "${chart}-*.tgz" | sort | tail -n 1)"
+            if [ -z "${package_file}" ]; then
+              echo "Failed to locate packaged artifact for ${chart}" >&2
+              exit 1
+            fi
+
+            echo "Pushing ${package_file} to oci://${OCI_REGISTRY}"
+            helm push "${package_file}" "oci://${OCI_REGISTRY}"
+          done
 
       - name: Enrich chart release notes
         if: steps.chart_releaser.outputs.changed_charts != ''
