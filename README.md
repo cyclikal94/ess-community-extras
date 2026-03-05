@@ -49,17 +49,10 @@ Given this is new, I'm actively looking for useful new charts to make, I'm prior
     <col width="1%">
     <col>
   </colgroup>
-  <thead>
-    <tr>
-      <th align="left">Chart</th>
-      <th align="left">Component</th>
-      <th align="left">Description</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
-      <td><a href="charts/ntfy/README.md"><img alt="ntfy" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.version&label=ntfy%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/binwiederhier/ntfy"><img alt="binwiederhier/ntfy" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.ComponentVersion&label=binwiederhier%2Fntfy&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/ntfy/README.md"><img alt="ntfy" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.version&label=ntfy%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/binwiederhier/ntfy"><img alt="binwiederhier/ntfy" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.ComponentVersion&label=binwiederhier%2Fntfy&logo=github&style=flat"></a></td>
       <td>HTTP-based pub-sub notification service. You can use this to provide Matrix push notifications on Android without Google.</td>
     </tr>
   </tbody>
@@ -73,17 +66,10 @@ Given this is new, I'm actively looking for useful new charts to make, I'm prior
     <col width="1%">
     <col>
   </colgroup>
-  <thead>
-    <tr>
-      <th align="left">Chart</th>
-      <th align="left">Component</th>
-      <th align="left">Description</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
-      <td><a href="charts/matrix-Componentservice-irc/README.md"><img alt="matrix-Componentservice-irc" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.matrix-Componentservice-irc%5B0%5D.version&label=matrix-Componentservice-irc%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/matrix-org/matrix-Componentservice-irc"><img alt="matrix-org/matrix-Componentservice-irc" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.matrix-Componentservice-irc%5B0%5D.ComponentVersion&label=matrix-org%2Fmatrix-Componentservice-irc&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/matrix-Componentservice-irc/README.md"><img alt="matrix-Componentservice-irc" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.matrix-Componentservice-irc%5B0%5D.version&label=matrix-Componentservice-irc%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/matrix-org/matrix-Componentservice-irc"><img alt="matrix-org/matrix-Componentservice-irc" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.matrix-Componentservice-irc%5B0%5D.ComponentVersion&label=matrix-org%2Fmatrix-Componentservice-irc&logo=github&style=flat"></a></td>
       <td>IRC bridge for Matrix.</td>
     </tr>
   </tbody>
@@ -101,22 +87,15 @@ Given there are so many `mautrix` bridges, I'm collating them under a dedicated 
     <col width="1%">
     <col>
   </colgroup>
-  <thead>
-    <tr>
-      <th align="left">Chart</th>
-      <th align="left">Component</th>
-      <th align="left">Description</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
-      <td><a href="charts/mautrix-googlechat/README.md"><img alt="mautrix-googlechat" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-googlechat%5B0%5D.version&label=mautrix-googlechat%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/googlechat"><img alt="mautrix/googlechat" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-googlechat%5B0%5D.ComponentVersion&label=mautrix%2Fgooglechat&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-googlechat/README.md"><img alt="mautrix-googlechat" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-googlechat%5B0%5D.version&label=mautrix-googlechat%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/googlechat"><img alt="mautrix/googlechat" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-googlechat%5B0%5D.ComponentVersion&label=mautrix%2Fgooglechat&logo=github&style=flat"></a></td>
       <td>A Matrix-Google Chat puppeting bridge.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-telegram/README.md"><img alt="mautrix-telegram" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-telegram%5B0%5D.version&label=mautrix-telegram%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/telegram"><img alt="mautrix/telegram" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-telegram%5B0%5D.ComponentVersion&label=mautrix%2Ftelegram&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-telegram/README.md"><img alt="mautrix-telegram" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-telegram%5B0%5D.version&label=mautrix-telegram%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/telegram"><img alt="mautrix/telegram" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-telegram%5B0%5D.ComponentVersion&label=mautrix%2Ftelegram&logo=github&style=flat"></a></td>
       <td>A Matrix-Telegram hybrid puppeting/relaybot bridge.</td>
     </tr>
   </tbody>
@@ -139,17 +118,10 @@ Double puppetting is enabled by default, and as such, any charts sharing the sam
     <col width="1%">
     <col>
   </colgroup>
-  <thead>
-    <tr>
-      <th align="left">Chart</th>
-      <th align="left">Component</th>
-      <th align="left">Description</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
-      <td><a href="charts/mautrix-go-base/README.md"><img alt="mautrix-go-base" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-go-base%5B0%5D.version&label=mautrix-go-base%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/cyclikal94/matrix-helm-charts"><img alt="cyclikal94/matrix-helm-charts" src="https://img.shields.io/badge/cyclikal94%2Fmatrix--helm--charts-N%2FA-blue?logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-go-base/README.md"><img alt="mautrix-go-base" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-go-base%5B0%5D.version&label=mautrix-go-base%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/cyclikal94/matrix-helm-charts"><img alt="cyclikal94/matrix-helm-charts" src="https://img.shields.io/badge/cyclikal94%2Fmatrix--helm--charts-N%2FA-blue?logo=github&style=flat"></a></td>
       <td>The base chart used for all <code>mautrix-</code> go bridges.</td>
     </tr>
   </tbody>
@@ -163,62 +135,55 @@ Double puppetting is enabled by default, and as such, any charts sharing the sam
     <col width="1%">
     <col>
   </colgroup>
-  <thead>
-    <tr>
-      <th align="left">Chart</th>
-      <th align="left">Component</th>
-      <th align="left">Description</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
-      <td><a href="charts/mautrix-bluesky/README.md"><img alt="mautrix-bluesky" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-bluesky%5B0%5D.version&label=mautrix-bluesky%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/bluesky"><img alt="mautrix/bluesky" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-bluesky%5B0%5D.ComponentVersion&label=mautrix%2Fbluesky&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-bluesky/README.md"><img alt="mautrix-bluesky" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-bluesky%5B0%5D.version&label=mautrix-bluesky%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/bluesky"><img alt="mautrix/bluesky" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-bluesky%5B0%5D.ComponentVersion&label=mautrix%2Fbluesky&logo=github&style=flat"></a></td>
       <td>A Matrix-Bluesky DM puppeting bridge.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-gmessages/README.md"><img alt="mautrix-gmessages" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gmessages%5B0%5D.version&label=mautrix-gmessages%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/gmessages"><img alt="mautrix/gmessages" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gmessages%5B0%5D.ComponentVersion&label=mautrix%2Fgmessages&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-gmessages/README.md"><img alt="mautrix-gmessages" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gmessages%5B0%5D.version&label=mautrix-gmessages%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/gmessages"><img alt="mautrix/gmessages" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gmessages%5B0%5D.ComponentVersion&label=mautrix%2Fgmessages&logo=github&style=flat"></a></td>
       <td>A Matrix-Google Messages puppeting bridge.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-gvoice/README.md"><img alt="mautrix-gvoice" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gvoice%5B0%5D.version&label=mautrix-gvoice%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/gvoice"><img alt="mautrix/gvoice" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gvoice%5B0%5D.ComponentVersion&label=mautrix%2Fgvoice&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-gvoice/README.md"><img alt="mautrix-gvoice" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gvoice%5B0%5D.version&label=mautrix-gvoice%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/gvoice"><img alt="mautrix/gvoice" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gvoice%5B0%5D.ComponentVersion&label=mautrix%2Fgvoice&logo=github&style=flat"></a></td>
       <td>A Matrix-Google Voice puppeting bridge.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-linkedin/README.md"><img alt="mautrix-linkedin" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-linkedin%5B0%5D.version&label=mautrix-linkedin%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/linkedin"><img alt="mautrix/linkedin" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-linkedin%5B0%5D.ComponentVersion&label=mautrix%2Flinkedin&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-linkedin/README.md"><img alt="mautrix-linkedin" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-linkedin%5B0%5D.version&label=mautrix-linkedin%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/linkedin"><img alt="mautrix/linkedin" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-linkedin%5B0%5D.ComponentVersion&label=mautrix%2Flinkedin&logo=github&style=flat"></a></td>
       <td>A Matrix-LinkedIn puppeting bridge.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-meta/README.md"><img alt="mautrix-meta" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-meta%5B0%5D.version&label=mautrix-meta%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/meta"><img alt="mautrix/meta" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-meta%5B0%5D.ComponentVersion&label=mautrix%2Fmeta&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-meta/README.md"><img alt="mautrix-meta" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-meta%5B0%5D.version&label=mautrix-meta%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/meta"><img alt="mautrix/meta" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-meta%5B0%5D.ComponentVersion&label=mautrix%2Fmeta&logo=github&style=flat"></a></td>
       <td>A Matrix-Meta puppeting bridge.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-signal/README.md"><img alt="mautrix-signal" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-signal%5B0%5D.version&label=mautrix-signal%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/signal"><img alt="mautrix/signal" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-signal%5B0%5D.ComponentVersion&label=mautrix%2Fsignal&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-signal/README.md"><img alt="mautrix-signal" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-signal%5B0%5D.version&label=mautrix-signal%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/signal"><img alt="mautrix/signal" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-signal%5B0%5D.ComponentVersion&label=mautrix%2Fsignal&logo=github&style=flat"></a></td>
       <td>A Matrix-Signal puppeting bridge.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-slack/README.md"><img alt="mautrix-slack" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-slack%5B0%5D.version&label=mautrix-slack%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/slack"><img alt="mautrix/slack" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-slack%5B0%5D.ComponentVersion&label=mautrix%2Fslack&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-slack/README.md"><img alt="mautrix-slack" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-slack%5B0%5D.version&label=mautrix-slack%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/slack"><img alt="mautrix/slack" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-slack%5B0%5D.ComponentVersion&label=mautrix%2Fslack&logo=github&style=flat"></a></td>
       <td>A Matrix-Slack puppeting bridge based on <a href="https://github.com/slack-go/slack">slack-go</a>.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-twitter/README.md"><img alt="mautrix-twitter" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-twitter%5B0%5D.version&label=mautrix-twitter%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/twitter"><img alt="mautrix/twitter" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-twitter%5B0%5D.ComponentVersion&label=mautrix%2Ftwitter&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-twitter/README.md"><img alt="mautrix-twitter" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-twitter%5B0%5D.version&label=mautrix-twitter%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/twitter"><img alt="mautrix/twitter" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-twitter%5B0%5D.ComponentVersion&label=mautrix%2Ftwitter&logo=github&style=flat"></a></td>
       <td>A Matrix-Twitter DM puppeting bridge.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-whatsComponent/README.md"><img alt="mautrix-whatsComponent" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-whatsComponent%5B0%5D.version&label=mautrix-whatsComponent%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/whatsComponent"><img alt="mautrix/whatsComponent" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-whatsComponent%5B0%5D.ComponentVersion&label=mautrix%2FwhatsComponent&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-whatsComponent/README.md"><img alt="mautrix-whatsComponent" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-whatsComponent%5B0%5D.version&label=mautrix-whatsComponent%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/whatsComponent"><img alt="mautrix/whatsComponent" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-whatsComponent%5B0%5D.ComponentVersion&label=mautrix%2FwhatsComponent&logo=github&style=flat"></a></td>
       <td>A Matrix-WhatsComponent puppeting bridge based on <a href="https://github.com/tulir/whatsmeow">whatsmeow</a>.</td>
     </tr>
     <tr>
-      <td><a href="charts/mautrix-zulip/README.md"><img alt="mautrix-zulip" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-zulip%5B0%5D.version&label=mautrix-zulip%20Helm%20Chart&logo=helm&style=for-the-badge"></a></td>
-      <td><a href="https://github.com/mautrix/zulip"><img alt="mautrix/zulip" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-zulip%5B0%5D.ComponentVersion&label=mautrix%2Fzulip&logo=github&style=for-the-badge"></a></td>
+      <td><a href="charts/mautrix-zulip/README.md"><img alt="mautrix-zulip" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-zulip%5B0%5D.version&label=mautrix-zulip%20Helm%20Chart&logo=helm&style=flat"></a></td>
+      <td><a href="https://github.com/mautrix/zulip"><img alt="mautrix/zulip" src="https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-zulip%5B0%5D.ComponentVersion&label=mautrix%2Fzulip&logo=github&style=flat"></a></td>
       <td>A Matrix-Zulip puppeting bridge.</td>
     </tr>
   </tbody>
