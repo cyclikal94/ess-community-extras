@@ -1,0 +1,66 @@
+name: Bug report
+description: Create a report to help us improve
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out the details below so we can triage the issue quickly.
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: To reproduce
+      description: Steps to reproduce the behaviour.
+      placeholder: |
+        1. Deploy chart with ...
+        2. Run ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: values-yaml
+    attributes:
+      label: Provide values.yaml
+      description: Please provide your values.yaml used to deploy the chart. Censor any sensitive values.
+      render: yaml
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Provide relevant logs
+      description: Please include relevant logs, for example `kubectl logs POD_NAME -n NAMESPACE` and `kubectl describe POD_NAME -n NAMESPACE`.
+      render: shell
+    validations:
+      required: false
+  - type: input
+    id: matrix-deployment
+    attributes:
+      label: Matrix deployment
+      description: For example ESS Community and version.
+      placeholder: ESS Community vX.Y.Z
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+    validations:
+      required: false
