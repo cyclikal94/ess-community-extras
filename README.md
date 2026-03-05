@@ -51,9 +51,11 @@ Given this is new, I'm actively looking for useful new charts to make, I'm prior
 
 [![binwiederhier/ntfy](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.appVersion&label=binwiederhier%2Fntfy&logo=github&style=flat)](https://github.com/binwiederhier/ntfy)
 
-</td></tr></table>
+</td></tr><tr><td>
 
-> HTTP-based pub-sub notification service. You can use this to provide Matrix push notifications on Android without Google.
+HTTP-based pub-sub notification service. You can use this to provide Matrix push notifications on Android without Google.
+
+</td></tr></table>
 
 ### Bridges
 
