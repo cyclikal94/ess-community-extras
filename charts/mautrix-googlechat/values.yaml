@@ -94,7 +94,7 @@ database:
     password:
       value: mautrix_googlechat_password
     database: mautrix_googlechat
-    sslMode: prefer
+    sslMode: disable
 
 postgres:
   enabled: true

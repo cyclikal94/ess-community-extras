@@ -129,7 +129,7 @@ database:
     password:
       value: mautrix_meta_password
     database: mautrix_meta
-    sslMode: prefer
+    sslMode: disable
 
 postgres:
   enabled: true

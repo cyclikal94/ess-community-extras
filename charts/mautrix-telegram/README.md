@@ -146,7 +146,7 @@ database:
     password:
       value: replace_me
     database: mautrix_telegram
-    sslMode: prefer
+    sslMode: require
 ```
 
 See: `values.external.example.yaml`

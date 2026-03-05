@@ -100,7 +100,7 @@ database:
     password:
       value: mautrix_telegram_password
     database: mautrix_telegram
-    sslMode: prefer
+    sslMode: disable
 
 postgres:
   enabled: true

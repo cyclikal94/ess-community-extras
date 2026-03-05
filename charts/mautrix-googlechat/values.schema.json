@@ -263,10 +263,7 @@
               "type": "string",
               "default": "disable",
               "enum": [
-                "",
                 "disable",
-                "allow",
-                "prefer",
                 "require",
                 "verify-ca",
                 "verify-full"

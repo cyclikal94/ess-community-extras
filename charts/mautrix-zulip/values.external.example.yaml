@@ -16,7 +16,7 @@ database:
     password:
       value: replace_me
     database: mautrix_zulip
-    sslMode: prefer
+    sslMode: require
 
 homeserver:
   domain: matrix.example.com

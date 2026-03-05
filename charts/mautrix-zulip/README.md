@@ -223,7 +223,7 @@ database:
     password:
       value: replace_me
     database: mautrix_zulip
-    sslMode: prefer
+    sslMode: require
 ```
 
 See: `values.external.example.yaml`

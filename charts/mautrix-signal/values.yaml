@@ -129,7 +129,7 @@ database:
     password:
       value: mautrix_signal_password
     database: mautrix_signal
-    sslMode: prefer
+    sslMode: disable
 
 postgres:
   enabled: true

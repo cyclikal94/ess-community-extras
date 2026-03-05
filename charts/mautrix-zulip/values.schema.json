@@ -412,7 +412,13 @@
             },
             "sslMode": {
               "type": "string",
-              "default": "prefer"
+              "default": "disable",
+              "enum": [
+                "disable",
+                "require",
+                "verify-ca",
+                "verify-full"
+              ]
             }
           }
         }

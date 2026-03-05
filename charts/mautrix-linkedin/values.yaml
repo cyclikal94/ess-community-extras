@@ -129,7 +129,7 @@ database:
     password:
       value: mautrix_linkedin_password
     database: mautrix_linkedin
-    sslMode: prefer
+    sslMode: disable
 
 postgres:
   enabled: true

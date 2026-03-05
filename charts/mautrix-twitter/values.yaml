@@ -129,7 +129,7 @@ database:
     password:
       value: mautrix_twitter_password
     database: mautrix_twitter
-    sslMode: prefer
+    sslMode: disable
 
 postgres:
   enabled: true

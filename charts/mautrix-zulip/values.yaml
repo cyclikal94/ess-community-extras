@@ -129,7 +129,7 @@ database:
     password:
       value: mautrix_zulip_password
     database: mautrix_zulip
-    sslMode: prefer
+    sslMode: disable
 
 postgres:
   enabled: true

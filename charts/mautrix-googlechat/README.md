@@ -138,7 +138,7 @@ database:
     password:
       value: replace_me
     database: mautrix_googlechat
-    sslMode: prefer
+    sslMode: require
 ```
 
 See: `values.external.example.yaml`

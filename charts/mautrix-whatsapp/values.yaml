@@ -129,7 +129,7 @@ database:
     password:
       value: mautrix_whatsapp_password
     database: mautrix_whatsapp
-    sslMode: prefer
+    sslMode: disable
 
 postgres:
   enabled: true
