@@ -41,7 +41,7 @@ Given this is new, I'm actively looking for useful new charts to make, I'm prior
 > [!NOTE]
 > Please note that I am actively testing each helm chart and plan to make `1.0.0` releases only after each have been tested / considered ready. For now, `ntfy`, `matrix-appservice-irc` and the two Python-based Mautrix bridges `mautrix-telegram` / `mautrix-googlechat` have been confirmed tested and working, hence `0.9.X` versions, but are due a `1.0.0` after further testing of different configurations / deployments.
 
-### Tools
+### Integrations
 
 #### [![ntfy](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.version&label=ntfy&logo=helm)](charts/ntfy/README.md) [![binwiederhier/ntfy](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.appVersion&label=binwiederhier%2Fntfy&logo=github)](https://github.com/binwiederhier/ntfy)
 
