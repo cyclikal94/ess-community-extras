@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="100%" height="100%" viewBox="0 0 5330 2266" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-    <g transform="matrix(2,0,0,2,0,0)">
+    <style>
+        :root {
+            --matrix-text: #000000;
+            --pattern-filter: none;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --matrix-text: #ffffff;
+            }
+        }
+    </style>
+    <g transform="matrix(2,0,0,2,0,0)" style="fill:var(--matrix-text);">
         <g transform="matrix(2,0,0,2,-312.859,-233.477)">
             <g id="_-" serif:id="[" transform="matrix(1,0,0,1,156.429,231.357)">
                 <path d="M8.876,7.71L8.876,329.096L32.006,329.096L32.006,336.807L0,336.807L0,0L32.006,0L32.006,7.71L8.876,7.71Z" style="fill-rule:nonzero;"/>

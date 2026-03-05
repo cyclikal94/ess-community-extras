@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="100%" height="100%" viewBox="0 0 1700 460" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <style>
+        :root {
+            --matrix-text: #000000;
+            --pattern-filter: none;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --matrix-text: #ffffff;
+            }
+        }
+    </style>
     <use id="bg" xlink:href="#_Image1" x="25" y="25" width="1650px" height="410px"/>
     <g transform="matrix(1.72364,0,0,1.11546,-41.5828,-17.8131)">
         <path d="M995.905,56.759L995.905,387.563C995.905,397.706 990.576,405.941 984.012,405.941L50.523,405.941C43.958,405.941 38.629,397.706 38.629,387.563L38.629,56.759C38.629,46.616 43.958,38.381 50.523,38.381L984.012,38.381C990.576,38.381 995.905,46.616 995.905,56.759ZM993.584,56.759C993.584,48.595 989.295,41.967 984.012,41.967L50.523,41.967C45.239,41.967 40.95,48.595 40.95,56.759L40.95,387.563C40.95,395.727 45.239,402.355 50.523,402.355L984.012,402.355C989.295,402.355 993.584,395.727 993.584,387.563L993.584,56.759Z" style="fill:rgb(15,22,137);"/>
     </g>
-    <g id="_-matrixHELM-" serif:id="[matrixHELM]" transform="matrix(0.553891,0,0,0.553891,25.4891,8.49196)">
+    <g id="_-matrixHELM-" serif:id="[matrixHELM]" transform="matrix(0.553891,0,0,0.553891,25.4891,8.49196)" style="fill:var(--matrix-text);">
         <g id="_-" serif:id="[" transform="matrix(1,0,0,1,156.429,231.357)">
             <path d="M8.876,7.71L8.876,329.096L32.006,329.096L32.006,336.807L0,336.807L0,0L32.006,0L32.006,7.71L8.876,7.71Z" style="fill-rule:nonzero;"/>
         </g>
