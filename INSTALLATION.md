@@ -2,7 +2,7 @@
 
 This guide is the quickest way to install one of the charts in this repository for a Matrix setup.
 
-Generally speaking, I'd advise to start small.
+Generally speaking, I'd advise to start with minimal configuration.
 
 For a first deployment, only change what is required to get started, then once working you can try component-specific config.
 
@@ -89,7 +89,7 @@ kubectl get pods -n "${CHART}" -w
 
 Once the pod is ready, the chart itself is installed.
 
-If any pod seems to be having issue, use the following to understand why:
+If any pod has an issue, use the following to understand why:
 
 ```bash
 # Make sure to replace `POD_NAME` with the name of the erroring pod!
@@ -97,8 +97,8 @@ kubectl logs POD_NAME -n "${CHART}"
 kubectl describe pod POD_NAME -n "${CHART}"
 ```
 
-> ![TIP]
-> Installing a bridge? If you see `as_token` issues, this is expected, you still need to link up your Synapse per the following steps!
+> [!TIP]
+> Installing a bridge? If you see `as_token` issues, this can be expected at this stage as you still need to link up those credentials with your Synapse per the following steps!
 
 ## 6. Start Using It
 
@@ -116,10 +116,10 @@ After the Helm install:
 
     ```yaml
     synapse:
-    appservices:
+      appservices:
         # Replace `mautrix-whatsapp` / `whatsapp` with the chart name of your choice
         - configMap: mautrix-whatsapp-registration
-        configMapKey: appservice-registration-whatsapp.yaml
+          configMapKey: appservice-registration-whatsapp.yaml
     ```
 
 2. Redeploy Synapse so it starts using that registration.
@@ -155,6 +155,6 @@ This guide is intentionally simple. After your first install command, use the sp
 
 You can find chart READMEs under [`charts/`](./charts/).
 
-All charts are designed to be as minimal as possible as such they defer most all configuration to the underlying components native config.
+All charts are designed to be as minimal as possible, so they defer most configuration to the underlying component's native config.
 
-Check out each components associated repo / linked config examples to learn more.
+Check out each component's associated repo / linked config examples to learn more.
