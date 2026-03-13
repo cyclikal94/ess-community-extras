@@ -129,22 +129,8 @@ password
 {{- define "mautrix-go-base.ensureDatabasePostgresPassword" -}}
 {{- $postgres := .Values.database.postgres | default dict -}}
 {{- if not (hasKey $postgres "_computedPassword") -}}
-{{- $passwordCfg := (get $postgres "password") | default dict -}}
-{{- $password := (get $passwordCfg "value") | default "" -}}
-{{- $existingSecretName := (get $passwordCfg "existingSecret") | default "" -}}
-{{- $existingSecretKey := (get $passwordCfg "existingSecretKey") | default "password" -}}
-{{- if and (ne $password "") (ne $existingSecretName "") -}}
-{{- fail "values.database.postgres.password.value and values.database.postgres.password.existingSecret are mutually exclusive" -}}
-{{- end -}}
-{{- if eq $password "" -}}
-{{- if ne $existingSecretName "" -}}
-{{- $existing := lookup "v1" "Secret" .Release.Namespace $existingSecretName -}}
-{{- if and $existing (hasKey $existing "data") (hasKey $existing.data $existingSecretKey) -}}
-{{- $password = (index $existing.data $existingSecretKey | b64dec) -}}
-{{- else -}}
-{{- fail (printf "values.database.postgres.password.existingSecret %q must contain key %q in namespace %q" $existingSecretName $existingSecretKey .Release.Namespace) -}}
-{{- end -}}
-{{- else if .Values.postgres.enabled -}}
+{{- $password := "" -}}
+{{- if .Values.postgres.enabled -}}
 {{- $managedSecretName := include "mautrix-go-base.postgresFullname" . -}}
 {{- $managedSecretKey := include "mautrix-go-base.databasePostgresManagedSecretKey" . -}}
 {{- $existing := lookup "v1" "Secret" .Release.Namespace $managedSecretName -}}
@@ -156,16 +142,33 @@ password
 {{- end -}}
 {{- if eq $password "" -}}
 {{- fail "values.database.postgres.password.value or values.database.postgres.password.existingSecret is required when postgres.enabled=false" -}}
-{{- else -}}
+{{- end -}}
 {{- $_ := set $postgres "_computedPassword" $password -}}
-{{- end -}}
-{{- end -}}
 {{- end -}}
 {{- end -}}
 
 {{- define "mautrix-go-base.databasePostgresPassword" -}}
+{{- $postgres := .Values.database.postgres | default dict -}}
+{{- $passwordCfg := (get $postgres "password") | default dict -}}
+{{- $password := (get $passwordCfg "value") | default "" -}}
+{{- $existingSecretName := (get $passwordCfg "existingSecret") | default "" -}}
+{{- $existingSecretKey := (get $passwordCfg "existingSecretKey") | default "password" -}}
+{{- if and (ne $password "") (ne $existingSecretName "") -}}
+{{- fail "values.database.postgres.password.value and values.database.postgres.password.existingSecret are mutually exclusive" -}}
+{{- end -}}
+{{- if ne $password "" -}}
+{{- $password -}}
+{{- else if ne $existingSecretName "" -}}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace $existingSecretName -}}
+{{- if and $existing (hasKey $existing "data") (hasKey $existing.data $existingSecretKey) -}}
+{{- index $existing.data $existingSecretKey | b64dec -}}
+{{- else -}}
+{{- fail (printf "values.database.postgres.password.existingSecret %q must contain key %q in namespace %q" $existingSecretName $existingSecretKey .Release.Namespace) -}}
+{{- end -}}
+{{- else -}}
 {{- include "mautrix-go-base.ensureDatabasePostgresPassword" . -}}
 {{- index .Values.database.postgres "_computedPassword" -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "mautrix-go-base.databasePostgresPasswordChecksum" -}}
