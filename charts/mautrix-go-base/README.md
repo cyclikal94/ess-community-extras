@@ -6,10 +6,10 @@ Shared Helm library chart for mautrix Go bridge wrappers.
 
 This chart centralizes Kubernetes resource templates and shared helper logic so bridge-specific charts only define:
 
-- bridge-specific managed config and reserved path declarations
-- bridge command and startup args
-- registration file key and regex defaults
-- chart metadata, schema, and examples
+- Bridge-specific managed config and reserved path declarations
+- Bridge command and startup args
+- Registration file key and regex defaults
+- Chart metadata, schema, and examples
 
 ## Wrapper Contract
 
@@ -43,29 +43,29 @@ A wrapper chart that depends on this library must define these helpers:
 
 Templates in this library follow mautrix Kubernetes guidance:
 
-- direct bridge command (no startup script)
+- Direct bridge command (no startup script)
 - `--no-update` support via wrapper args
-- read-only config mount at `/data`
-- singleton bridge StatefulSet (`replicas: 1`)
+- Read-only config mount at `/data`
+- Singleton bridge StatefulSet (`replicas: 1`)
 - `publishNotReadyAddresses: true`
-- optional probes only (disabled by default)
+- Optional probes only (disabled by default)
 
 ## New Go Bridge Checklist
 
-Use `mautrix-whatsapp` as the scaffold:
+If you want to make a new Go Bridge chart, simply:
 
 1. Copy `charts/mautrix-whatsapp` to a new chart name.
 2. Update `Chart.yaml` metadata and image defaults.
 3. Update wrapper helpers in `templates/_helpers.tpl`:
-- `registrationFileKey`
-- `defaultRegistrationUserRegex`
-- `managedConfig`
-- `reservedBasePaths`
-- `reservedNetworkPaths`
-- `doublePuppetRegistrationFileKey`
-- `doublePuppetUserRegex`
-- `mergedConfig` include call to `mautrix-go-base.bridgev2MergedConfig`
-- any bridge-specific config defaults
+    - `registrationFileKey`
+    - `defaultRegistrationUserRegex`
+    - `managedConfig`
+    - `reservedBasePaths`
+    - `reservedNetworkPaths`
+    - `doublePuppetRegistrationFileKey`
+    - `doublePuppetUserRegex`
+    - `mergedConfig` include call to `mautrix-go-base.bridgev2MergedConfig`
+    - any bridge-specific config defaults
 4. Keep Kubernetes runtime shape unchanged unless bridge behavior requires it.
 5. Update `values.yaml`, `values.schema.json`, and examples.
 6. Update chart README and root docs tables.
