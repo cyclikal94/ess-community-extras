@@ -21,7 +21,7 @@ Generally speaking, installation / usage follows these steps:
 3. Start a DM with the bot `@componentnamebot:example.com`, i.e. `@whatsappbot:example.com`, login etc.
 
 > [!TIP]
-> You should start with the [INSTALLATION](INSTALLATION.md) guide!.
+> You should start with the [INSTALLATION](INSTALLATION.md) guide!
 
 ### OCI Registry (Preferred)
 
