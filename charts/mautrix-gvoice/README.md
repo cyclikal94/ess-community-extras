@@ -2,6 +2,9 @@
 
 A Matrix-Google-Voice puppeting bridge. See [mautrix/gvoice](https://github.com/mautrix/gvoice) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys `mautrix-gvoice` with:

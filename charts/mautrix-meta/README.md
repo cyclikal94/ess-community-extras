@@ -2,6 +2,9 @@
 
 A Matrix-Meta puppeting bridge. See [mautrix/meta](https://github.com/mautrix/meta) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys `mautrix-meta` with:

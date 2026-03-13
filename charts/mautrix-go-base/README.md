@@ -2,6 +2,9 @@
 
 Shared Helm library chart for mautrix Go bridge wrappers.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Purpose
 
 This chart centralizes Kubernetes resource templates and shared helper logic so bridge-specific charts only define:

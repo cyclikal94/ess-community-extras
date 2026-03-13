@@ -2,6 +2,9 @@
 
 A Matrix-Google-Messages puppeting bridge. See [mautrix/gmessages](https://github.com/mautrix/gmessages) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys `mautrix-gmessages` with:

@@ -2,6 +2,9 @@
 
 A Matrix-WhatsApp puppeting bridge. See [mautrix/whatsapp](https://github.com/mautrix/whatsapp) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys `mautrix-whatsapp` with:

@@ -2,6 +2,9 @@
 
 This is an IRC bridge for Matrix. See [matrix-org/matrix-appservice-irc](https://github.com/matrix-org/matrix-appservice-irc) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys matrix-appservice-irc with a ConfigMap, Service, Deployment(s), optional bundled Redis/Postgres StatefulSets, and media proxy Ingress.

@@ -2,6 +2,9 @@
 
 A Matrix-LinkedIn puppeting bridge. See [mautrix/linkedin](https://github.com/mautrix/linkedin) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys `mautrix-linkedin` with:

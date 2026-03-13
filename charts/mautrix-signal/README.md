@@ -2,6 +2,9 @@
 
 A Matrix-Signal puppeting bridge. See [mautrix/signal](https://github.com/mautrix/signal) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys `mautrix-signal` with:

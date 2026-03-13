@@ -2,6 +2,9 @@
 
 A Matrix-Bluesky puppeting bridge. See [mautrix/bluesky](https://github.com/mautrix/bluesky) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys `mautrix-bluesky` with:

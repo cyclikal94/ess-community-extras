@@ -2,6 +2,9 @@
 
 A Matrix-Twitter puppeting bridge. See [mautrix/twitter](https://github.com/mautrix/twitter) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys `mautrix-twitter` with:

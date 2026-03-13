@@ -2,6 +2,9 @@
 
 ntfy (pronounced "notify") is a simple HTTP-based pub-sub notification service. See [binwiederhier/ntfy](https://github.com/binwiederhier/ntfy) for details.
 
+> [!TIP]
+> Not interested in the nitty-gritty technical details? Start with the [INSTALLATION](../../INSTALLATION.md) guide!.
+
 ## Overview
 
 This chart deploys ntfy with a ConfigMap, Service, StatefulSet, and Ingress.
