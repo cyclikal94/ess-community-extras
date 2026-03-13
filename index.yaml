@@ -43,6 +43,19 @@ entries:
   matrix-appservice-irc:
   - apiVersion: v2
     appVersion: release-4.0.0
+    created: "2026-03-13T11:22:46.933246927Z"
+    description: Helm chart for matrix-appservice-irc
+    digest: c3eb57118025b4801bf78f4fb57b1dad63e167da4f92534abe97fad9476fa8f0
+    home: https://matrix-org.github.io/matrix-appservice-irc/latest/
+    name: matrix-appservice-irc
+    sources:
+    - https://github.com/matrix-org/matrix-appservice-irc
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/matrix-appservice-irc-1.0.0/matrix-appservice-irc-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: release-4.0.0
     created: "2026-03-03T16:02:56.98702722Z"
     description: Helm chart for matrix-appservice-irc
     digest: 15418e06ae474cb3fc19316c41507f7e1f365a34a615cbba03f744a8247ddf8f
@@ -148,6 +161,23 @@ entries:
   mautrix-bluesky:
   - apiVersion: v2
     appVersion: v0.2510.0
+    created: "2026-03-13T11:22:47.045148375Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-bluesky
+    digest: aa693d46f56f383397834214639da1ed69b8f6f23787814e3cc0201632a18da9
+    home: https://docs.mau.fi/bridges/go/bluesky/
+    name: mautrix-bluesky
+    sources:
+    - https://github.com/mautrix/bluesky
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-bluesky-1.0.0/mautrix-bluesky-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.2510.0
     created: "2026-03-05T17:52:46.110387893Z"
     dependencies:
     - name: mautrix-go-base
@@ -200,6 +230,23 @@ entries:
   mautrix-gmessages:
   - apiVersion: v2
     appVersion: v0.2602.0
+    created: "2026-03-13T11:22:47.18229038Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-gmessages
+    digest: d3143bec56a73a4abfae62102b5605f220f262371a29a28f3bac86a0081786de
+    home: https://docs.mau.fi/bridges/go/gmessages/
+    name: mautrix-gmessages
+    sources:
+    - https://github.com/mautrix/gmessages
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-gmessages-1.0.0/mautrix-gmessages-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.2602.0
     created: "2026-03-05T17:52:46.267557104Z"
     dependencies:
     - name: mautrix-go-base
@@ -250,6 +297,20 @@ entries:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-gmessages-0.1.0/mautrix-gmessages-0.1.0.tgz
     version: 0.1.0
   mautrix-go-base:
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2026-03-13T11:22:47.345172654Z"
+    description: Shared library templates for mautrix Go bridge Helm charts
+    digest: 12f0faebdd1aa7e30148b895b0942ff50eeb75c95b0c6109a99fb4748950fb15
+    home: https://docs.mau.fi/bridges/go/
+    name: mautrix-go-base
+    sources:
+    - https://github.com/mautrix
+    - https://github.com/cyclikal94/matrix-helm-charts
+    type: library
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-go-base-1.0.0/mautrix-go-base-1.0.0.tgz
+    version: 1.0.0
   - apiVersion: v2
     appVersion: 0.0.0
     created: "2026-03-03T16:02:57.520636646Z"
@@ -323,6 +384,19 @@ entries:
   mautrix-googlechat:
   - apiVersion: v2
     appVersion: v0.5.2
+    created: "2026-03-13T11:22:47.478217886Z"
+    description: Helm chart for mautrix-googlechat
+    digest: 81ed75d4aeb596f21c536e8b684585520a90f49461f34ea77c0484712658a398
+    home: https://docs.mau.fi/bridges/python/googlechat/
+    name: mautrix-googlechat
+    sources:
+    - https://github.com/mautrix/googlechat
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-googlechat-1.0.0/mautrix-googlechat-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.5.2
     created: "2026-03-05T17:52:46.471232491Z"
     description: Helm chart for mautrix-googlechat
     digest: d9f8a93c0204ec64beda1ca5e2bd76fbf456737f5f17a3915b09a5d284266259
@@ -374,6 +448,23 @@ entries:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-googlechat-0.1.0/mautrix-googlechat-0.1.0.tgz
     version: 0.1.0
   mautrix-gvoice:
+  - apiVersion: v2
+    appVersion: v0.2511.0
+    created: "2026-03-13T11:22:47.594188645Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-gvoice
+    digest: d1aa7a5c669297639dffef0727664da06dd6b921a2a9a6e9bd6332d5827efc37
+    home: https://docs.mau.fi/bridges/go/gvoice/
+    name: mautrix-gvoice
+    sources:
+    - https://github.com/mautrix/gvoice
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-gvoice-1.0.0/mautrix-gvoice-1.0.0.tgz
+    version: 1.0.0
   - apiVersion: v2
     appVersion: v0.2511.0
     created: "2026-03-05T17:52:46.657975691Z"
@@ -428,6 +519,23 @@ entries:
   mautrix-linkedin:
   - apiVersion: v2
     appVersion: v0.2602.0
+    created: "2026-03-13T11:22:47.724958397Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-linkedin
+    digest: 64b1a72077085db8bca12a80a678447215477e425666f04f363822423652c30f
+    home: https://docs.mau.fi/bridges/go/linkedin/
+    name: mautrix-linkedin
+    sources:
+    - https://github.com/mautrix/linkedin
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-linkedin-1.0.0/mautrix-linkedin-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.2602.0
     created: "2026-03-05T17:52:46.810306941Z"
     dependencies:
     - name: mautrix-go-base
@@ -480,6 +588,23 @@ entries:
   mautrix-meta:
   - apiVersion: v2
     appVersion: v0.2602.0
+    created: "2026-03-13T11:22:47.835930971Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-meta
+    digest: a31184d4d7c69d9932e6934c707bd391b961098da1df467d410017623dcb4305
+    home: https://docs.mau.fi/bridges/go/meta/
+    name: mautrix-meta
+    sources:
+    - https://github.com/mautrix/meta
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-meta-1.0.0/mautrix-meta-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.2602.0
     created: "2026-03-05T17:52:46.977815635Z"
     dependencies:
     - name: mautrix-go-base
@@ -513,6 +638,23 @@ entries:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-meta-0.1.0/mautrix-meta-0.1.0.tgz
     version: 0.1.0
   mautrix-signal:
+  - apiVersion: v2
+    appVersion: v0.2602.2
+    created: "2026-03-13T11:22:47.947416212Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-signal
+    digest: 80db39710bacda28c7ee9249727f9b20cccb945f484a9c47de3261fbf39c22e2
+    home: https://docs.mau.fi/bridges/go/signal/
+    name: mautrix-signal
+    sources:
+    - https://github.com/mautrix/signal
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-signal-1.0.0/mautrix-signal-1.0.0.tgz
+    version: 1.0.0
   - apiVersion: v2
     appVersion: v0.2602.2
     created: "2026-03-05T17:52:47.131782503Z"
@@ -567,6 +709,23 @@ entries:
   mautrix-slack:
   - apiVersion: v2
     appVersion: v0.2602.0
+    created: "2026-03-13T11:22:48.069092822Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-slack
+    digest: 06d161f5d040f2c96f57495ea6b5cbd978f88089cb60d8790fa45de832228522
+    home: https://docs.mau.fi/bridges/go/slack/
+    name: mautrix-slack
+    sources:
+    - https://github.com/mautrix/slack
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-slack-1.0.0/mautrix-slack-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.2602.0
     created: "2026-03-05T17:52:47.274391179Z"
     dependencies:
     - name: mautrix-go-base
@@ -617,6 +776,19 @@ entries:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-slack-0.1.0/mautrix-slack-0.1.0.tgz
     version: 0.1.0
   mautrix-telegram:
+  - apiVersion: v2
+    appVersion: v0.15.3
+    created: "2026-03-13T11:22:48.171259599Z"
+    description: Helm chart for mautrix-telegram
+    digest: a0fb73c0a0ad6d8d626bfc347071b26779f58d3c0881083fba0049e624831ead
+    home: https://docs.mau.fi/bridges/python/telegram/
+    name: mautrix-telegram
+    sources:
+    - https://github.com/mautrix/telegram
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-telegram-1.0.0/mautrix-telegram-1.0.0.tgz
+    version: 1.0.0
   - apiVersion: v2
     appVersion: v0.15.3
     created: "2026-03-05T17:52:47.40070266Z"
@@ -763,6 +935,23 @@ entries:
   mautrix-twitter:
   - apiVersion: v2
     appVersion: v0.2511.0
+    created: "2026-03-13T11:22:48.30645428Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-twitter
+    digest: 91f1be1b4b023ca78f0d47ad3f4f11051bde66943585171d851b3fcd46f4b421
+    home: https://docs.mau.fi/bridges/go/twitter/
+    name: mautrix-twitter
+    sources:
+    - https://github.com/mautrix/twitter
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-twitter-1.0.0/mautrix-twitter-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.2511.0
     created: "2026-03-05T17:52:47.535853167Z"
     dependencies:
     - name: mautrix-go-base
@@ -813,6 +1002,23 @@ entries:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-twitter-0.1.0/mautrix-twitter-0.1.0.tgz
     version: 0.1.0
   mautrix-whatsapp:
+  - apiVersion: v2
+    appVersion: v0.2602.0
+    created: "2026-03-13T11:22:48.430756876Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-whatsapp
+    digest: 1049d80011bea6bf36fc7c6d5abd7d18ba1135cbb8331fbf0edc1bb098ee2d59
+    home: https://docs.mau.fi/bridges/go/whatsapp/
+    name: mautrix-whatsapp
+    sources:
+    - https://github.com/mautrix/whatsapp
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-whatsapp-1.0.0/mautrix-whatsapp-1.0.0.tgz
+    version: 1.0.0
   - apiVersion: v2
     appVersion: v0.2602.0
     created: "2026-03-05T17:52:47.7031067Z"
@@ -952,6 +1158,23 @@ entries:
   mautrix-zulip:
   - apiVersion: v2
     appVersion: v0.2511.0
+    created: "2026-03-13T11:22:48.548799782Z"
+    dependencies:
+    - name: mautrix-go-base
+      repository: file://../mautrix-go-base
+      version: 1.0.0
+    description: Helm chart for mautrix-zulip
+    digest: cd58667bee51ea5c8d7338da40f51b6d2e5b7225baa9bd7ba5580fa764a96fe6
+    home: https://docs.mau.fi/bridges/go/zulip/
+    name: mautrix-zulip
+    sources:
+    - https://github.com/mautrix/zulip
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-zulip-1.0.0/mautrix-zulip-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
+    appVersion: v0.2511.0
     created: "2026-03-05T17:52:47.860419896Z"
     dependencies:
     - name: mautrix-go-base
@@ -1002,6 +1225,20 @@ entries:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/mautrix-zulip-0.1.0/mautrix-zulip-0.1.0.tgz
     version: 0.1.0
   ntfy:
+  - apiVersion: v2
+    appVersion: v2.17.0
+    created: "2026-03-13T11:22:48.666476755Z"
+    description: Helm chart for ntfy
+    digest: 387a18c7ea216c1fe561787c9327a974b350ff385e66719b213e30daf490867f
+    home: https://ntfy.sh
+    icon: https://github.com/binwiederhier/ntfy/blob/main/web/public/static/images/ntfy.png
+    name: ntfy
+    sources:
+    - https://github.com/binwiederhier/ntfy
+    type: application
+    urls:
+    - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-1.0.0/ntfy-1.0.0.tgz
+    version: 1.0.0
   - apiVersion: v2
     appVersion: v2.17.0
     created: "2026-03-03T16:02:59.321096831Z"
@@ -1097,4 +1334,4 @@ entries:
     urls:
     - https://github.com/cyclikal94/matrix-helm-charts/releases/download/ntfy-0.2.0/ntfy-0.2.0.tgz
     version: 0.2.0
-generated: "2026-03-05T17:52:47.860586808Z"
+generated: "2026-03-13T11:22:48.666738292Z"
