@@ -24,8 +24,12 @@ Generally speaking, installation / usage follows these steps:
 2. Point your Synapse deployment at the generated App Service Registration file, i.e. if using ESS Community, just redeploy with the sample `values.yaml` per the chart `README.md`.
 3. Start a DM with the bot `@componentnamebot:example.com`, i.e. `@whatsappbot:example.com`, login etc.
 
-> [!TIP]
-> You should start with the [INSTALLATION](INSTALLATION.md) guide!.
+<div class="pages-callout pages-callout-tip" markdown="1">
+<p class="pages-callout-title">Tip</p>
+
+You should start with the [INSTALLATION](INSTALLATION.md) guide!
+</div>
+
 
 ### OCI Registry (Preferred)
 
@@ -57,15 +61,15 @@ Given this is new, I'm actively looking for useful new charts to make, I'm prior
 
 ### Integrations
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![ntfy](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.version&label=ntfy%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/ntfy/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![binwiederhier/ntfy](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.ntfy%5B0%5D.appVersion&label=binwiederhier%2Fntfy&logo=github&style=for-the-badge)](https://github.com/binwiederhier/ntfy)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 HTTP-based pub-sub notification service. Useful to allow providing Matrix push notifications on Android without Google. You'll need to be using a Matrix Android client that supports serving push notification via UnifiedPush, i.e. `Element X`.
 
@@ -73,15 +77,15 @@ HTTP-based pub-sub notification service. Useful to allow providing Matrix push n
 
 ### Bridges
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![matrix-appservice-irc](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.matrix-appservice-irc%5B0%5D.version&label=matrix-appservice-irc%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/matrix-appservice-irc/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![matrix-org/matrix-appservice-irc](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.matrix-appservice-irc%5B0%5D.appVersion&label=matrix-org%2Fmatrix-appservice-irc&logo=github&style=for-the-badge)](https://github.com/matrix-org/matrix-appservice-irc)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 IRC bridge for Matrix. This bridge allows you to join IRC channels and chat to IRC users via Matrix rooms. For capabilities etc. check it's entry on [matrix.org IRC Bridges](https://matrix.org/ecosystem/bridges/irc/).
 
@@ -93,29 +97,29 @@ Given there are so many `mautrix` bridges, I'm collating them under a dedicated 
 
 #### Python Bridges
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-googlechat](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-googlechat%5B0%5D.version&label=mautrix-googlechat%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-googlechat/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/googlechat](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-googlechat%5B0%5D.appVersion&label=mautrix%2Fgooglechat&logo=github&style=for-the-badge)](https://github.com/mautrix/googlechat)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Google Chat puppeting bridge. For all 5 of you using Google Chat this will allow continuing those conversations in Matrix. No it's not, Allo, Hangouts or Meet - why do/did they have so many. I think this is some holdover from Google+. For capabilities etc. check it's entry on [matrix.org Google Chat Bridges](https://matrix.org/ecosystem/bridges/google_chat/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-telegram](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-telegram%5B0%5D.version&label=mautrix-telegram%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-telegram/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/telegram](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-telegram%5B0%5D.appVersion&label=mautrix%2Ftelegram&logo=github&style=for-the-badge)](https://github.com/mautrix/telegram)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Telegram hybrid puppeting/relaybot bridge. Note this is a `mautrix` python bridge, so I believe will eventually be replaced with a go variant. For capabilities etc. check it's entry on [matrix.org Telegram Bridges](https://matrix.org/ecosystem/bridges/telegram/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
@@ -125,155 +129,155 @@ A Matrix-Telegram hybrid puppeting/relaybot bridge. Note this is a `mautrix` pyt
 
 Double puppetting is enabled by default, and as such, any charts sharing the same `mautrix-go-base` chart version will use the same double puppet App Service registration automatically.
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-go-base](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-go-base%5B0%5D.version&label=mautrix-go-base%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-go-base/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![cyclikal94/matrix-helm-charts](https://img.shields.io/badge/cyclikal94%2Fmatrix--helm--charts-N%2FA-blue?logo=github&style=for-the-badge)](https://github.com/cyclikal94/matrix-helm-charts)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 The base chart used for all `mautrix-` go bridges. Created in order to reduce duplication, all dependant charts use this base chart, then extend as needed for bridge specifics.
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-bluesky](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-bluesky%5B0%5D.version&label=mautrix-bluesky%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-bluesky/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/bluesky](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-bluesky%5B0%5D.appVersion&label=mautrix%2Fbluesky&logo=github&style=for-the-badge)](https://github.com/mautrix/bluesky)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Bluesky DM puppeting bridge. No category for Bluesky bridges on [matrix.org Ecosystem Bridges](https://matrix.org/ecosystem/bridges/) for this one. For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-gmessages](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gmessages%5B0%5D.version&label=mautrix-gmessages%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-gmessages/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/gmessages](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gmessages%5B0%5D.appVersion&label=mautrix%2Fgmessages&logo=github&style=for-the-badge)](https://github.com/mautrix/gmessages)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Google Messages puppeting bridge. For capabilities etc. check it's entry on [matrix.org SMS Bridges](https://matrix.org/ecosystem/bridges/sms/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-gvoice](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gvoice%5B0%5D.version&label=mautrix-gvoice%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-gvoice/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/gvoice](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-gvoice%5B0%5D.appVersion&label=mautrix%2Fgvoice&logo=github&style=for-the-badge)](https://github.com/mautrix/gvoice)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Google Voice puppeting bridge. No category for Google Voice bridges on [matrix.org Ecosystem Bridges](https://matrix.org/ecosystem/bridges/) for this one. For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-linkedin](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-linkedin%5B0%5D.version&label=mautrix-linkedin%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-linkedin/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/linkedin](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-linkedin%5B0%5D.appVersion&label=mautrix%2Flinkedin&logo=github&style=for-the-badge)](https://github.com/mautrix/linkedin)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-LinkedIn puppeting bridge. For capabilities etc. check it's entry on [matrix.org LinkedIn Bridges](https://matrix.org/ecosystem/bridges/linkedin/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-meta](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-meta%5B0%5D.version&label=mautrix-meta%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-meta/README.md) 
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/meta](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-meta%5B0%5D.appVersion&label=mautrix%2Fmeta&logo=github&style=for-the-badge)](https://github.com/mautrix/meta)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Meta puppeting bridge. For capabilities etc. check it's entry on [matrix.org Instagram Bridges](https://matrix.org/ecosystem/bridges/instagram/), don't let the link fool you, it also does Facebook Messaging. For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-signal](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-signal%5B0%5D.version&label=mautrix-signal%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-signal/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/signal](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-signal%5B0%5D.appVersion&label=mautrix%2Fsignal&logo=github&style=for-the-badge)](https://github.com/mautrix/signal)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Signal puppeting bridge. For capabilities etc. check it's entry on [matrix.org Signal Bridges](https://matrix.org/ecosystem/bridges/signal/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-slack](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-slack%5B0%5D.version&label=mautrix-slack%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-slack/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/slack](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-slack%5B0%5D.appVersion&label=mautrix%2Fslack&logo=github&style=for-the-badge)](https://github.com/mautrix/slack)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Slack puppeting bridge based on [slack-go](https://github.com/slack-go/slack). For capabilities etc. check it's entry on [matrix.org Slack Bridges](https://matrix.org/ecosystem/bridges/slack/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-twitter](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-twitter%5B0%5D.version&label=mautrix-twitter%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-twitter/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/twitter](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-twitter%5B0%5D.appVersion&label=mautrix%2Ftwitter&logo=github&style=for-the-badge)](https://github.com/mautrix/twitter)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Twitter DM puppeting bridge. For capabilities etc. check it's entry on [matrix.org X Bridges](https://matrix.org/ecosystem/bridges/X/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-whatsapp](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-whatsapp%5B0%5D.version&label=mautrix-whatsapp%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-whatsapp/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/whatsapp](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-whatsapp%5B0%5D.appVersion&label=mautrix%2Fwhatsapp&logo=github&style=for-the-badge)](https://github.com/mautrix/whatsapp)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-WhatsApp puppeting bridge based on [whatsmeow](https://github.com/tulir/whatsmeow). For capabilities etc. check it's entry on [matrix.org Whatsapp Bridges](https://matrix.org/ecosystem/bridges/whatsapp/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
 </td></tr></table>
 
-<table><tr><td>
+<table><tr><td markdown="1">
 
 [![mautrix-zulip](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-zulip%5B0%5D.version&label=mautrix-zulip%20Helm%20Chart&logo=helm&style=for-the-badge)](charts/mautrix-zulip/README.md)
 
-</td><td align="right">
+</td><td markdown="1" align="right">
 
 [![mautrix/zulip](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/cyclikal94/matrix-helm-charts/gh-pages/index.yaml&query=%24.entries.mautrix-zulip%5B0%5D.appVersion&label=mautrix%2Fzulip&logo=github&style=for-the-badge)](https://github.com/mautrix/zulip)
 
-</td></tr><tr><td colspan="2">
+</td></tr><tr><td markdown="1" colspan="2">
 
 A Matrix-Zulip puppeting bridge. For capabilities etc. check it's entry on [matrix.org Zulip Bridges](https://matrix.org/ecosystem/bridges/zulip/). For hands-on `mautrix` docs, check [docs.mau.fi](https://docs.mau.fi/bridges/), just note you only need to care about the custom configuration (everything else is handled by the chart).
 
