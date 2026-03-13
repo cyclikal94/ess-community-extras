@@ -46,4 +46,4 @@ fi
       print
     }
   ' "${readme_path}"
-} > "${output_path}"
+} | perl -pe 's{<t([dh])\b(?![^>]*\bmarkdown=)([^>]*)>}{<t$1 markdown="1"$2>}g' > "${output_path}"
