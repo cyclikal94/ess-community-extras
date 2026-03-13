@@ -25,5 +25,7 @@ database:
     user: matrix_irc
     password:
       value: replace_me
+      # existingSecret: my-postgres-password
+      # existingSecretKey: password
     database: matrix_irc
     sslMode: prefer

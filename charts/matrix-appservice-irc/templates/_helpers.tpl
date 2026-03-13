@@ -210,22 +210,62 @@ app.kubernetes.io/component: {{ .component }}
 {{- required "values.database.postgres.user is required" $user -}}
 {{- end -}}
 
+{{- define "matrix-appservice-irc.databasePostgresManagedSecretKey" -}}
+POSTGRES_PASSWORD
+{{- end -}}
+
+{{- define "matrix-appservice-irc.databasePostgresPasswordSecretName" -}}
+{{- $postgres := .Values.database.postgres | default dict -}}
+{{- $passwordCfg := (get $postgres "password") | default dict -}}
+{{- $existingSecretName := (get $passwordCfg "existingSecret") | default "" -}}
+{{- if ne $existingSecretName "" -}}
+{{- $existingSecretName -}}
+{{- else -}}
+{{- include "matrix-appservice-irc.postgresFullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "matrix-appservice-irc.databasePostgresPasswordSecretKey" -}}
+{{- $postgres := .Values.database.postgres | default dict -}}
+{{- $passwordCfg := (get $postgres "password") | default dict -}}
+{{- $existingSecretName := (get $passwordCfg "existingSecret") | default "" -}}
+{{- if ne $existingSecretName "" -}}
+{{- (get $passwordCfg "existingSecretKey") | default "password" -}}
+{{- else -}}
+{{- include "matrix-appservice-irc.databasePostgresManagedSecretKey" . -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "matrix-appservice-irc.ensureDatabasePostgresPassword" -}}
 {{- $postgres := .Values.database.postgres | default dict -}}
 {{- if not (hasKey $postgres "_computedPassword") -}}
 {{- $passwordCfg := (get $postgres "password") | default dict -}}
 {{- $password := (get $passwordCfg "value") | default "" -}}
+{{- $existingSecretName := (get $passwordCfg "existingSecret") | default "" -}}
+{{- $existingSecretKey := (get $passwordCfg "existingSecretKey") | default "password" -}}
+{{- if and (ne $password "") (ne $existingSecretName "") -}}
+{{- fail "values.database.postgres.password.value and values.database.postgres.password.existingSecret are mutually exclusive" -}}
+{{- end -}}
 {{- if eq $password "" -}}
-{{- if .Values.postgres.enabled -}}
-{{- $existing := lookup "v1" "Secret" .Release.Namespace (include "matrix-appservice-irc.postgresFullname" .) -}}
-{{- if and $existing (hasKey $existing "data") (hasKey $existing.data "POSTGRES_PASSWORD") -}}
-{{- $password = (index $existing.data "POSTGRES_PASSWORD" | b64dec) -}}
+{{- if ne $existingSecretName "" -}}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace $existingSecretName -}}
+{{- if and $existing (hasKey $existing "data") (hasKey $existing.data $existingSecretKey) -}}
+{{- $password = (index $existing.data $existingSecretKey | b64dec) -}}
+{{- else -}}
+{{- fail (printf "values.database.postgres.password.existingSecret %q must contain key %q in namespace %q" $existingSecretName $existingSecretKey .Release.Namespace) -}}
+{{- end -}}
+{{- else if .Values.postgres.enabled -}}
+{{- $managedSecretName := include "matrix-appservice-irc.postgresFullname" . -}}
+{{- $managedSecretKey := include "matrix-appservice-irc.databasePostgresManagedSecretKey" . -}}
+{{- $existing := lookup "v1" "Secret" .Release.Namespace $managedSecretName -}}
+{{- if and $existing (hasKey $existing "data") (hasKey $existing.data $managedSecretKey) -}}
+{{- $password = (index $existing.data $managedSecretKey | b64dec) -}}
 {{- else -}}
 {{- $password = (randAlphaNum 64 | sha256sum) -}}
 {{- end -}}
 {{- end -}}
 {{- if eq $password "" -}}
-{{- fail "values.database.postgres.password.value is required when postgres.enabled=false" -}}
+{{- fail "values.database.postgres.password.value or values.database.postgres.password.existingSecret is required when postgres.enabled=false" -}}
 {{- else -}}
 {{- $_ := set $postgres "_computedPassword" $password -}}
 {{- end -}}
@@ -236,6 +276,16 @@ app.kubernetes.io/component: {{ .component }}
 {{- define "matrix-appservice-irc.databasePostgresPassword" -}}
 {{- include "matrix-appservice-irc.ensureDatabasePostgresPassword" . -}}
 {{- index .Values.database.postgres "_computedPassword" -}}
+{{- end -}}
+
+{{- define "matrix-appservice-irc.databasePostgresPasswordChecksum" -}}
+{{- include "matrix-appservice-irc.ensureDatabasePostgresPassword" . -}}
+{{- $payload := dict
+  "secretName" (include "matrix-appservice-irc.databasePostgresPasswordSecretName" .)
+  "secretKey" (include "matrix-appservice-irc.databasePostgresPasswordSecretKey" .)
+  "password" (include "matrix-appservice-irc.databasePostgresPassword" .)
+-}}
+{{- toYaml $payload | sha256sum -}}
 {{- end -}}
 
 {{- define "matrix-appservice-irc.redisUrl" -}}
