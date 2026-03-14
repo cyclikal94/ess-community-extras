@@ -182,7 +182,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - name: Upsert PR preview comment
+      - name: PR preview comment
         uses: actions/github-script@v7
         env:
           COMMENT_PAYLOAD: ${{ needs.publish-preview-self.outputs.comment_payload || needs.publish-preview-approved.outputs.comment_payload }}
@@ -253,17 +253,20 @@ jobs:
               `<!-- pr-preview-comment-metadata:${metadata} -->`,
               "Preview charts for this PR have been built and are ready to test.",
               "",
+              "Install the preview package using your normal release name and namespace. This should make it easy to switch back to the main chart later with a normal `helm upgrade`.",
+              "",
               "Use the install template below, then substitute the chart and version you want to test from the table.",
               "",
               "```bash",
               'export BASE_CHART="mautrix-whatsapp"',
-              'export CHART="${BASE_CHART}-pr"',
+              'export PREVIEW_CHART="${BASE_CHART}-pr"',
               'export VERSION="1.0.1-pr.' + payload.prNumber + '"',
               "",
-              'helm upgrade --install "${CHART}" "oci://' + registry + '/${CHART}" \\',
+              'helm upgrade --install "${BASE_CHART}" "oci://' + registry + '/${PREVIEW_CHART}" \\',
               '  --version "${VERSION}" \\',
-              '  --namespace "${CHART}" \\',
+              '  --namespace "${BASE_CHART}" \\',
               '  --create-namespace \\',
+              '  --set nameOverride="${BASE_CHART}" \\',
               '  --values "./${BASE_CHART}-values.yaml"',
               "```",
               "",
