@@ -229,7 +229,8 @@ database:
     user: mautrix_slack
     password:
       value: replace_me
-      # existingSecret: my-postgres-password
+      # Remove `value` and replace with the below to use an external secret
+			# existingSecret: my-postgres-password
       # existingSecretKey: password
     database: mautrix_slack
     sslMode: require

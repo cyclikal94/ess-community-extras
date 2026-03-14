@@ -15,7 +15,8 @@ database:
     user: mautrix_gmessages
     password:
       value: replace_me
-      # existingSecret: my-postgres-password
+      # Remove `value` and replace with the below to use an external secret
+			# existingSecret: my-postgres-password
       # existingSecretKey: password
     database: mautrix_gmessages
     sslMode: require
