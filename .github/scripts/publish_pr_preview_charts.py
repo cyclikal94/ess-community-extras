@@ -13,6 +13,7 @@ TOP_LEVEL_NAME_RE = re.compile(r'^name:\s*"?([^"\n#]+)"?\s*$', re.MULTILINE)
 TOP_LEVEL_VERSION_RE = re.compile(r'^version:\s*"?([^"\n#]+)"?\s*$', re.MULTILINE)
 DEP_NAME_RE = re.compile(r'^\s*-\s*name:\s*"?([^"\n#]+)"?\s*$')
 DEP_VERSION_RE = re.compile(r'^(\s*version:\s*).*$')
+DEP_ALIAS_RE = re.compile(r'^\s*alias:\s*"?([^"\n#]+)"?\s*$')
 
 
 def run(*args: str, cwd: str | None = None) -> str:
@@ -126,6 +127,8 @@ def rewrite_chart_versions(charts_root: pathlib.Path, charts: list[str], version
         rewritten: list[str] = []
         in_dependencies = False
         current_dependency = None
+        current_dependency_original = None
+        pending_alias = False
 
         for line in lines:
             if TOP_LEVEL_NAME_RE.match(line):
@@ -144,21 +147,52 @@ def rewrite_chart_versions(charts_root: pathlib.Path, charts: list[str], version
                 dep_name_match = DEP_NAME_RE.match(line)
                 if dep_name_match:
                     current_dependency = dep_name_match.group(1)
-                    if current_dependency in versions:
+                    current_dependency_original = current_dependency
+                    pending_alias = False
+                    if current_dependency_original in versions:
                         line = re.sub(
                             r'(^\s*-\s*name:\s*).*$',
-                            rf'\g<1>{preview_chart_name(current_dependency)}',
+                            rf'\g<1>{preview_chart_name(current_dependency_original)}',
                             line,
                         )
+                        pending_alias = True
                 else:
+                    if pending_alias and DEP_ALIAS_RE.match(line):
+                        pending_alias = False
                     dep_version_match = DEP_VERSION_RE.match(line)
-                    if dep_version_match and current_dependency in versions:
-                        line = f"{dep_version_match.group(1)}{versions[current_dependency]}"
+                    if dep_version_match and current_dependency_original in versions:
+                        line = f"{dep_version_match.group(1)}{versions[current_dependency_original]}"
+                        if pending_alias:
+                            rewritten.append(line)
+                            indent = re.match(r"^(\s*)", line).group(1)
+                            rewritten.append(f"{indent}alias: {current_dependency_original}")
+                            pending_alias = False
+                            current_dependency = None
+                            current_dependency_original = None
+                            continue
                         current_dependency = None
+                        current_dependency_original = None
 
             rewritten.append(line)
 
         chart_yaml.write_text("\n".join(rewritten) + "\n")
+
+
+def rewrite_chart_template_names(charts_root: pathlib.Path, charts: list[str]) -> None:
+    for chart_name in charts:
+        templates_dir = charts_root / chart_name / "templates"
+        if not templates_dir.exists():
+            continue
+
+        original = f'"{chart_name}.'
+        preview = f'"{preview_chart_name(chart_name)}.'
+        for template_file in templates_dir.rglob("*"):
+            if not template_file.is_file():
+                continue
+            contents = template_file.read_text()
+            if original not in contents:
+                continue
+            template_file.write_text(contents.replace(original, preview))
 
 
 def package_and_push(charts_root: pathlib.Path, charts: list[str], versions: dict[str, str], oci_registry: str) -> None:
@@ -203,6 +237,7 @@ def command_publish(args: argparse.Namespace) -> int:
         build_charts = dependency_closure(work_charts_root, charts)
         versions = preview_versions(work_charts_root, build_charts, args.pr_number, args.head_sha, args.mode)
         rewrite_chart_versions(work_charts_root, build_charts, versions)
+        rewrite_chart_template_names(work_charts_root, charts)
         package_and_push(work_charts_root, charts, versions, args.oci_registry)
         versions_output.write_text("".join(f"{chart}={versions[chart]}\n" for chart in charts))
 
